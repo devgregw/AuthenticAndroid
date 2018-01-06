@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:fitsSystemWindows="false">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:alpha="0"
+            android:src="@drawable/ic_keyboard_arrow_up_white_48dp"
+            android:id="@+id/tabsButton"
+            android:scaleType="centerInside"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/logo"
+            android:src="@drawable/banner"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
