@@ -5,10 +5,6 @@ import android.graphics.Color
 import android.os.Build
 import android.support.v7.app.AlertDialog
 
-/**
- * Created by devgr on 12/27/2017.
- */
-
 fun String.Companion.isNullOrWhiteSpace(string: String?): Boolean {
     if (string != null) {
         var i = 0

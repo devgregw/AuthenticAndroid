@@ -9,10 +9,6 @@ import com.firebase.ui.storage.images.FirebaseImageLoader
 import com.google.firebase.storage.StorageReference
 import java.io.InputStream
 
-/**
- * Created by devgr on 12/25/2017.
- */
-
 @GlideModule
 class AuthenticGlideModule : AppGlideModule() {
     override fun registerComponents(context: Context?, glide: Glide?, registry: Registry?) {

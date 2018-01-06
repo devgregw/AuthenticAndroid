@@ -17,9 +17,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.firebase.storage.FirebaseStorage
 
-/**
- * Created by devgr on 12/26/2017.
- */
 class TabView(context: Context, tab: AuthenticTab) : CardView(context) {
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_tab, this)

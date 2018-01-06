@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         //setSupportActionBar(tb)
         button.animate().setStartDelay(500L).translationY(0f).setInterpolator(AccelerateDecelerateInterpolator()).setDuration(500L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationEnd(p0: Animator?) {
-                button.animate().setStartDelay(0L).alpha(1f).setInterpolator(AccelerateDecelerateInterpolator()).setDuration(250L)
+                button.animate().setStartDelay(0L).alpha(1f).setInterpolator(AccelerateDecelerateInterpolator()).duration = 250L
             }
 
             override fun onAnimationRepeat(p0: Animator?) {
@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         val image = findViewById<ImageView>(R.id.logo)
-        image.animate().setStartDelay(500L).translationY(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -37.5f, resources.displayMetrics)).setInterpolator(AccelerateDecelerateInterpolator()).setDuration(500L)
+        image.animate().setStartDelay(500L).translationY(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -37.5f, resources.displayMetrics)).setInterpolator(AccelerateDecelerateInterpolator()).duration = 500L
         button.setOnClickListener {
             dialog!!.show()
         }

@@ -13,9 +13,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.firebase.storage.FirebaseStorage
 
-/**
- * Created by devgr on 12/25/2017.
- */
 class AuthenticBundle(val id: String = "", val parentId: String = "", val index: Int = -1, val image: String = "", val title: String = "", val text: String = "", val _buttonInfo: HashMap<String, Any>? = null) {
     val buttonLabel: String
         get() = _buttonInfo?.get("label")?.toString() ?: ""

@@ -114,7 +114,7 @@ class TabActivity : AppCompatActivity() {
         if (intent.getBooleanExtra("loadAll", false))
             FirebaseDatabase.getInstance().reference.child("tabs").child(id).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError?) =
-                    Utils.showErrorDialog(this@TabActivity, p0?.code ?: -1, p0?.message ?: "Unknown", p0?.details ?: "Unknown")
+                        Utils.showErrorDialog(this@TabActivity, p0?.code ?: -1, p0?.message ?: "Unknown", p0?.details ?: "Unknown")
 
                 override fun onDataChange(p0: DataSnapshot?) {
                     val data = p0?.getValue(AuthenticTab::class.java)

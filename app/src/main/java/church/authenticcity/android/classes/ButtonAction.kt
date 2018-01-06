@@ -5,9 +5,6 @@ import android.util.Log
 import android.widget.Toast
 import church.authenticcity.android.TabActivity
 
-/**
- * Created by devgr on 12/26/2017.
- */
 class ButtonAction(private val map: HashMap<String, Any>) {
     var group: Int = -1
         get() = map["group"].toString().toInt()
