@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
+import android.support.v4.content.ContextCompat
 import android.support.v4.widget.NestedScrollView
 import android.support.v7.app.AppCompatActivity
 import android.util.TypedValue
@@ -37,10 +38,10 @@ class MainActivity : AppCompatActivity() {
                     addRule(RelativeLayout.CENTER_IN_PARENT)
                 }
                 if (Utils.checkSdk(21))
-                    indeterminateTintList = ColorStateList.valueOf(Color.BLACK)
+                    indeterminateTintList = ColorStateList.valueOf(Color.WHITE)
             })
         })
-        FirebaseAuth.getInstance().signInAnonymously().addOnCompleteListener { _ ->
+        val loader = {
             FirebaseDatabase.getInstance().getReference("/tabs/").orderByChild("index").addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError?) {
                     sheetView!!.removeAllViews()
@@ -88,6 +89,10 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
+        if (FirebaseAuth.getInstance().currentUser != null)
+            loader()
+        else
+            FirebaseAuth.getInstance().signInAnonymously().addOnCompleteListener { _ -> loader() }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -95,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val button = findViewById<ImageButton>(R.id.tabsButton)
         button.translationY = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75f, resources.displayMetrics)
-        sheetView = NestedScrollView(this).apply { setBackgroundColor(Color.argb(255, 15, 15, 15)) }
+        sheetView = NestedScrollView(this).apply { setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.colorBackgroundDark)) }
         dialog = BottomSheetDialog(this).apply { setContentView(sheetView!!) }
         //val tb = findViewById<Toolbar>(R.id.toolbar)
         //setSupportActionBar(tb)

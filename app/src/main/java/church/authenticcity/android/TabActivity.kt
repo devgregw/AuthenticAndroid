@@ -78,9 +78,9 @@ class TabActivity : AppCompatActivity() {
 
             override fun onDataChange(p0: DataSnapshot?) {
                 val data = p0!!.getValue(AuthenticTab::class.java)!!
-                if (data.bundles != null) {
-                    setContent(data.bundles.map { it.toView(this@TabActivity) })
-                } else
+                if (data.bundles != null)
+                    setContent(data.getSortedBundles()!!.map { it.toView(this@TabActivity) })
+                else
                     setContent(RelativeLayout(this@TabActivity).apply {
                         addView(TextView(this@TabActivity).apply {
                             textSize = resources.getDimension(R.dimen.textSize)
@@ -107,7 +107,7 @@ class TabActivity : AppCompatActivity() {
                     addRule(RelativeLayout.CENTER_IN_PARENT)
                 }
                 if (Utils.checkSdk(21))
-                    indeterminateTintList = ColorStateList.valueOf(Color.BLACK)
+                    indeterminateTintList = ColorStateList.valueOf(Color.WHITE)
             })
         })
         val id = intent.getStringExtra("id")
