@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    android:background="@color/colorBackground">
+    android:background="#FFF"> <!--@color/colorBackground-->
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -15,7 +15,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/nsvRoot">
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

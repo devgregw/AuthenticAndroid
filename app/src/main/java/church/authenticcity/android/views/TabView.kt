@@ -7,28 +7,32 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.RippleDrawable
 import android.support.v7.widget.CardView
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import church.authenticcity.android.R
 import church.authenticcity.android.TabActivity
 import church.authenticcity.android.classes.AuthenticTab
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.isNullOrWhiteSpace
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.google.firebase.storage.FirebaseStorage
 
 class TabView(context: Context, tab: AuthenticTab) : CardView(context) {
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_tab, this)
         if (!String.isNullOrWhiteSpace(tab.header))
-        Glide.with(context).load(FirebaseStorage.getInstance().reference.child(tab.header!!)).transition(DrawableTransitionOptions.withCrossFade()).into(view.findViewById(R.id.image))
-        view.findViewById<TextView>(R.id.dataCardTitle).text = tab.title
+            Utils.loadFirebaseImage(context, tab.header!!, view.findViewById(R.id.image))
+        if (!tab.hideTitle)
+            view.findViewById<TextView>(R.id.dataCardTitle).apply {
+                text = tab.title
+                typeface = Utils.getTitleTypeface(context)
+            }
+        else
+            view.findViewById<LinearLayout>(R.id.dataCardTitleContainer).visibility = View.GONE
         setBackgroundColor(Color.TRANSPARENT)
-        val card = view.findViewById<CardView>(R.id.card)
-        if (Utils.checkSdk(21))
-            card.foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
-        card.setOnClickListener {
-            TabActivity.start(context, tab)
+        view.findViewById<CardView>(R.id.card).apply {
+            if (Utils.checkSdk(21))
+                foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
+            setOnClickListener {TabActivity.start(context, tab) }
         }
     }
 }
