@@ -83,7 +83,7 @@ class TabActivity : AppCompatActivity() {
                     setContent(RelativeLayout(this@TabActivity).apply {
                         addView(TextView(this@TabActivity).apply {
                             textSize = 22f
-                            text = "No content"
+                            text = this@TabActivity.getString(R.string.no_content)
                             setTextColor(Color.BLACK)
                             typeface = Utils.getTextTypeface(this@TabActivity)
                             layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { addRule(RelativeLayout.CENTER_IN_PARENT) }

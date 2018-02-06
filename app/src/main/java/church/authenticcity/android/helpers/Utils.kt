@@ -2,7 +2,6 @@ package church.authenticcity.android.helpers
 
 import android.app.Activity
 import android.content.Context
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
@@ -32,25 +31,23 @@ fun String.Companion.isNullOrWhiteSpace(string: String?): Boolean {
 }
 
 fun AlertDialog.applyColorsAndTypefaces(): AlertDialog {
-    setOnShowListener(object : DialogInterface.OnShowListener {
-        override fun onShow(p0: DialogInterface?) {
-            val a = p0 as AlertDialog
-            a.getButton(AlertDialog.BUTTON_POSITIVE).apply {
-                setTextColor(Color.WHITE)
-                typeface = Utils.getTextTypeface(a.context)
-            }
-            a.getButton(AlertDialog.BUTTON_NEGATIVE).apply {
-                setTextColor(Color.WHITE)
-                typeface = Utils.getTextTypeface(a.context)
-            }
-            a.getButton(AlertDialog.BUTTON_NEUTRAL).apply {
-                setTextColor(Color.WHITE)
-                typeface = Utils.getTextTypeface(a.context)
-            }
-            a.findViewById<TextView>(android.R.id.message)?.typeface = Utils.getTextTypeface(a.context)
-            a.findViewById<TextView>(android.support.v7.appcompat.R.id.alertTitle)?.typeface = Utils.getTitleTypeface(a.context)
+    setOnShowListener { p0 ->
+        val a = p0 as AlertDialog
+        a.getButton(AlertDialog.BUTTON_POSITIVE).apply {
+            setTextColor(Color.WHITE)
+            typeface = Utils.getTextTypeface(a.context)
         }
-    })
+        a.getButton(AlertDialog.BUTTON_NEGATIVE).apply {
+            setTextColor(Color.WHITE)
+            typeface = Utils.getTextTypeface(a.context)
+        }
+        a.getButton(AlertDialog.BUTTON_NEUTRAL).apply {
+            setTextColor(Color.WHITE)
+            typeface = Utils.getTextTypeface(a.context)
+        }
+        a.findViewById<TextView>(android.R.id.message)?.typeface = Utils.getTextTypeface(a.context)
+        a.findViewById<TextView>(android.support.v7.appcompat.R.id.alertTitle)?.typeface = Utils.getTitleTypeface(a.context)
+    }
     return this
 }
 
