@@ -27,15 +27,9 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
         const val VIDEO_PROVIDER_VIMEO = "Vimeo"
     }
 
-    val id: String
-    val parent: String
-    val type: String
-
-    init {
-        id = map["id"] as String
-        parent = map["parent"] as String
-        type = map["type"] as String
-    }
+    val id: String = map["id"] as String
+    val parent: String = map["parent"] as String
+    val type: String = map["type"] as String
 
     private fun <T> getProperty(key: String) = map[key] as T
 
@@ -51,6 +45,14 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                 }
                 "title" -> TextView(context).apply {
                     textSize = 22f
+                    layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    if (Utils.checkSdk(17))
+                        textAlignment = when (getProperty<String>("alignment")) {
+                            "left" -> TextView.TEXT_ALIGNMENT_TEXT_START
+                            "center" -> TextView.TEXT_ALIGNMENT_CENTER
+                            "right" -> TextView.TEXT_ALIGNMENT_TEXT_END
+                            else -> TextView.TEXT_ALIGNMENT_INHERIT
+                        }
                     setTextColor(Color.BLACK)
                     typeface = Utils.getTitleTypeface(context)
                     text = getProperty("title")
@@ -61,6 +63,14 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                 }
                 "text" -> TextView(context).apply {
                     textSize = 18f
+                    layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    if (Utils.checkSdk(17))
+                        textAlignment = when (getProperty<String>("alignment")) {
+                            "left" -> TextView.TEXT_ALIGNMENT_TEXT_START
+                            "center" -> TextView.TEXT_ALIGNMENT_CENTER
+                            "right" -> TextView.TEXT_ALIGNMENT_TEXT_END
+                            else -> TextView.TEXT_ALIGNMENT_INHERIT
+                        }
                     setTextColor(Color.BLACK)
                     typeface = Utils.getTextTypeface(context)
                     text = type
