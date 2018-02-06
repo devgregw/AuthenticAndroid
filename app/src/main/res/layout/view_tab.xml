@@ -8,15 +8,16 @@
     app:cardBackgroundColor="@android:color/white"
     app:cardCornerRadius="6dp"
     app:cardElevation="4dp"
-    android:clickable="true">
+    android:clickable="true"
+    android:focusable="true">
 
     <LinearLayout
-        android:id="@+id/dataCardRoot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <ImageView
+            android:contentDescription="@string/header_image_content_description"
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

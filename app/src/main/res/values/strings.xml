@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Authentic</string>
+    <string name="header_image_content_description">Header image</string>
+    <string name="no_content">No content</string>
+    <string name="open_tabs_button_content_description">Open tabs button</string>
+    <string name="authentic_city_church_logo_content_description">Authentic City Church logo</string>
 </resources>
