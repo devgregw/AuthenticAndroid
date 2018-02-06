@@ -1,6 +1,7 @@
 package church.authenticcity.android
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -40,16 +41,15 @@ class MainActivity : AppCompatActivity() {
                     addRule(RelativeLayout.CENTER_IN_PARENT)
                 }
                 indeterminateDrawable.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
-                //if (Utils.checkSdk(21))
-                    //indeterminateTintList = ColorStateList.valueOf(Color.WHITE)
             })
         })
         val loader = {
             FirebaseDatabase.getInstance().getReference("/tabs/").orderByChild("index").addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("SetTextI18n")
                 override fun onCancelled(p0: DatabaseError?) {
                     sheetView!!.removeAllViews()
                     sheetView!!.addView(TextView(this@MainActivity).apply {
-                        text = "ERROR: " + p0?.message
+                        text = "ERROR: ${p0?.message}"
                         typeface = Utils.getTextTypeface(this@MainActivity)
                         setTextColor(Color.WHITE)
                     })
@@ -80,10 +80,9 @@ class MainActivity : AppCompatActivity() {
                             })
                         })
                     }
-                    p0?.children?.forEach {
-                        val data = it.getValue(AuthenticTab::class.java)
-                        if (data !== null)
-                            layout.addView(TabView(this@MainActivity, data))
+                    p0?.children?.map { it.getValue(AuthenticTab::class.java) }?.filter { it?.getShouldBeHidden()?.not() ?: false }?.forEach {
+                        if (it !== null)
+                            layout.addView(TabView(this@MainActivity, it))
                     }
                     sheetView!!.addView(layout)
                 }
@@ -145,7 +144,7 @@ class MainActivity : AppCompatActivity() {
         image.alpha = 0f
         val button = findViewById<ImageButton>(R.id.tabsButton)
         button.translationY = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75f, resources.displayMetrics)
-        sheetView = NestedScrollView(this).apply { /*setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.colorBackgroundDark))*/ setBackgroundColor(Color.WHITE) }
+        sheetView = NestedScrollView(this).apply { setBackgroundColor(Color.WHITE) }
         dialog = BottomSheetDialog(this).apply { setContentView(sheetView!!) }
         FirebaseDatabase.getInstance().reference.child("versions").child("android").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError?) {
