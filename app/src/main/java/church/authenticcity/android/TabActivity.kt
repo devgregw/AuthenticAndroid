@@ -3,19 +3,22 @@ package church.authenticcity.android
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.TypedValue
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import church.authenticcity.android.classes.AuthenticTab
 import church.authenticcity.android.helpers.Utils
+import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.helpers.applyTypeface
-import church.authenticcity.android.helpers.isNullOrWhiteSpace
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -24,19 +27,27 @@ import com.google.firebase.database.ValueEventListener
 class TabActivity : AppCompatActivity() {
     companion object {
         fun start(context: Context, tab: AuthenticTab) {
-            val intent = Intent(context, TabActivity::class.java)
-            intent.putExtra("id", tab.id)
-            intent.putExtra("title", tab.title)
-            intent.putExtra("header", tab.header)
-            intent.putExtra("hideHeader", tab.hideHeader)
-            context.startActivity(intent)
+            Utils.Temp.putTab(tab)
+            context.startActivity(Intent(context, TabActivity::class.java).apply { putExtra("id", tab.id) })
         }
 
         fun start(context: Context, tabId: String) {
-            val intent = Intent(context, TabActivity::class.java)
-            intent.putExtra("loadAll", true)
-            intent.putExtra("id", tabId)
-            context.startActivity(intent)
+            val dialog = Utils.createIndeterminateDialog(context, "Loading...")
+            dialog.show()
+            FirebaseDatabase.getInstance().getReference("/tabs/$tabId").addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onCancelled(p0: DatabaseError?) {
+                    dialog.dismiss()
+                    AlertDialog.Builder(context).setTitle("Unexpected Error").setCancelable(false).setMessage("An unexpected error occurred while loading data.\n\nCode: ${p0?.code
+                            ?: "unknown"}\nMessage: ${p0?.message
+                            ?: "unknown"}\nDetails: ${p0?.details
+                            ?: "unknown"}").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
+                }
+
+                override fun onDataChange(p0: DataSnapshot?) {
+                    dialog.dismiss()
+                    start(context, p0!!.getValue(AuthenticTab::class.java)!!)
+                }
+            })
         }
     }
 
@@ -63,73 +74,35 @@ class TabActivity : AppCompatActivity() {
         }
     }
 
-    private fun initialize(title: String, header: String?, id: String) {
-        this.title = title
-        supportActionBar?.applyTypeface(this, title)
-        if (!String.isNullOrWhiteSpace(header))
-            Utils.loadFirebaseImage(this, header!!, findViewById(R.id.image))
+    private fun initialize() {
+        val tab = Utils.Temp.getTab(intent.getStringExtra("id"))!!
+        this.title = tab.title
+        supportActionBar?.applyTypeface(this, tab.title)
+        if (tab.hideHeader) findViewById<ImageView>(R.id.image).visibility = View.GONE else Utils.loadFirebaseImage(this, tab.header, findViewById(R.id.image))
+        if (tab.elementCount > 0)
+            setContent(tab.convertedElements.map { it.toView(this@TabActivity) })
         else
-            findViewById<ImageView>(R.id.image).visibility = View.GONE
-        FirebaseDatabase.getInstance().getReference("/tabs/" + id).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError?) {
-                setContent(TextView(this@TabActivity).apply { text = p0!!.message })
-            }
-
-            override fun onDataChange(p0: DataSnapshot?) {
-                val data = p0!!.getValue(AuthenticTab::class.java)!!
-                if (data.elementCount > 0)
-                    setContent(data.convertedElements.map { it.toView(this@TabActivity) })
-                else
-                    setContent(RelativeLayout(this@TabActivity).apply {
-                        addView(TextView(this@TabActivity).apply {
-                            textSize = 22f
-                            text = this@TabActivity.getString(R.string.no_content)
-                            setTextColor(Color.BLACK)
-                            typeface = Utils.getTextTypeface(this@TabActivity)
-                            layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { addRule(RelativeLayout.CENTER_IN_PARENT) }
-                        })
-                    })
-            }
-        })
+            setContent(RelativeLayout(this@TabActivity).apply {
+                addView(TextView(this@TabActivity).apply {
+                    textSize = 22f
+                    text = this@TabActivity.getString(R.string.no_content)
+                    setTextColor(Color.BLACK)
+                    typeface = Utils.getTextTypeface(this@TabActivity)
+                    layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { addRule(RelativeLayout.CENTER_IN_PARENT) }
+                })
+            })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tab)
+        setContentView(R.layout.activity_content_basic)
         findViewById<Toolbar>(R.id.toolbar).apply {
             this@TabActivity.setSupportActionBar(this)
             setBackgroundColor(Color.parseColor("#212121"))
         }
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_white_36dp)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.applyTypeface(this, "")
-        setContent(RelativeLayout(this@TabActivity).apply {
-            addView(ProgressBar(this@TabActivity).apply {
-                isIndeterminate = true
-                val size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50f, resources.displayMetrics).toInt()
-                layoutParams = RelativeLayout.LayoutParams(size, size).apply { addRule(RelativeLayout.CENTER_IN_PARENT) }
-                indeterminateDrawable.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
-                //if (Utils.checkSdk(21))
-                //indeterminateTintList = ColorStateList.valueOf(Color.WHITE)
-            })
-        })
-        val id = intent.getStringExtra("id")
-        if (intent.getBooleanExtra("loadAll", false))
-            FirebaseDatabase.getInstance().reference.child("tabs").child(id).addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(p0: DatabaseError?) =
-                        Utils.showErrorDialog(this@TabActivity, p0?.code ?: -1, p0?.message
-                                ?: "Unknown", p0?.details ?: "Unknown")
-
-                override fun onDataChange(p0: DataSnapshot?) {
-                    val data = p0?.getValue(AuthenticTab::class.java)
-                    if (data == null)
-                        Utils.showErrorDialog(this@TabActivity, 404, "The data could not be found; it may have been deleted.", "Firebase/Database - /tabs/" + id)
-                    else
-                        this@TabActivity.initialize(data.title, if (data.hideHeader) null else data.header, id)
-                }
-            })
-        else {
-            val h = intent.getStringExtra("header")
-            initialize(intent.getStringExtra("title"), if (intent.getBooleanExtra("hideHeader", false)) null else h, id)
-        }
+        initialize()
     }
 }

@@ -2,19 +2,19 @@ package church.authenticcity.android.classes
 
 import church.authenticcity.android.helpers.isNullOrWhiteSpace
 import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 
-class AuthenticTab(val header: String? = null, val id: String = "", val index: Int = -1, val hideTitle: Boolean = false, val hideHeader: Boolean = false, val title: String = "", val elements: List<HashMap<String, Any>>? = null, val visibility: HashMap<String, Any>? = null) {
-    val convertedElements: List<AuthenticElement>
+class AuthenticTab(val header: String, val id: String, val index: Int, val hideTitle: Boolean, val hideHeader: Boolean, val title: String, private val elements: List<HashMap<String, Any>>?, val visibility: HashMap<String, Any>) {
+    val convertedElements
         get() = elements?.map(::AuthenticElement) ?: ArrayList()
 
-    val elementCount: Int
+    val elementCount
         get() = convertedElements.count()
 
     fun getShouldBeHidden(): Boolean {
-        if (visibility == null)
-            return true
         if (convertedElements.count() == 0)
             return true
         if (visibility["override"] as Boolean)
@@ -23,10 +23,9 @@ class AuthenticTab(val header: String? = null, val id: String = "", val index: I
         val end = visibility["end"] as String
         if (String.isNullOrWhiteSpace(start) || String.isNullOrWhiteSpace(end))
             return true
-        val startDate = OffsetDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME)
-        val endDate = OffsetDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME)
-        val now = OffsetDateTime.now()
+        val startDate = OffsetDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault())
+        val endDate = OffsetDateTime.parse(end, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault())
+        val now = ZonedDateTime.now(ZoneId.systemDefault())
         return now.isBefore(startDate) || now.isAfter(endDate)
-
     }
 }
