@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="church.authenticcity.android">
+
+    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -8,15 +11,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" android:screenOrientation="portrait"/>
-        <activity android:name=".SplashScreenActivity" android:theme="@style/SplashScreen"
-            android:screenOrientation="portrait">
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SplashScreenActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TabActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".TabActivity"
+            android:configChanges="screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".EventListActivity"
+            android:configChanges="screenSize"
+            android:screenOrientation="portrait" />
+        <activity android:name=".EventActivity"></activity>
     </application>
+
 </manifest>
