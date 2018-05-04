@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.TypedValue
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.AuthenticTab
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
@@ -57,10 +57,7 @@ class TabActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.content_list).apply {
             removeAllViews()
             views.forEach { addView(it) }
-            addView(LinearLayout(context).apply {
-                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, context.resources.displayMetrics).toInt())
-                setBackgroundColor(Color.TRANSPARENT)
-            })
+            addView(AuthenticElement.createSeparator(this@TabActivity, false))
         }
     }
 
