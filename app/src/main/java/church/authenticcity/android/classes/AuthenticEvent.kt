@@ -24,5 +24,5 @@ class AuthenticEvent(val id: String, val title: String, val hideTitle: Boolean, 
 
     fun getNextOccurrence() = if (recurs) recurrenceRule!!.getNextOccurrence(startDate, endDate) else RecurrenceRule.Occurrence(startDate, endDate)
 
-    fun getIsVisible() = ZonedDateTime.now().isBefore(endDate)
+    fun getIsVisible() = ZonedDateTime.now().isBefore(getNextOccurrence().endDate)
 }

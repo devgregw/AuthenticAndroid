@@ -16,8 +16,7 @@ class RecurrenceRule(val frequency: String, val interval: Int, val endDate: Zone
         fun format(): String {
             if (startDate.dayOfYear != endDate.dayOfYear || startDate.year != endDate.year) {
                 return "Starts on ${startDate.format(Utils.datePattern)} at ${startDate.format(Utils.timePattern)} and ends on ${endDate.format(Utils.datePattern)} at ${endDate.format(Utils.timePattern)}"
-            }
-            else
+            } else
                 return "${startDate.format(Utils.datePattern)} from ${startDate.format(Utils.timePattern)} to ${endDate.format(Utils.timePattern)}"
         }
     }
@@ -33,12 +32,15 @@ class RecurrenceRule(val frequency: String, val interval: Int, val endDate: Zone
         return main
     }
 
-    fun format(): String {
+    fun format(initialStart: ZonedDateTime, initialEnd: ZonedDateTime): String {
         val amount = if (interval == 1) "every" else if (interval == 2) "every other" else "every $interval"
-        val main = "Repeats $amount $frequency${if (interval > 2) "s" else ""}"
+        val main = "Repeats $amount ${if (frequency == "daily") "day" else frequency.replace("ly", "")}${if (interval > 2) "s" else ""}"
         return when {
             endDate != null -> main + " until ${endDate.format(Utils.datePattern)} at ${endDate.format(Utils.timePattern)}"
-            count != null -> main + " $count more time${if (count == 1) "s" else ""}"
+            count != null -> {
+                val remaining = getOccurrences(initialStart, initialEnd).filter { it.startDate.isAfter(ZonedDateTime.now()) }.count()
+                return main + " $remaining more time${if (remaining != 1) "s" else ""}"
+            }
             else -> main
         }
     }
@@ -65,13 +67,13 @@ class RecurrenceRule(val frequency: String, val interval: Int, val endDate: Zone
     }
 
     private fun addInterval(date: ZonedDateTime): ZonedDateTime =
-        when (frequency) {
-            "daily" -> date.plusDays(interval.toLong())
-            "weekly" -> date.plusWeeks(interval.toLong())
-            "monthly" -> date.plusMonths(interval.toLong())
-            "yearly" -> date.plusYears(interval.toLong())
-            else -> throw IllegalArgumentException("Invalid frequency $frequency")
-        }
+            when (frequency) {
+                "daily" -> date.plusDays(interval.toLong())
+                "weekly" -> date.plusWeeks(interval.toLong())
+                "monthly" -> date.plusMonths(interval.toLong())
+                "yearly" -> date.plusYears(interval.toLong())
+                else -> throw IllegalArgumentException("Invalid frequency $frequency")
+            }
 
     fun getNextOccurrence(initialStart: ZonedDateTime, initialEnd: ZonedDateTime): Occurrence = getOccurrences(initialStart, initialEnd).first { it.startDate.isAfter(ZonedDateTime.now()) }
 }

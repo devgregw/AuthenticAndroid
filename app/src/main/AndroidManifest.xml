@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="church.authenticcity.android">
 
-    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
         android:allowBackup="true"
@@ -10,7 +10,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".AuthenticApplication">
         <activity
             android:name=".MainActivity"
             android:configChanges="screenSize"
@@ -33,7 +34,12 @@
             android:name=".EventListActivity"
             android:configChanges="screenSize"
             android:screenOrientation="portrait" />
-        <activity android:name=".EventActivity"></activity>
+        <activity android:name=".EventActivity"
+            android:configChanges="screenSize"
+            android:screenOrientation="portrait" />
+        <activity android:name=".TabListActivity"
+            android:configChanges="screenSize"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

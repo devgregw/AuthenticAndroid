@@ -17,10 +17,10 @@ class AuthenticTab(val header: String, val id: String, val index: Int, val hideT
     fun getShouldBeHidden(): Boolean {
         if (convertedElements.count() == 0)
             return true
-        if (visibility["override"] as Boolean)
+        if (visibility["override"].toString().toBoolean())
             return false
-        val start = visibility["start"] as String
-        val end = visibility["end"] as String
+        val start = visibility["start"] as String?
+        val end = visibility["end"] as String?
         if (String.isNullOrWhiteSpace(start) || String.isNullOrWhiteSpace(end))
             return true
         val startDate = OffsetDateTime.parse(start, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault())
