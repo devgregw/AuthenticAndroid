@@ -17,6 +17,7 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import church.authenticcity.android.classes.AuthenticAppearance
+import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyTypeface
 import church.authenticcity.android.views.PlainCardView
@@ -49,7 +50,9 @@ class EventListActivity : AppCompatActivity() {
                 indeterminateDrawable.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
             })
         })
-        FirebaseDatabase.getInstance().getReference("/events/").addListenerForSingleValueEvent(object : ValueEventListener {
+        val eventsRef = FirebaseDatabase.getInstance().getReference("/events/")
+        eventsRef.keepSynced(true)
+        eventsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("SetTextI18n")
             override fun onCancelled(p0: DatabaseError?) {
                 layout!!.removeAllViews()
@@ -70,10 +73,13 @@ class EventListActivity : AppCompatActivity() {
                         }
                     })
                 }
-                p0?.children?.map { Utils.Constructors.constructEvent(it.value!!) }?.filter { it.getIsVisible() }?.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }?.forEach {
-                    Utils.Temp.putEvent(it)
-                    layout!!.addView(PlainCardView(this@EventListActivity, it))
-                }
+                if (p0?.children?.count() == 0)
+                    layout!!.addView(AuthenticElement.createCustomText(this@EventListActivity, "There are no upcoming events yet.", 22f, Utils.getTextTypeface(this@EventListActivity), "center", Color.BLACK))
+                else
+                    p0?.children?.map { Utils.Constructors.constructEvent(it.value!!) }?.filter { it.getIsVisible() }?.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }?.forEach {
+                        Utils.Temp.putEvent(it)
+                        layout!!.addView(PlainCardView(this@EventListActivity, it))
+                    }
             }
         })
     }
