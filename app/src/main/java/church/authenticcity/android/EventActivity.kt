@@ -74,7 +74,7 @@ class EventActivity : AppCompatActivity() {
             addView(AuthenticElement.createTitle(this@EventActivity, "Date & Time", "center"))
             addView(AuthenticElement.createText(this@EventActivity, event.getNextOccurrence().format(), "left"))
             if (event.recurs)
-                addView(AuthenticElement.createText(this@EventActivity, event.recurrenceRule!!.format(), "left"))
+                addView(AuthenticElement.createText(this@EventActivity, event.recurrenceRule!!.format(event.startDate, event.endDate), "left"))
             addView(AuthenticElement.createButton(this@EventActivity, ButtonAction(HashMap<String, Any>().apply {
                 put("group", 0)
                 put("type", "AddToCalendarAction")
@@ -91,12 +91,12 @@ class EventActivity : AppCompatActivity() {
                     put("type", "GetDirectionsAction")
                     put("address", event.address)
                 }), "Get Directions"))
+            } else
                 addView(AuthenticElement.createButton(this@EventActivity, ButtonAction(HashMap<String, Any>().apply {
                     put("group", -1)
                     put("type", "ShowMapAction")
-                    put("address", event.address)
-                }), "Show on Map"))
-            }
+                    put("address", event.location)
+                }), "Search"))
 
             addView(AuthenticElement.createSeparator(this@EventActivity, true))
             addView(AuthenticElement.createTitle(this@EventActivity, "Price & Registration", "center"))
