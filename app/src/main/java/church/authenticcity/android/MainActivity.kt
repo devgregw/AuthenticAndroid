@@ -17,7 +17,6 @@ import android.util.TypedValue
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.Toast
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import com.google.firebase.database.DataSnapshot
@@ -28,24 +27,7 @@ import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
     fun finishInitialization() {
-        val image = findViewById<ImageView>(R.id.logo).apply {
-            setOnLongClickListener {
-                val map = HashMap<CharSequence, () -> Unit>().apply {
-                    put("Clear Cache", {
-                        try {
-                            this@MainActivity.cacheDir.deleteRecursively()
-                            Utils.makeToast(this@MainActivity, "Cache cleared.\nRestart application to apply changes.", Toast.LENGTH_SHORT).show()
-                        } catch (e: Exception) {
-                            Utils.makeToast(this@MainActivity, e.message!!, Toast.LENGTH_LONG).show()
-                        }
-                    })
-                }
-                AlertDialog.Builder(this@MainActivity).setTitle("Management").setItems(map.keys.toTypedArray(), { _, i ->
-                    map.values.toList().get(i).invoke()
-                }).create().applyColorsAndTypefaces().show()
-                true
-            }
-        }
+        val image = findViewById<ImageView>(R.id.logo)
         val button = findViewById<ImageButton>(R.id.tabsButton).apply { setOnClickListener { TabListActivity.start(this@MainActivity) } }
         image.animate().setStartDelay(100L).alpha(1f).setInterpolator(AccelerateDecelerateInterpolator()).setDuration(250L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
