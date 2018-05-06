@@ -5,6 +5,7 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Project AuthenticAndroid
@@ -38,7 +39,7 @@ class RecurrenceRule(val frequency: String, val interval: Int, val endDate: Zone
         return when {
             endDate != null -> main + " until ${endDate.format(Utils.datePattern)} at ${endDate.format(Utils.timePattern)}"
             count != null -> {
-                val remaining = getOccurrences(initialStart, initialEnd).filter { it.startDate.isAfter(ZonedDateTime.now()) }.count()
+                val remaining = getOccurrences(initialStart, initialEnd).filter { it.startDate >= ZonedDateTime.now() }.count()
                 return main + " $remaining more time${if (remaining != 1) "s" else ""}"
             }
             else -> main
@@ -47,7 +48,7 @@ class RecurrenceRule(val frequency: String, val interval: Int, val endDate: Zone
 
     constructor(data: HashMap<String, Any>) : this(data["frequency"] as String, data["interval"].toString().toInt(), if (data.containsKey("date")) OffsetDateTime.parse(data["date"] as String, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault()) else null, if (data.containsKey("number")) data["number"].toString().toInt() else null)
 
-    private fun getOccurrences(initialStart: ZonedDateTime, initialEnd: ZonedDateTime): List<Occurrence> {
+    /*private fun getOccurrences(initialStart: ZonedDateTime, initialEnd: ZonedDateTime): List<Occurrence> {
         val occurrences = ArrayList<Occurrence>()
         occurrences.add(Occurrence(initialStart, initialEnd))
         if (endDate !== null) {
@@ -64,6 +65,35 @@ class RecurrenceRule(val frequency: String, val interval: Int, val endDate: Zone
             }
         else return RecurrenceRule(frequency, interval, null, 30).getOccurrences(initialStart, initialEnd)
         return occurrences
+    }*/
+
+    public fun getOccurrences(originalStart: ZonedDateTime, originalEnd: ZonedDateTime): List<Occurrence> {
+        val duration = originalEnd.toEpochSecond() - originalStart.toEpochSecond()
+        val occurrences = ArrayList<Occurrence>()
+        if (infinite) {
+            var firstAfter = originalStart
+            while (firstAfter < ZonedDateTime.now())
+                firstAfter = addInterval(firstAfter)
+            for (i in 1..10) {
+                occurrences.add(Occurrence(firstAfter, firstAfter.plusSeconds(duration)))
+                firstAfter = addInterval(firstAfter)
+            }
+        } else if (endDate != null) {
+            var nextStart = originalStart
+            var after = addInterval(nextStart)
+            while (after < endDate) {
+                occurrences.add(Occurrence(nextStart, nextStart.plusSeconds(duration)))
+                nextStart = after
+                after = addInterval(after)
+            }
+        } else if (count != null) {
+            occurrences.add(Occurrence(originalStart, originalEnd))
+            for (i in 1..(count - 1)) {
+                val oc = occurrences.last()
+                occurrences.add(Occurrence(addInterval(oc.startDate), addInterval(oc.endDate)))
+            }
+        }
+        return occurrences
     }
 
     private fun addInterval(date: ZonedDateTime): ZonedDateTime =
@@ -75,5 +105,5 @@ class RecurrenceRule(val frequency: String, val interval: Int, val endDate: Zone
                 else -> throw IllegalArgumentException("Invalid frequency $frequency")
             }
 
-    fun getNextOccurrence(initialStart: ZonedDateTime, initialEnd: ZonedDateTime): Occurrence = getOccurrences(initialStart, initialEnd).first { it.startDate.isAfter(ZonedDateTime.now()) }
+    fun getNextOccurrence(initialStart: ZonedDateTime, initialEnd: ZonedDateTime): Occurrence? = getOccurrences(initialStart, initialEnd).firstOrNull { ZonedDateTime.now() <= it.startDate }//getOccurrences(initialStart, initialEnd).first { it.startDate.isAfter(ZonedDateTime.now()) }
 }
