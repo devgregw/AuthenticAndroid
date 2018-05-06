@@ -7,8 +7,10 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.RippleDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.PopupMenu
 import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.*
@@ -95,6 +97,32 @@ class TabListActivity : AppCompatActivity() {
                                 })
                                 addView(ImageButton(this@TabListActivity).apply {
                                     layoutParams = RelativeLayout.LayoutParams(buttonWidth, ViewGroup.LayoutParams.WRAP_CONTENT).apply { addRule(RelativeLayout.ALIGN_PARENT_RIGHT) }
+                                    id = R.id.expanded_menu
+                                    setImageResource(R.drawable.ic_more_vert_black_36dp)
+                                    setBackgroundColor(Color.TRANSPARENT)
+                                    if (Utils.checkSdk(23))
+                                        foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, null).apply { radius = buttonWidth / 2 }
+                                    val menu = PopupMenu(this@TabListActivity, this)
+                                    menu.inflate(R.menu.menu_tab_list_popup)
+                                    menu.menu.getItem(0).setTitle(Utils.makeTypefaceSpan("About", Utils.getTextTypeface(this@TabListActivity)))
+                                    menu.menu.getItem(1).setTitle(Utils.makeTypefaceSpan("Settings", Utils.getTextTypeface(this@TabListActivity)))
+                                    menu.setOnMenuItemClickListener { item ->
+                                        var handled = true
+                                        when (item.itemId) {
+                                            R.id.popupMenu_about -> this@TabListActivity.startActivity(Intent(this@TabListActivity, AboutActivity::class.java))
+                                            R.id.popupMenu_settings -> this@TabListActivity.startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                                data = Uri.parse("package:${this@TabListActivity.packageName}")
+                                            })
+                                            else -> handled = false
+                                        }
+                                        handled
+                                    }
+                                    setOnClickListener {
+                                        menu.show()
+                                    }
+                                })
+                                addView(ImageButton(this@TabListActivity).apply {
+                                    layoutParams = RelativeLayout.LayoutParams(buttonWidth, ViewGroup.LayoutParams.WRAP_CONTENT).apply { addRule(RelativeLayout.LEFT_OF, R.id.expanded_menu) }
                                     setImageResource(R.drawable.ic_refresh_black_36dp)
                                     setBackgroundColor(Color.TRANSPARENT)
                                     if (Utils.checkSdk(23))
