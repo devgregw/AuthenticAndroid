@@ -73,13 +73,12 @@ class EventListActivity : AppCompatActivity() {
                         }
                     })
                 }
-                if (p0?.children?.count() == 0)
-                    layout!!.addView(AuthenticElement.createCustomText(this@EventListActivity, "There are no upcoming events yet.", 22f, Utils.getTextTypeface(this@EventListActivity), "center", Color.BLACK))
-                else
-                    p0?.children?.map { Utils.Constructors.constructEvent(it.value!!) }?.filter { it.getIsVisible() }?.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }?.forEach {
-                        Utils.Temp.putEvent(it)
-                        layout!!.addView(PlainCardView(this@EventListActivity, it))
-                    }
+                p0?.children?.map { Utils.Constructors.constructEvent(it.value!!) }?.filter { !it.getShouldBeHidden() }?.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }?.forEach {
+                    Utils.Temp.putEvent(it)
+                    layout!!.addView(PlainCardView(this@EventListActivity, it))
+                }
+                if (layout!!.childCount == 0)
+                    layout!!.addView(AuthenticElement.createCustomText(this@EventListActivity, "There are no upcoming events.", 22f, Utils.getTextTypeface(this@EventListActivity), "center", Color.BLACK))
             }
         })
     }
