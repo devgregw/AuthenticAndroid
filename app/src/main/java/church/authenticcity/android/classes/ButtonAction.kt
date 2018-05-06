@@ -24,17 +24,23 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class ButtonAction(private val map: HashMap<String, Any>) {
+    companion object {
+        fun openUrl(url: String): ButtonAction = ButtonAction(HashMap<String, Any>().apply {
+            put("type", "OpenURLAction")
+            put("group", -1)
+            put("url", url)
+        })
+    }
+
     val group = map["group"].toString().toInt()
     val type = map["type"] as String
     var properties = HashMap<String, Any>(map.filter { it.key != "group" && it.key != "type" })
 
     fun <T> get(name: String): T = properties[name] as T
 
-    /*val isExternal =
-            when (type) {
-                "OpenTabAction", "OpenEventAction" -> false
-                else -> true
-            }*/
+    private fun showAlert(context: Context, title: String, message: String) {
+        AlertDialog.Builder(context).setTitle(Utils.makeTypefaceSpan(title, Utils.getTitleTypeface(context))).setCancelable(true).setMessage(Utils.makeTypefaceSpan(message, Utils.getTextTypeface(context))).setPositiveButton(Utils.makeTypefaceSpan("Dismiss", Utils.getTextTypeface(context)), null).create().applyColorsAndTypefaces().show()
+    }
 
     fun invoke(context: Context) {
         try {
@@ -45,7 +51,7 @@ class ButtonAction(private val map: HashMap<String, Any>) {
                 "OpenURLAction" -> {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(get<String>("url")))
                     when (context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).count()) {
-                        0 -> AlertDialog.Builder(context).setTitle("Cannot Open URL").setMessage("We could not find an app to open the URL \"${get<String>("url")}\".").setPositiveButton("OK", null).create().applyColorsAndTypefaces().show()
+                        0 -> showAlert(context, "Cannot Open URL", "We could not find an app to open the URL \"${get<String>("url")}\".")
                         1 -> context.startActivity(intent)
                         else -> context.startActivity(Intent.createChooser(intent, "Choose an app to open this"))
                     }
@@ -59,6 +65,10 @@ class ButtonAction(private val map: HashMap<String, Any>) {
                     val endDate: ZonedDateTime
                     val location: String
                     val recurrenceRule: RecurrenceRule?
+                    if (group > 2) {
+                        showAlert(context, "Error", "We were unable to add this event to your calendar because an invalid parameter group was specified.")
+                        return
+                    }
                     when (group) {
                         0 -> {
                             val event = Utils.Temp.getEvent(get("eventId"))!!
@@ -107,7 +117,7 @@ class ButtonAction(private val map: HashMap<String, Any>) {
                         }).setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
                     }
                 }
-                else -> throw IllegalStateException("\"$type\" is not a legal action")//AlertDialog.Builder(context).setTitle("Unknown Action").setMessage("We were unable to parse this action.").setPositiveButton("OK", null).create().applyColorsAndTypefaces().show()
+                else -> showAlert(context, "Error", "We were unable to run this action because the type \"$type\" is undefined.")
             }
         } catch (ex: Exception) {
             ex.printStackTrace()
