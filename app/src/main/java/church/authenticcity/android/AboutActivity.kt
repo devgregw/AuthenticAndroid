@@ -52,7 +52,7 @@ class AboutActivity : AppCompatActivity() {
             addView(AuthenticElement.createCustomText(this@AboutActivity, "FOR ALL TO LOVE GOD, LOVE PEOPLE, AND IMPACT THE KINGDOM.", 33f, Utils.getTextTypeface(this@AboutActivity), "center", Color.BLACK))
             addView(AuthenticElement.createSeparator(this@AboutActivity, true))
             addView(AuthenticElement.createTitle(this@AboutActivity, "CONNECT WITH US", "center"))
-            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.authenticcity.church"), "Visit our Website"))
+            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.authenticcity.church"), "Visit Our Website"))
             addView(AuthenticElement.createSeparator(this@AboutActivity, false))
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.authenticcity.church/next/"), "Take the Next Step"))
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.authenticcity.church/new-products/"), "Merchandise"))
