@@ -13,10 +13,12 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.util.TypedValue
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ProgressBar
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import com.google.firebase.database.DataSnapshot
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     fun finishInitialization() {
         val image = findViewById<ImageView>(R.id.logo)
         val button = findViewById<ImageButton>(R.id.tabsButton).apply { setOnClickListener { TabListActivity.start(this@MainActivity) } }
+        findViewById<ProgressBar>(R.id.progress_bar).animate().setStartDelay(100L).alpha(0f).setInterpolator(AccelerateDecelerateInterpolator()).duration = 250L
         image.animate().setStartDelay(100L).alpha(1f).setInterpolator(AccelerateDecelerateInterpolator()).setDuration(250L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
                 //not implemented
@@ -98,6 +101,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        Log.d("EXTRAS", intent.extras?.toString() ?: "NULL")
         findViewById<ImageView>(R.id.logo).alpha = 0f
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !getSharedPreferences("private", 0).getBoolean("permissionsRequested", false) && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED)
             requestPermissions(Array(1, { _ -> Manifest.permission.WRITE_CALENDAR }), 100)
