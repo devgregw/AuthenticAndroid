@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.util.TypedValue
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageButton
@@ -21,6 +20,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
+import church.authenticcity.android.services.FirebaseMessagingService
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -101,7 +101,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Log.d("EXTRAS", intent.extras?.toString() ?: "NULL")
+        FirebaseMessagingService.setAction(intent.extras)
+        FirebaseMessagingService.invokeNotificationAction(this)
         findViewById<ImageView>(R.id.logo).alpha = 0f
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !getSharedPreferences("private", 0).getBoolean("permissionsRequested", false) && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED)
             requestPermissions(Array(1, { _ -> Manifest.permission.WRITE_CALENDAR }), 100)
