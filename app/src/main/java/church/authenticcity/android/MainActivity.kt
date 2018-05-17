@@ -18,6 +18,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.Toast
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.services.FirebaseMessagingService
@@ -25,11 +26,22 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
     fun finishInitialization() {
         val image = findViewById<ImageView>(R.id.logo)
+        image.setOnLongClickListener {
+            AlertDialog.Builder(this@MainActivity).setTitle("Development Notifications").setMessage("Development notifications are for internal testing use only.  Interacting with them may cause instability.\n\n/topics/dev").setPositiveButton("Subscribe", { _, _ ->
+                FirebaseMessaging.getInstance().subscribeToTopic("dev")
+                Utils.makeToast(this@MainActivity, "Subscribed to /topics/dev", Toast.LENGTH_SHORT).show()
+            }).setNegativeButton("Unsubscribe", { _, _ ->
+                FirebaseMessaging.getInstance().unsubscribeFromTopic("dev")
+                Utils.makeToast(this@MainActivity, "Unsubscribed from /topics/dev", Toast.LENGTH_SHORT).show()
+            }).create().applyColorsAndTypefaces().show()
+            true
+        }
         val button = findViewById<ImageButton>(R.id.tabsButton).apply { setOnClickListener { TabListActivity.start(this@MainActivity) } }
         findViewById<ProgressBar>(R.id.progress_bar).animate().setStartDelay(100L).alpha(0f).setInterpolator(AccelerateDecelerateInterpolator()).duration = 250L
         image.animate().setStartDelay(100L).alpha(1f).setInterpolator(AccelerateDecelerateInterpolator()).setDuration(250L).setListener(object : Animator.AnimatorListener {
