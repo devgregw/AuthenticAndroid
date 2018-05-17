@@ -27,7 +27,7 @@ class TabListActivity : AppCompatActivity() {
     companion object {
         fun start(parentActivity: Activity) {
             parentActivity.startActivity(Intent(parentActivity, TabListActivity::class.java))
-            parentActivity.overridePendingTransition(R.anim.abc_slide_in_bottom, R.anim.empty)
+            parentActivity.overridePendingTransition(R.anim.slide_up, R.anim.empty)
         }
     }
 
@@ -147,7 +147,7 @@ class TabListActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(R.anim.empty, R.anim.abc_slide_out_bottom)
+        overridePendingTransition(R.anim.empty, R.anim.slide_down)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
