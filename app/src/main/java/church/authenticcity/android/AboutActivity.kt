@@ -61,6 +61,7 @@ class AboutActivity : AppCompatActivity() {
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.instagram.com/authentic_city_church/"), "Instagram"))
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.facebook.com/AuthenticCityChurch/"), "Facebook"))
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://twitter.com/AuthenticCity_"), "Twitter"))
+            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.youtube.com/channel/UCxrYck_z50n5It7ifj1LCjA"), "YouTube"))
             addView(AuthenticElement.createSeparator(this@AboutActivity, true))
             addView(AuthenticElement.createText(this@AboutActivity, "Designed and developed by Greg Whatley for Authentic City Church", "center"))
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://devgregw.com"), "Learn More"))
