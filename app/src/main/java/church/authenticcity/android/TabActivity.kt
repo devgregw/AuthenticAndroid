@@ -32,6 +32,11 @@ class TabActivity : AppCompatActivity() {
         }
 
         fun start(context: Context, tabId: String) {
+            val tab = Utils.Temp.getTab(tabId)
+            if (tab != null) {
+                start(context, tab)
+                return
+            }
             val dialog = Utils.createIndeterminateDialog(context, "Loading...")
             dialog.show()
             FirebaseDatabase.getInstance().getReference("/tabs/$tabId").addListenerForSingleValueEvent(object : ValueEventListener {
@@ -45,6 +50,10 @@ class TabActivity : AppCompatActivity() {
 
                 override fun onDataChange(p0: DataSnapshot?) {
                     dialog.dismiss()
+                    if (p0?.value == null) {
+                        AlertDialog.Builder(context).setTitle("Error").setCancelable(false).setMessage("We were unable to open the page because it does not exist.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
+                        return
+                    }
                     start(context, p0!!.getValue(AuthenticTab::class.java)!!)
                 }
             })

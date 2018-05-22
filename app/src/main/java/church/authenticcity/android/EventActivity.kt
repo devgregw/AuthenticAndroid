@@ -31,6 +31,11 @@ class EventActivity : AppCompatActivity() {
         }
 
         fun start(context: Context, eventId: String) {
+            val event = Utils.Temp.getEvent(eventId)
+            if (event != null) {
+                start(context, event)
+                return
+            }
             val dialog = Utils.createIndeterminateDialog(context, "Loading...")
             dialog.show()
             FirebaseDatabase.getInstance().getReference("/events/$eventId").addListenerForSingleValueEvent(object : ValueEventListener {
@@ -44,7 +49,11 @@ class EventActivity : AppCompatActivity() {
 
                 override fun onDataChange(p0: DataSnapshot?) {
                     dialog.dismiss()
-                    EventActivity.start(context, p0!!.getValue(AuthenticEvent::class.java)!!)
+                    if (p0?.value == null) {
+                        AlertDialog.Builder(context).setTitle("Error").setCancelable(false).setMessage("We were unable to open the event details because the event does not exist.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
+                        return
+                    }
+                    start(context, p0!!.getValue(AuthenticEvent::class.java)!!)
                 }
             })
         }
@@ -83,9 +92,9 @@ class EventActivity : AppCompatActivity() {
 
             addView(AuthenticElement.createSeparator(this@EventActivity, true))
             addView(AuthenticElement.createTitle(this@EventActivity, "Location", "center"))
-            addView(AuthenticElement.createText(this@EventActivity, event.location, "left"))
+            addView(AuthenticElement.createText(this@EventActivity, event.location, "left", true))
             if (!String.isNullOrWhiteSpace(event.address)) {
-                addView(AuthenticElement.createText(this@EventActivity, event.address, "left"))
+                addView(AuthenticElement.createText(this@EventActivity, event.address, "left", true))
                 addView(AuthenticElement.createButton(this@EventActivity, ButtonAction(HashMap<String, Any>().apply {
                     put("group", -1)
                     put("type", "GetDirectionsAction")
