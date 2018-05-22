@@ -34,9 +34,10 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     setBackgroundColor(Color.BLACK)
                 }
 
-        fun createCustomText(context: Context, text: String, size: Float, typeface: Typeface = Typeface.DEFAULT, alignment: String = "left", color: Int = Color.BLACK) =
+        fun createCustomText(context: Context, text: String, size: Float, typeface: Typeface = Typeface.DEFAULT, alignment: String = "left", color: Int = Color.BLACK, selectable: Boolean = false) =
                 TextView(context).apply {
                     textSize = size
+                    setTextIsSelectable(selectable)
                     layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     if (Utils.checkSdk(17))
                         textAlignment = when (alignment) {
@@ -54,9 +55,9 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     }
                 }
 
-        fun createTitle(context: Context, text: String, alignment: String) = createCustomText(context, text, 26f, Utils.getTitleTypeface(context), alignment)
+        fun createTitle(context: Context, text: String, alignment: String, selectable: Boolean = false) = createCustomText(context, text, 26f, Utils.getTitleTypeface(context), alignment, selectable = selectable)
 
-        fun createText(context: Context, text: String, alignment: String) = createCustomText(context, text, 18f, Utils.getTextTypeface(context), alignment)
+        fun createText(context: Context, text: String, alignment: String, selectable: Boolean = false) = createCustomText(context, text, 18f, Utils.getTextTypeface(context), alignment, selectable = selectable)
 
         fun createButton(context: Context, action: ButtonAction, text: String) =
                 Button(context).apply {
