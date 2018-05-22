@@ -28,6 +28,10 @@ class AboutActivity : AppCompatActivity() {
                 ButtonAction.openUrl("https://accams.devgregw.com").invoke(this)
                 true
             }
+            android.R.id.home -> {
+                finish()
+                true
+            }
             else -> false
         }
     }
