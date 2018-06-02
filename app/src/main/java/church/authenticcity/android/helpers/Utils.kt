@@ -20,7 +20,7 @@ import church.authenticcity.android.classes.AuthenticEvent
 import church.authenticcity.android.classes.AuthenticTab
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.google.firebase.crash.FirebaseCrash
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.storage.FirebaseStorage
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -106,7 +106,7 @@ class Utils {
         private var text: Typeface? = null
 
         fun reportAndAlertException(context: Context, ex: Exception, location: String) {
-            FirebaseCrash.report(ex)
+            Crashlytics.logException(ex)
             var msg = "Unfortunately, an unexpected error occurred and has been reported.  We apologize for the inconvenience.  If you need them, here are the details:\n"
             msg += "\nLocation: $location"
             msg += "\nType: ${ex.javaClass.canonicalName ?: "<null>"}"
@@ -125,13 +125,13 @@ class Utils {
 
         fun getTitleTypeface(context: Context): Typeface {
             if (title == null)
-                title = ResourcesCompat.getFont(context, R.font.title)
+                title = ResourcesCompat.getFont(context, R.font.effra)
             return title!!
         }
 
         fun getTextTypeface(context: Context): Typeface {
             if (text == null)
-                text = ResourcesCompat.getFont(context, R.font.text)
+                text = ResourcesCompat.getFont(context, R.font.proxima_nova)
             return text!!
         }
 
