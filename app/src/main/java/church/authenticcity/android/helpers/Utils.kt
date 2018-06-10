@@ -1,10 +1,12 @@
 package church.authenticcity.android.helpers
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.ActionBar
@@ -19,7 +21,11 @@ import church.authenticcity.android.R
 import church.authenticcity.android.classes.AuthenticEvent
 import church.authenticcity.android.classes.AuthenticTab
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.storage.FirebaseStorage
 import org.threeten.bp.format.DateTimeFormatter
@@ -63,6 +69,24 @@ fun ActionBar.applyTypeface(context: Context, text: String) {
 
 inline fun <reified T, V, K> HashMap<V, K>.getAs(key: V) = (if (T::class.simpleName == Int::class.simpleName) this[key].toString().toInt() else if (T::class.simpleName == Float::class.simpleName) this[key].toString().toFloat() else this[key]) as T
 
+open class SimpleAnimatorListener : Animator.AnimatorListener {
+    override fun onAnimationRepeat(p0: Animator?) {
+        // nothing
+    }
+
+    override fun onAnimationEnd(p0: Animator?) {
+        // nothing
+    }
+
+    override fun onAnimationCancel(p0: Animator?) {
+        // nothing
+    }
+
+    override fun onAnimationStart(p0: Animator?) {
+        // nothing
+    }
+}
+
 class Utils {
     class Temp {
         companion object {
@@ -86,7 +110,7 @@ class Utils {
         companion object {
             fun constructEvent(value: Any): AuthenticEvent {
                 val map = value as HashMap<String, Any>
-                return AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), map.getAs("header"), map.getAs("dateTime"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
+                return AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), map.getAs("header"), map.getAs("dateTime"), map.getAs("hideEndDate"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
             }
 
             fun constructTab(value: Any): AuthenticTab {
@@ -135,13 +159,26 @@ class Utils {
             return text!!
         }
 
-        fun loadFirebaseImage(context: Context, name: String, view: ImageView) {
-            Glide.with(context).load(FirebaseStorage.getInstance().reference.child(name)).transition(DrawableTransitionOptions.withCrossFade()).into(view)
+        fun loadFirebaseImage(context: Context, name: String, view: ImageView, callback: ((Drawable) -> Unit)? = null) {
+            var request = Glide.with(context).load(FirebaseStorage.getInstance().reference.child(name)).transition(DrawableTransitionOptions.withCrossFade())
+            if (callback != null)
+                request.listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        return true
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        callback(resource!!)
+                        return true
+                    }
+                }).submit()
+            else
+                request.into(view)
         }
 
         fun isUpdateAvailable(latestCode: Int) = BuildConfig.VERSION_CODE < latestCode
 
-        fun checkSdk(apiLevel: Int): Boolean = Build.VERSION.SDK_INT >= apiLevel
+        fun checkSdk(apiLevel: Int) = Build.VERSION.SDK_INT >= apiLevel
 
         fun createIndeterminateDialog(context: Context, message: String): AlertDialog {
             return AlertDialog.Builder(context).setView(RelativeLayout(context).apply {
