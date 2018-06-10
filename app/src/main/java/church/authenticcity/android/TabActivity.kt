@@ -40,21 +40,18 @@ class TabActivity : AppCompatActivity() {
             val dialog = Utils.createIndeterminateDialog(context, "Loading...")
             dialog.show()
             FirebaseDatabase.getInstance().getReference("/tabs/$tabId").addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(p0: DatabaseError?) {
+                override fun onCancelled(p0: DatabaseError) {
                     dialog.dismiss()
-                    AlertDialog.Builder(context).setTitle("Unexpected Error").setCancelable(false).setMessage("An unexpected error occurred while loading data.\n\nCode: ${p0?.code
-                            ?: "unknown"}\nMessage: ${p0?.message
-                            ?: "unknown"}\nDetails: ${p0?.details
-                            ?: "unknown"}").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
+                    AlertDialog.Builder(context).setTitle("Unexpected Error").setCancelable(false).setMessage("An unexpected error occurred while loading data.\n\nCode: ${p0.code}\nMessage: ${p0.message}\nDetails: ${p0.details}").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
                 }
 
-                override fun onDataChange(p0: DataSnapshot?) {
+                override fun onDataChange(p0: DataSnapshot) {
                     dialog.dismiss()
-                    if (p0?.value == null) {
+                    if (p0.value == null) {
                         AlertDialog.Builder(context).setTitle("Error").setCancelable(false).setMessage("We were unable to open the page because it does not exist.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
                         return
                     }
-                    start(context, p0!!.getValue(AuthenticTab::class.java)!!)
+                    start(context, p0.getValue(AuthenticTab::class.java)!!)
                 }
             })
         }
