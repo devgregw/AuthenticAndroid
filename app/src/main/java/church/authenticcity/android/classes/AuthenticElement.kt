@@ -2,9 +2,9 @@ package church.authenticcity.android.classes
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
+import kotlin.math.roundToInt
 
 
 /**
@@ -24,7 +25,20 @@ import church.authenticcity.android.helpers.Utils
 
 class AuthenticElement(private val map: HashMap<String, Any>) {
     companion object {
-        fun createImage(context: Context, image: String) = ImageView(context).apply { Utils.loadFirebaseImage(context, image, this) }
+        fun createImage(context: Context, image: String, enlargable: Boolean): View {
+            val imageView = ImageView(context).apply { Utils.loadFirebaseImage(context, image, this) }
+            if (enlargable)
+                return LinearLayout(context).apply {
+                    orientation = LinearLayout.VERTICAL
+                    layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    imageView.setOnClickListener {
+                        ButtonAction.openUrl("https://accams.devgregw.com/meta/storage/$image").invoke(context)
+                    }
+                    addView(imageView)
+                    addView(createText(context, "Tap image to enlarge.", "left", color = Color.DKGRAY, size = 14f))
+                }
+            return imageView
+        }
 
         fun createVideo(context: Context, videoId: String, provider: String) =
                 WebView(context).apply {
@@ -34,34 +48,59 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     setBackgroundColor(Color.BLACK)
                 }
 
-        fun createCustomText(context: Context, text: String, size: Float, typeface: Typeface = Typeface.DEFAULT, alignment: String = "left", color: Int = Color.BLACK, selectable: Boolean = false) =
-                TextView(context).apply {
-                    textSize = size
-                    setTextIsSelectable(selectable)
-                    layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                    if (Utils.checkSdk(17))
-                        textAlignment = when (alignment) {
-                            "left" -> TextView.TEXT_ALIGNMENT_TEXT_START
-                            "center" -> TextView.TEXT_ALIGNMENT_CENTER
-                            "right" -> TextView.TEXT_ALIGNMENT_TEXT_END
-                            else -> TextView.TEXT_ALIGNMENT_INHERIT
-                        }
-                    setTextColor(color)
-                    this.typeface = typeface
-                    this.text = text
-                    layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                        val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, context.resources.displayMetrics).toInt()
-                        setMargins(px, 0, px, 0)
-                    }
+        fun createTitle(context: Context, text: String, alignment: String, size: Float = 26f, selectable: Boolean = false) = TextView(context).apply {
+            textSize = size
+            setTextIsSelectable(selectable)
+            val dimen = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, context.resources.displayMetrics).roundToInt()
+            setPadding(dimen, dimen, dimen, dimen)
+            /*textAlignment = when (alignment) {
+                "left" -> TextView.TEXT_ALIGNMENT_TEXT_START
+                "center" -> TextView.TEXT_ALIGNMENT_CENTER
+                "right" -> TextView.TEXT_ALIGNMENT_TEXT_END
+                else -> TextView.TEXT_ALIGNMENT_INHERIT
+            }*/
+            setTextColor(Color.BLACK)
+            setBackgroundResource(R.drawable.title_border_black)
+            this.typeface = Utils.getTitleTypeface(context)
+            this.text = text
+            letterSpacing = 0.1f
+            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                gravity = when (alignment) {
+                    "center" -> Gravity.CENTER_HORIZONTAL
+                    "right" -> Gravity.END
+                    else -> Gravity.START
                 }
+                val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, context.resources.displayMetrics).toInt()
+                setMargins(px, px / 8, px, px / 8)
+            }
+        }
 
-        fun createTitle(context: Context, text: String, alignment: String, selectable: Boolean = false) = createCustomText(context, text, 26f, Utils.getTitleTypeface(context), alignment, selectable = selectable)
-
-        fun createText(context: Context, text: String, alignment: String, selectable: Boolean = false) = createCustomText(context, text, 18f, Utils.getTextTypeface(context), alignment, selectable = selectable)
+        fun createText(context: Context, text: String, alignment: String, color: Int = Color.BLACK, size: Float = 20f, selectable: Boolean = false) = TextView(context).apply {
+            textSize = size
+            setTextIsSelectable(selectable)
+            val dimen = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, context.resources.displayMetrics).roundToInt()
+            setPadding(dimen, dimen, dimen, dimen)
+            textAlignment = when (alignment) {
+                "left" -> TextView.TEXT_ALIGNMENT_TEXT_START
+                "center" -> TextView.TEXT_ALIGNMENT_CENTER
+                "right" -> TextView.TEXT_ALIGNMENT_TEXT_END
+                else -> TextView.TEXT_ALIGNMENT_INHERIT
+            }
+            setTextColor(color)
+            this.typeface = Utils.getTextTypeface(context)
+            this.text = text
+            layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, context.resources.displayMetrics).toInt()
+                setMargins(px, px / 8, px, px / 8)
+            }
+        }
 
         fun createButton(context: Context, action: ButtonAction, text: String) =
                 Button(context).apply {
                     this.text = text
+                    val dimen = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, context.resources.displayMetrics).roundToInt()
+                    setPadding(dimen, dimen, dimen, dimen)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
                     typeface = Utils.getTextTypeface(context)
                     //if (action.isExternal)
                         //setCompoundDrawablesWithIntrinsicBounds(null, null, ContextCompat.getDrawable(context, R.drawable.ic_open_in_new_white_18dp), null)
@@ -89,16 +128,16 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
     val parent: String = map["parent"] as String
     val type: String = map["type"] as String
 
-    private fun <T> getProperty(key: String) = map[key] as T
+    private fun <T> getProperty(key: String, default: T) = if (map.containsKey(key)) map[key] as T else default
 
     fun toView(context: Context) =
             when (type) {
-                "image" -> createImage(context, getProperty("image"))
-                "video" -> createVideo(context, getProperty("videoId"), getProperty("provider"))
-                "title" -> createTitle(context, getProperty("title"), getProperty("alignment"))
-                "text" -> createText(context, getProperty("text"), getProperty("alignment"))
-                "button" -> createButton(context, getProperty("_buttonInfo"))
-                "separator" -> createSeparator(context, getProperty("visible"))
-                else -> createCustomText(context, String.format("Invalid element type: %s; ID: %s; parent: %s", type, this@AuthenticElement.id, this@AuthenticElement.parent), 18f, Utils.getTextTypeface(context))
+                "image" -> createImage(context, getProperty("image", ""), getProperty("enlargeButton", false))
+                "video" -> createVideo(context, getProperty("videoId", ""), getProperty("provider", ""))
+                "title" -> createTitle(context, getProperty("title", ""), getProperty("alignment", "center"))
+                "text" -> createText(context, getProperty("text", ""), getProperty("alignment", "left"))
+                "button" -> createButton(context, getProperty("_buttonInfo", HashMap()))
+                "separator" -> createSeparator(context, getProperty("visible", true))
+                else -> createText(context, String.format("Invalid element type: %s; ID: %s; parent: %s", type, this@AuthenticElement.id, this@AuthenticElement.parent), "left", Color.RED)
             }
 }
