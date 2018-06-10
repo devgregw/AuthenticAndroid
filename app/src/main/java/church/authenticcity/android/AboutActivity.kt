@@ -2,18 +2,22 @@ package church.authenticcity.android
 
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.Toast
 import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.helpers.Utils
+import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.helpers.applyTypeface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.google.firebase.messaging.FirebaseMessaging
 
 class AboutActivity : AppCompatActivity() {
 
@@ -49,11 +53,21 @@ class AboutActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.content_list).apply {
             val image = ImageView(this@AboutActivity)
             Glide.with(context).load(R.drawable.banner).transition(DrawableTransitionOptions.withCrossFade()).into(image)
+            image.setOnLongClickListener {
+                AlertDialog.Builder(this@AboutActivity).setTitle("Development Notifications").setMessage("Development notifications are for internal testing use only.  Interacting with them may cause instability.\n\n/topics/dev").setPositiveButton("Subscribe", { _, _ ->
+                    FirebaseMessaging.getInstance().subscribeToTopic("dev")
+                    Utils.makeToast(this@AboutActivity, "Subscribed to /topics/dev", Toast.LENGTH_SHORT).show()
+                }).setNegativeButton("Unsubscribe", { _, _ ->
+                    FirebaseMessaging.getInstance().unsubscribeFromTopic("dev")
+                    Utils.makeToast(this@AboutActivity, "Unsubscribed from /topics/dev", Toast.LENGTH_SHORT).show()
+                }).create().applyColorsAndTypefaces().show()
+                true
+            }
             addView(image)
             addView(AuthenticElement.createTitle(this@AboutActivity, "AUTHENTIC CITY CHURCH", "center"))
             addView(AuthenticElement.createText(this@AboutActivity, "Version ${BuildConfig.VERSION_NAME}-u${BuildConfig.VERSION_CODE} for Android devices", "center"))
             addView(AuthenticElement.createSeparator(this@AboutActivity, true))
-            addView(AuthenticElement.createCustomText(this@AboutActivity, "FOR ALL TO LOVE GOD, LOVE PEOPLE, AND IMPACT THE KINGDOM.", 33f, Utils.getTextTypeface(this@AboutActivity), "center", Color.BLACK))
+            addView(AuthenticElement.createText(this@AboutActivity, "FOR ALL TO LOVE GOD, LOVE PEOPLE, AND IMPACT THE KINGDOM.", "center", size = 33f))
             addView(AuthenticElement.createSeparator(this@AboutActivity, true))
             addView(AuthenticElement.createTitle(this@AboutActivity, "CONNECT WITH US", "center"))
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.authenticcity.church"), "Visit Our Website"))
