@@ -12,11 +12,11 @@ import org.threeten.bp.format.DateTimeFormatter
  * Created by Greg Whatley on 4/6/2018 at 1:51 PM.
  * Licensed under the MIT License.
  */
-class AuthenticEvent(val id: String, val title: String, val hideTitle: Boolean, val description: String, val header: String, dateTime: HashMap<String, Any>, recurrence: HashMap<String, Any>?, val location: String, val address: String, registration: HashMap<String, Any>?) {
+class AuthenticEvent(val id: String, val title: String, val hideTitle: Boolean, val description: String, val header: String, dateTime: HashMap<String, Any>, val hideEndDate: Boolean, recurrence: HashMap<String, Any>?, val location: String, val address: String, registration: HashMap<String, Any>?) {
     constructor() : this("INVALID", "INVALID", false, "INVALID", "", HashMap<String, Any>().apply {
         put("start", ZonedDateTime.now(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_DATE_TIME))
         put("end", ZonedDateTime.now(ZoneId.systemDefault()).plusDays(1L).format(DateTimeFormatter.ISO_DATE_TIME))
-    }, null, "INVALID", "", null)
+    }, false, null, "INVALID", "", null)
 
     val startDate = OffsetDateTime.parse(dateTime["start"] as String, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault())
     val endDate = OffsetDateTime.parse(dateTime["end"] as String, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault())

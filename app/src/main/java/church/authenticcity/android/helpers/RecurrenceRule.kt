@@ -14,11 +14,15 @@ import kotlin.collections.ArrayList
  */
 class RecurrenceRule(val frequency: String, val interval: Int, val endDate: ZonedDateTime?, val count: Int?) {
     class Occurrence(val startDate: ZonedDateTime, val endDate: ZonedDateTime) {
-        fun format(): String {
-            if (startDate.dayOfYear != endDate.dayOfYear || startDate.year != endDate.year) {
-                return "Starts on ${startDate.format(Utils.datePattern)} at ${startDate.format(Utils.timePattern)} and ends on ${endDate.format(Utils.datePattern)} at ${endDate.format(Utils.timePattern)}"
-            } else
-                return "${startDate.format(Utils.datePattern)} from ${startDate.format(Utils.timePattern)} to ${endDate.format(Utils.timePattern)}"
+        fun format(hideEndDate: Boolean): String {
+            return if (startDate.dayOfYear != endDate.dayOfYear || startDate.year != endDate.year) {
+                "Starts on ${startDate.format(Utils.datePattern)} at ${startDate.format(Utils.timePattern)} and ends on ${endDate.format(Utils.datePattern)} at ${endDate.format(Utils.timePattern)}"
+            } else {
+                if (hideEndDate)
+                    "Starts on ${startDate.format(Utils.datePattern)} at ${startDate.format(Utils.timePattern)}"
+                else
+                    "From ${startDate.format(Utils.timePattern)} to ${endDate.format(Utils.timePattern)} on ${startDate.format(Utils.datePattern)}"
+            }
         }
     }
 
