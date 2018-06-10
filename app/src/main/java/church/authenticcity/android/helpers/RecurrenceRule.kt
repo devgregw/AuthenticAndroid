@@ -71,30 +71,34 @@ class RecurrenceRule(val frequency: String, val interval: Int, val endDate: Zone
         return occurrences
     }*/
 
-    public fun getOccurrences(originalStart: ZonedDateTime, originalEnd: ZonedDateTime): List<Occurrence> {
+    fun getOccurrences(originalStart: ZonedDateTime, originalEnd: ZonedDateTime): List<Occurrence> {
         val duration = originalEnd.toEpochSecond() - originalStart.toEpochSecond()
         val occurrences = ArrayList<Occurrence>()
-        if (infinite) {
-            var firstAfter = originalStart
-            while (firstAfter < ZonedDateTime.now())
-                firstAfter = addInterval(firstAfter)
-            for (i in 1..10) {
-                occurrences.add(Occurrence(firstAfter, firstAfter.plusSeconds(duration)))
-                firstAfter = addInterval(firstAfter)
+        when {
+            infinite -> {
+                var firstAfter = originalStart
+                while (firstAfter < ZonedDateTime.now())
+                    firstAfter = addInterval(firstAfter)
+                for (i in 1..10) {
+                    occurrences.add(Occurrence(firstAfter, firstAfter.plusSeconds(duration)))
+                    firstAfter = addInterval(firstAfter)
+                }
             }
-        } else if (endDate != null) {
-            var nextStart = originalStart
-            var after = addInterval(nextStart)
-            while (after < endDate) {
-                occurrences.add(Occurrence(nextStart, nextStart.plusSeconds(duration)))
-                nextStart = after
-                after = addInterval(after)
+            endDate != null -> {
+                var nextStart = originalStart
+                var after = addInterval(nextStart)
+                while (after < endDate) {
+                    occurrences.add(Occurrence(nextStart, nextStart.plusSeconds(duration)))
+                    nextStart = after
+                    after = addInterval(after)
+                }
             }
-        } else if (count != null) {
-            occurrences.add(Occurrence(originalStart, originalEnd))
-            for (i in 1..(count - 1)) {
-                val oc = occurrences.last()
-                occurrences.add(Occurrence(addInterval(oc.startDate), addInterval(oc.endDate)))
+            count != null -> {
+                occurrences.add(Occurrence(originalStart, originalEnd))
+                for (i in 1..(count - 1)) {
+                    val oc = occurrences.last()
+                    occurrences.add(Occurrence(addInterval(oc.startDate), addInterval(oc.endDate)))
+                }
             }
         }
         return occurrences

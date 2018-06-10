@@ -8,15 +8,10 @@ package church.authenticcity.android.classes
 class AuthenticAppearance(data: HashMap<String, Any>) {
 
     class Events(data: HashMap<String, Any>) {
-        val title: String
-        val hideTitle: Boolean
-        val header: String
+        val title: String = data["title"] as String
+        val hideTitle: Boolean = data["hideTitle"] as Boolean
+        val header: String = data["header"] as String
 
-        init {
-            title = data["title"] as String
-            hideTitle = data["hideTitle"] as Boolean
-            header = data["header"] as String
-        }
     }
 
     val events: Events

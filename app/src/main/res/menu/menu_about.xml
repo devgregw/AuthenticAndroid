@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<item android:id="@+id/action_launchAms" android:title="Launch AMS" app:showAsAction="always|withText"/>
+<item android:id="@+id/action_launchAms" android:title="@string/action_menu_launch_ams" app:showAsAction="always|withText"/>
 </menu>

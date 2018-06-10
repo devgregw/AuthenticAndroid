@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="About" android:id="@+id/popupMenu_about"/>
-    <item android:title="Settings" android:id="@+id/popupMenu_settings"/>
+    <item android:title="@string/action_menu_about" android:id="@+id/popupMenu_about"/>
+    <item android:title="@string/action_menu_settings" android:id="@+id/popupMenu_settings"/>
 </menu>

@@ -21,7 +21,7 @@ class FirebaseMessagingService : FirebaseMessagingService() {
                 if (!bundle.containsKey("type") || !bundle.containsKey("group"))
                     return
                 val map = HashMap<String, Any>()
-                bundle.keySet().forEach { map.put(it, bundle.get(it)) }
+                bundle.keySet().forEach { map[it] = bundle.get(it) }
                 action = ButtonAction(map)
             }
         }

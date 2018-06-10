@@ -41,6 +41,7 @@ class TabsListFragment : Fragment() {
         val appRef = FirebaseDatabase.getInstance().getReference("/appearance/")
         appRef.keepSynced(true)
         appRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            @SuppressLint("SetTextI18n")
             override fun onCancelled(p0: DatabaseError) {
                 view!!.root.removeAllViews()
                 view!!.root.addView(TextView(this@TabsListFragment.requireContext()).apply {

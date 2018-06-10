@@ -25,7 +25,6 @@
             android:textColor="@android:color/white"
             android:letterSpacing="0.1"
             android:gravity="center"
-            android:text="SUNDAYS AT 6:30 PM"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 </ViewSwitcher>

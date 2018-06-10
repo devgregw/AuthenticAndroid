@@ -32,14 +32,15 @@ class VerticalViewPager : ViewPager {
 
     class VerticalPageTransformer : ViewPager.PageTransformer {
         override fun transformPage(page: View, position: Float) {
-            if (position < -1)
-                page.alpha = 0f
-            else if (position <= 1) {
-                page.alpha = 1f
-                page.translationX = page.width * -position
-                page.translationY = position * page.height
-            } else
-                page.alpha = 0f
+            when {
+                position < -1 -> page.alpha = 0f
+                position <= 1 -> {
+                    page.alpha = 1f
+                    page.translationX = page.width * -position
+                    page.translationY = position * page.height
+                }
+                else -> page.alpha = 0f
+            }
         }
     }
 

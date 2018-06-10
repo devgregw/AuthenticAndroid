@@ -18,11 +18,11 @@ class AuthenticEvent(val id: String, val title: String, val hideTitle: Boolean, 
         put("end", ZonedDateTime.now(ZoneId.systemDefault()).plusDays(1L).format(DateTimeFormatter.ISO_DATE_TIME))
     }, false, null, "INVALID", "", null)
 
-    val startDate = OffsetDateTime.parse(dateTime["start"] as String, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault())
-    val endDate = OffsetDateTime.parse(dateTime["end"] as String, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault())
+    val startDate = OffsetDateTime.parse(dateTime["start"] as String, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault())!!
+    val endDate = OffsetDateTime.parse(dateTime["end"] as String, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault())!!
 
-    val registrationUrl = if (registration != null) registration.getAs("url") else ""
-    val price = if (registration != null) registration.getAs("price") else 0f
+    val registrationUrl = registration?.getAs("url") ?: ""
+    val price = registration?.getAs("price") ?: 0f
 
     val recurrenceRule = if (recurrence !== null) RecurrenceRule(recurrence) else null
     val recurs = recurrence !== null

@@ -25,7 +25,7 @@ class TileViewHolder(private val activity: Activity, viewGroup: ViewGroup) : Rec
         itemView.setBackgroundColor(Color.BLACK)
     }
 
-    private val LOGGING = false
+    private val logging = false
 
     private fun applyDrawable(drawable: Drawable, name: String) {
         Handler().postDelayed({
@@ -33,7 +33,7 @@ class TileViewHolder(private val activity: Activity, viewGroup: ViewGroup) : Rec
             val adjustedWidth = activity.resources.displayMetrics.widthPixels / 2
             val ratio = bitmap.bitmap.width.toFloat() / bitmap.bitmap.height.toFloat()
             val adjustedHeight = (adjustedWidth / ratio).roundToInt()
-            if (LOGGING) {
+            if (logging) {
                 var log = "Applying $name:\n"
                 log += " - requested width: $adjustedWidth\n"
                 log += " - image aspect ratio: $ratio (${if (ratio > 1f) "landscape" else if (ratio == 1f) "square" else "landscape"})\n"
