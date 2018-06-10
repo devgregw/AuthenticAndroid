@@ -1,31 +1,28 @@
 package church.authenticcity.android
 
+import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.TypedValue
-import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.widget.TextView
 import church.authenticcity.android.classes.AuthenticAppearance
 import church.authenticcity.android.classes.AuthenticElement
+import church.authenticcity.android.helpers.SimpleAnimatorListener
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyTypeface
-import church.authenticcity.android.views.PlainCardView
+import church.authenticcity.android.views.recyclerView.DualRecyclerView
+import church.authenticcity.android.views.recyclerView.Tile
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlin.math.roundToInt
+import kotlinx.android.synthetic.main.activity_event_list.*
 
 class EventListActivity : AppCompatActivity() {
 
@@ -36,59 +33,46 @@ class EventListActivity : AppCompatActivity() {
         }
     }
 
-    private var layout: LinearLayout? = null
-
     private fun loadEvents() {
-        layout!!.removeAllViews()
-        layout!!.addView(RelativeLayout(this).apply {
-            addView(ProgressBar(this@EventListActivity).apply {
-                isIndeterminate = true
-                val size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75f, resources.displayMetrics).toInt()
-                layoutParams = RelativeLayout.LayoutParams(size, size).apply {
-                    addRule(RelativeLayout.CENTER_IN_PARENT)
-                }
-                indeterminateDrawable.setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_IN)
-            })
-        })
         val eventsRef = FirebaseDatabase.getInstance().getReference("/events/")
         eventsRef.keepSynced(true)
         eventsRef.addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("SetTextI18n")
-            override fun onCancelled(p0: DatabaseError?) {
-                layout!!.removeAllViews()
-                layout!!.addView(TextView(this@EventListActivity).apply {
-                    text = "ERROR: ${p0?.message}"
+            override fun onCancelled(p0: DatabaseError) {
+                root.removeAllViews()
+                root.addView(TextView(this@EventListActivity).apply {
+                    text = "ERROR: ${p0.message}"
                     typeface = Utils.getTextTypeface(this@EventListActivity)
                     setTextColor(Color.WHITE)
                 })
             }
 
-            override fun onDataChange(p0: DataSnapshot?) {
-                layout!!.removeAllViews()
-                layout!!.apply {
-                    addView(RelativeLayout(this@EventListActivity).apply {
-                        layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                            val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, this@EventListActivity.resources.displayMetrics).roundToInt()
-                            setMargins(px, px / 4, px, 0)
+            override fun onDataChange(p0: DataSnapshot) {
+                root.findViewWithTag<LinearLayout>("recyclerViewHost").animate().alpha(0f).setDuration(250L).setStartDelay(0L).setListener(object : SimpleAnimatorListener() {
+                    override fun onAnimationEnd(animator: Animator?) {
+                        root.removeAllViews()
+                        swipe_refresh_layout.isRefreshing = false
+                        if (!p0.exists() || p0.childrenCount == 0L) {
+                            root.addView(AuthenticElement.createText(this@EventListActivity, "There are no upcoming events.", "center", size = 22f))
+                            return
                         }
-                    })
-                }
-                if (p0?.exists() == false)
-                    layout!!.addView(AuthenticElement.createCustomText(this@EventListActivity, "There are no upcoming events.", 22f, Utils.getTextTypeface(this@EventListActivity), "center", Color.BLACK))
-                p0?.children?.map { Utils.Constructors.constructEvent(it.value!!) }?.filter { !it.getShouldBeHidden() }?.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }?.forEach {
-                    Utils.Temp.putEvent(it)
-                    layout!!.addView(PlainCardView(this@EventListActivity, it))
-                }
+                        runOnUiThread {
+                            val layout = DualRecyclerView.create(this@EventListActivity, p0.children.map { Utils.Constructors.constructEvent(it.value!!) }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.header, it, { e -> EventActivity.start(this@EventListActivity, e) }) })
+                            root.addView(layout)
+                            layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
+                        }
+                    }
+                })
             }
         })
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == android.R.id.home)
+        if (item?.itemId == android.R.id.home) {
             onBackPressed()
-        else if (item?.itemId == R.id.menu_refresh)
-            loadEvents()
-        return super.onOptionsItemSelected(item)
+            return true
+        }
+        else return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {
@@ -96,16 +80,15 @@ class EventListActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.empty, R.anim.slide_down)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_events, menu!!)
-        return true
+    override fun onStart() {
+        super.onStart()
+        loadEvents()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = intent.getStringExtra("title")
         setContentView(R.layout.activity_event_list)
-        layout = findViewById(R.id.content_list)
         findViewById<Toolbar>(R.id.toolbar).apply {
             this@EventListActivity.setSupportActionBar(this)
             setBackgroundColor(Color.parseColor("#212121"))
@@ -114,6 +97,10 @@ class EventListActivity : AppCompatActivity() {
         supportActionBar?.applyTypeface(this, title as String)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_down_white_36dp)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        loadEvents()
+        swipe_refresh_layout.apply {
+            setOnRefreshListener {
+                loadEvents()
+            }
+        }
     }
 }

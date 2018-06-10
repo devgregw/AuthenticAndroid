@@ -39,21 +39,18 @@ class EventActivity : AppCompatActivity() {
             val dialog = Utils.createIndeterminateDialog(context, "Loading...")
             dialog.show()
             FirebaseDatabase.getInstance().getReference("/events/$eventId").addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onCancelled(p0: DatabaseError?) {
+                override fun onCancelled(p0: DatabaseError) {
                     dialog.dismiss()
-                    AlertDialog.Builder(context).setTitle("Unexpected Error").setCancelable(false).setMessage("An unexpected error occurred while loading data.\n\nCode: ${p0?.code
-                            ?: "unknown"}\nMessage: ${p0?.message
-                            ?: "unknown"}\nDetails: ${p0?.details
-                            ?: "unknown"}").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
+                    AlertDialog.Builder(context).setTitle("Unexpected Error").setCancelable(false).setMessage("An unexpected error occurred while loading data.\n\nCode: ${p0.code}\nMessage: ${p0.message}\nDetails: ${p0.details}").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
                 }
 
-                override fun onDataChange(p0: DataSnapshot?) {
+                override fun onDataChange(p0: DataSnapshot) {
                     dialog.dismiss()
-                    if (p0?.value == null) {
+                    if (p0.value == null) {
                         AlertDialog.Builder(context).setTitle("Error").setCancelable(false).setMessage("We were unable to open the event details because the event does not exist.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
                         return
                     }
-                    start(context, p0!!.getValue(AuthenticEvent::class.java)!!)
+                    start(context, p0.getValue(AuthenticEvent::class.java)!!)
                 }
             })
         }
@@ -69,19 +66,19 @@ class EventActivity : AppCompatActivity() {
         val event = Utils.Temp.getEvent(intent.getStringExtra("id"))!!
         supportActionBar?.applyTypeface(this, event.title)
         findViewById<LinearLayout>(R.id.content_list).apply {
-            addView(AuthenticElement.createImage(this@EventActivity, event.header))
-            addView(AuthenticElement.createCustomText(this@EventActivity, event.title, 32f, Utils.getTitleTypeface(this@EventActivity), "center", Color.BLACK).apply {
+            addView(AuthenticElement.createImage(this@EventActivity, event.header, false))
+            addView(AuthenticElement.createText(this@EventActivity, event.title, "center", size = 32f).apply {
                 layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                     setMargins(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt(), 0, 0)
                 }
             })
             //addView(AuthenticElement.createTitle(this@EventActivity, event.title, "center"))
-            addView(AuthenticElement.createCustomText(this@EventActivity, event.description, 20f, Utils.getTextTypeface(this@EventActivity), "left", Color.BLACK))
+            addView(AuthenticElement.createText(this@EventActivity, event.description, "left", size = 20f))
             //addView(AuthenticElement.createText(this@EventActivity, event.description, "left"))
 
             addView(AuthenticElement.createSeparator(this@EventActivity, true))
             addView(AuthenticElement.createTitle(this@EventActivity, "Date & Time", "center"))
-            addView(AuthenticElement.createText(this@EventActivity, event.getNextOccurrence().format(), "left"))
+            addView(AuthenticElement.createText(this@EventActivity, event.getNextOccurrence().format(event.hideEndDate), "left"))
             if (event.recurs)
                 addView(AuthenticElement.createText(this@EventActivity, event.recurrenceRule!!.format(event.startDate, event.endDate), "left"))
             addView(AuthenticElement.createButton(this@EventActivity, ButtonAction(HashMap<String, Any>().apply {
@@ -92,9 +89,9 @@ class EventActivity : AppCompatActivity() {
 
             addView(AuthenticElement.createSeparator(this@EventActivity, true))
             addView(AuthenticElement.createTitle(this@EventActivity, "Location", "center"))
-            addView(AuthenticElement.createText(this@EventActivity, event.location, "left", true))
+            addView(AuthenticElement.createText(this@EventActivity, event.location, "left", selectable = true))
             if (!String.isNullOrWhiteSpace(event.address)) {
-                addView(AuthenticElement.createText(this@EventActivity, event.address, "left", true))
+                addView(AuthenticElement.createText(this@EventActivity, event.address, "left", selectable = true))
                 addView(AuthenticElement.createButton(this@EventActivity, ButtonAction(HashMap<String, Any>().apply {
                     put("group", -1)
                     put("type", "GetDirectionsAction")

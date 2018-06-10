@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewSwitcher xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@android:color/white"
+            android:layout_centerInParent="true"
+            />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:id="@+id/livestream_textView"
+            android:textSize="26sp"
+            android:textColor="@android:color/white"
+            android:letterSpacing="0.1"
+            android:gravity="center"
+            android:text="SUNDAYS AT 6:30 PM"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+</ViewSwitcher>
