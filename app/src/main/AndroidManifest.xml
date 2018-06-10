@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="church.authenticcity.android">
-
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
-
     <application
         android:name=".AuthenticApplication"
         android:allowBackup="true"
@@ -12,21 +10,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_notification"/>
-
-        <activity
-            android:name=".MainActivity"
-            android:configChanges="screenSize"
-            android:screenOrientation="portrait" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
         <activity
             android:name=".SplashScreenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -42,24 +34,20 @@
             android:name=".EventActivity"
             android:configChanges="screenSize"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".TabListActivity"
-            android:configChanges="screenSize"
-            android:screenOrientation="portrait" />
         <activity android:name=".AboutActivity" />
-
-        <service
-            android:name=".services.FirebaseMessagingService">
+        <service android:name=".services.FirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service
-            android:name=".services.FirebaseInstanceIDService">
+        <service android:name=".services.FirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+        <activity android:name=".HomeActivity"
+            android:configChanges="screenSize"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
