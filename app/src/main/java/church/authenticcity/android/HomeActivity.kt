@@ -24,7 +24,7 @@ class HomeActivity : AppCompatActivity() {
                         HomeFragment()
                     }
                     1 -> {
-                        TabsListFragment()
+                        TabsListFragment.create(this@HomeActivity)
                     }
                     else -> throw IllegalArgumentException("Invalid position")
                 }

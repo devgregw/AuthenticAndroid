@@ -3,12 +3,14 @@ package church.authenticcity.android.fragments
 
 import android.animation.Animator
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.RippleDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.support.v7.widget.PopupMenu
@@ -37,6 +39,12 @@ import java.util.*
 import kotlin.math.roundToInt
 
 class TabsListFragment : Fragment() {
+    companion object {
+        fun create(activity: Activity) = TabsListFragment().apply { this.activity = activity }
+    }
+
+    private lateinit var activity: Activity
+
     private fun loadTabs() {
         val appRef = FirebaseDatabase.getInstance().getReference("/appearance/")
         appRef.keepSynced(true)
@@ -159,17 +167,29 @@ class TabsListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        loadTabs()
+        /*loadTabs()
         view!!.swipe_refresh_layout.apply {
             setOnRefreshListener {
                 loadTabs()
             }
-        }
+        }*/
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_tabs_list, container, false)
+        return inflater.inflate(R.layout.fragment_tabs_list, container, false).apply {
+            Handler().postDelayed({
+                activity.runOnUiThread {
+                    swipe_refresh_layout.isRefreshing = true
+                    loadTabs()
+                }
+            }, 1750L)
+            swipe_refresh_layout.apply {
+                setOnRefreshListener {
+                    loadTabs()
+                }
+            }
+        }
     }
 
 

@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -96,7 +97,7 @@ class EventListActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        loadEvents()
+        //loadEvents()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,6 +112,12 @@ class EventListActivity : AppCompatActivity() {
         supportActionBar?.applyTypeface(this, title as String)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_down_white_36dp)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        Handler().postDelayed({
+            runOnUiThread {
+                swipe_refresh_layout.isRefreshing = true
+                loadEvents()
+            }
+        }, 500L)
         swipe_refresh_layout.apply {
             setOnRefreshListener {
                 loadEvents()
