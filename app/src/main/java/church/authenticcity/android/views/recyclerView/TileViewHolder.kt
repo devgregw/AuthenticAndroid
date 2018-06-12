@@ -20,7 +20,7 @@ import kotlin.math.roundToInt
  * Created by Greg Whatley on 6/8/2018 at 8:27 PM.
  * Licensed under the MIT License.
  */
-class TileViewHolder(private val activity: Activity, viewGroup: ViewGroup) : RecyclerView.ViewHolder(LayoutInflater.from(activity).inflate(R.layout.view_tile, viewGroup, false)) {
+class TileViewHolder(private val activity: Activity, private val fullWidth: Boolean, viewGroup: ViewGroup) : RecyclerView.ViewHolder(LayoutInflater.from(activity).inflate(R.layout.view_tile, viewGroup, false)) {
     init {
         itemView.setBackgroundColor(Color.BLACK)
     }
@@ -30,7 +30,7 @@ class TileViewHolder(private val activity: Activity, viewGroup: ViewGroup) : Rec
     private fun applyDrawable(drawable: Drawable, name: String) {
         Handler().postDelayed({
             val bitmap = drawable as BitmapDrawable
-            val adjustedWidth = activity.resources.displayMetrics.widthPixels / 2
+            val adjustedWidth = activity.resources.displayMetrics.widthPixels / (if (fullWidth) 1 else 2)
             val ratio = bitmap.bitmap.width.toFloat() / bitmap.bitmap.height.toFloat()
             val adjustedHeight = (adjustedWidth / ratio).roundToInt()
             if (logging) {

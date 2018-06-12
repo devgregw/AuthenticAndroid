@@ -7,6 +7,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.widget.LinearLayout
@@ -16,8 +18,8 @@ import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.helpers.SimpleAnimatorListener
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyTypeface
-import church.authenticcity.android.views.recyclerView.DualRecyclerView
 import church.authenticcity.android.views.recyclerView.Tile
+import church.authenticcity.android.views.recyclerView.TileAdapter
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -57,9 +59,21 @@ class EventListActivity : AppCompatActivity() {
                             return
                         }
                         runOnUiThread {
-                            val layout = DualRecyclerView.create(this@EventListActivity, p0.children.map { Utils.Constructors.constructEvent(it.value!!) }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.header, it, { e -> EventActivity.start(this@EventListActivity, e) }) })
-                            root.addView(layout)
-                            layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
+                            val tiles = p0.children.map { Utils.Constructors.constructEvent(it.value!!) }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.header, it, { e -> EventActivity.start(this@EventListActivity, e) }) }
+                            if (tiles.isEmpty()) {
+                                root.addView(AuthenticElement.createText(this@EventListActivity, "There are no upcoming events.", "center", size = 22f))
+                            } else {
+                                val recyclerView = RecyclerView(this@EventListActivity)
+                                recyclerView.adapter = TileAdapter(this@EventListActivity, tiles, true)
+                                recyclerView.layoutManager = LinearLayoutManager(this@EventListActivity)
+                                root.addView(LinearLayout(this@EventListActivity).apply {
+                                    addView(recyclerView)
+                                    tag = "recyclerViewHost"
+                                    orientation = LinearLayout.VERTICAL
+                                    alpha = 0f
+                                    animate().setStartDelay(250L).alpha(1f).duration = 250L
+                                })
+                            }
                         }
                     }
                 })

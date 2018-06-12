@@ -9,9 +9,9 @@ import android.view.ViewGroup
  * Created by Greg Whatley on 6/8/2018 at 8:26 PM.
  * Licensed under the MIT License.
  */
-class TileAdapter(private val activity: Activity, private val tiles: List<Tile<*>>) : RecyclerView.Adapter<TileViewHolder>() {
+class TileAdapter(private val activity: Activity, private val tiles: List<Tile<*>>, private val fullWidth: Boolean) : RecyclerView.Adapter<TileViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TileViewHolder(activity, parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TileViewHolder(activity, fullWidth, parent)
 
     override fun getItemCount() = tiles.size
 
