@@ -55,7 +55,7 @@ class LivestreamView {
                 setText(false)
                 Log.e("Livestream", err.localizedMessage)
                 err.printStackTrace()
-            }))
+            }).setShouldCache(false))
             return view
         }
     }

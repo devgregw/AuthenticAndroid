@@ -54,10 +54,9 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
             val dimen = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, context.resources.displayMetrics).roundToInt()
             setPadding(dimen, dimen, dimen, dimen)
             /*textAlignment = when (alignment) {
-                "left" -> TextView.TEXT_ALIGNMENT_TEXT_START
                 "center" -> TextView.TEXT_ALIGNMENT_CENTER
                 "right" -> TextView.TEXT_ALIGNMENT_TEXT_END
-                else -> TextView.TEXT_ALIGNMENT_INHERIT
+                else -> TextView.TEXT_ALIGNMENT_TEXT_START
             }*/
             setTextColor(Color.BLACK)
             setBackgroundResource(R.drawable.title_border_black)

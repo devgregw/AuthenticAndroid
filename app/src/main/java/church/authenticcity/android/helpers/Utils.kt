@@ -160,7 +160,7 @@ class Utils {
         }
 
         fun loadFirebaseImage(context: Context, name: String, view: ImageView, callback: ((Drawable) -> Unit)? = null) {
-            val request = Glide.with(context).load(FirebaseStorage.getInstance().reference.child(name)).transition(DrawableTransitionOptions.withCrossFade())
+            val request = Glide.with(context).load(FirebaseStorage.getInstance().reference.child(if (String.isNullOrWhiteSpace(name)) "unknown.png" else name)).transition(DrawableTransitionOptions.withCrossFade())
             if (callback != null)
                 request.listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {

@@ -7,9 +7,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.TypedValue
 import android.view.MenuItem
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.AuthenticEvent
@@ -67,11 +65,11 @@ class EventActivity : AppCompatActivity() {
         supportActionBar?.applyTypeface(this, event.title)
         findViewById<LinearLayout>(R.id.content_list).apply {
             addView(AuthenticElement.createImage(this@EventActivity, event.header, false))
-            addView(AuthenticElement.createText(this@EventActivity, event.title, "center", size = 32f).apply {
-                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+            addView(AuthenticElement.createTitle(this@EventActivity, event.title, "center", size = 32f)/*.apply {
+                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                     setMargins(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).toInt(), 0, 0)
                 }
-            })
+            }*/)
             //addView(AuthenticElement.createTitle(this@EventActivity, event.title, "center"))
             addView(AuthenticElement.createText(this@EventActivity, event.description, "left", size = 20f))
             //addView(AuthenticElement.createText(this@EventActivity, event.description, "left"))
