@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import android.widget.ViewSwitcher
 import church.authenticcity.android.R
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.helpers.Utils
@@ -23,15 +22,17 @@ import kotlinx.android.synthetic.main.view_livestream.view.*
  */
 class LivestreamView {
     companion object {
-        fun create(context: Context, viewGroup: ViewGroup): ViewSwitcher {
-            val view = LayoutInflater.from(context).inflate(R.layout.view_livestream, viewGroup, false) as ViewSwitcher
+        fun create(context: Context, viewGroup: ViewGroup): RelativeLayout {
+            val view = LayoutInflater.from(context).inflate(R.layout.view_livestream, viewGroup, false) as RelativeLayout
             view.apply {
                 layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, context.resources.displayMetrics.widthPixels / 2).apply { addRule(RelativeLayout.BELOW, R.id.title) }
             }
+            view.livestream_progress.animate().setStartDelay(0L).alpha(1f).duration = 250L
             view.livestream_textView.typeface = Utils.getTitleTypeface(context)
             val setText: (Boolean) -> Unit = { isLive ->
                 view.livestream_textView.text = if (isLive) "WATCH LIVE ON YOUTUBE" else "SUNDAYS AT 6:30 PM"
-                view.showNext()
+                view.livestream_progress.animate().setStartDelay(0L).alpha(0f).duration = 250L
+                view.livestream_textView.animate().setStartDelay(250L).alpha(1f).duration = 250L
             }
             val queue = Volley.newRequestQueue(context)
             //authentic: UCxrYck_z50n5It7ifj1LCjA
