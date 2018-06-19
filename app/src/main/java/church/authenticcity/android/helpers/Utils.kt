@@ -72,15 +72,15 @@ fun ActionBar.applyTypeface(context: Context, text: String) {
 inline fun <reified T, V, K> HashMap<V, K>.getAs(key: V) = (if (T::class.simpleName == Int::class.simpleName) this[key].toString().toInt() else if (T::class.simpleName == Float::class.simpleName) this[key].toString().toFloat() else this[key]) as T
 
 open class SimpleAnimatorListener : Animator.AnimatorListener {
-    override fun onAnimationRepeat(p0: Animator?) {
+    override fun onAnimationRepeat(animator: Animator?) {
         // nothing
     }
 
-    override fun onAnimationEnd(p0: Animator?) {
+    override fun onAnimationEnd(animator: Animator?) {
         // nothing
     }
 
-    override fun onAnimationCancel(p0: Animator?) {
+    override fun onAnimationCancel(animator: Animator?) {
         // nothing
     }
 
