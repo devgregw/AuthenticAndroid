@@ -36,6 +36,7 @@ class ButtonAction(private val map: HashMap<String, Any>) {
     val type = map["type"] as String
     var properties = HashMap<String, Any>(map.filter { it.key != "group" && it.key != "type" })
 
+    @Suppress("UNCHECKED_CAST")
     fun <T> get(name: String): T = properties[name] as T
 
     private fun showAlert(context: Context, title: String, message: String) {

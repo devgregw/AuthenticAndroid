@@ -127,6 +127,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
     val parent: String = map["parent"] as String
     val type: String = map["type"] as String
 
+    @Suppress("UNCHECKED_CAST")
     private fun <T> getProperty(key: String, default: T) = if (map.containsKey(key)) map[key] as T else default
 
     fun toView(context: Context) =

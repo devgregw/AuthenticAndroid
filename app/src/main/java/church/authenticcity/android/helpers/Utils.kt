@@ -68,6 +68,7 @@ fun ActionBar.applyTypeface(context: Context, text: String) {
     this.title = Utils.makeTypefaceSpan(text, Utils.getTitleTypeface(context))
 }
 
+@Suppress("IMPLICIT_CAST_TO_ANY")
 inline fun <reified T, V, K> HashMap<V, K>.getAs(key: V) = (if (T::class.simpleName == Int::class.simpleName) this[key].toString().toInt() else if (T::class.simpleName == Float::class.simpleName) this[key].toString().toFloat() else this[key]) as T
 
 open class SimpleAnimatorListener : Animator.AnimatorListener {
