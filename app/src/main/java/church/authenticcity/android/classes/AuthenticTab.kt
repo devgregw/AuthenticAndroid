@@ -8,8 +8,8 @@ import org.threeten.bp.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.HashMap
 
-class AuthenticTab(val header: String, val id: String, val index: Int, val hideTitle: Boolean, val hideHeader: Boolean, val title: String, val elements: List<HashMap<String, Any>>?, val visibility: HashMap<String, Any>) {
-    constructor() : this("", "INVALID", Int.MAX_VALUE, false, false, "INVALID", ArrayList<HashMap<String, Any>>(), HashMap<String, Any>().apply { put("override", false) })
+class AuthenticTab(val header: ImageResource, val id: String, val index: Int, val hideTitle: Boolean, val hideHeader: Boolean, val title: String, val elements: List<HashMap<String, Any>>?, val visibility: HashMap<String, Any>) {
+    constructor() : this(ImageResource("unknown.png", 720, 1080), "INVALID", Int.MAX_VALUE, false, false, "INVALID", ArrayList<HashMap<String, Any>>(), HashMap<String, Any>().apply { put("override", false) })
 
     val convertedElements
         get() = elements?.map(::AuthenticElement) ?: ArrayList()

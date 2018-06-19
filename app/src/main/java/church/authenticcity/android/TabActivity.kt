@@ -81,7 +81,7 @@ class TabActivity : AppCompatActivity() {
         val tab = Utils.Temp.getTab(intent.getStringExtra("id"))!!
         this.title = tab.title
         supportActionBar?.applyTypeface(this, tab.title)
-        if (tab.hideHeader) findViewById<ImageView>(R.id.image).visibility = View.GONE else Utils.loadFirebaseImage(this, tab.header, findViewById(R.id.image))
+        if (tab.hideHeader) findViewById<ImageView>(R.id.image).visibility = View.GONE else Utils.loadFirebaseImage(this, tab.header.imageName, findViewById(R.id.image))
         if (tab.elementCount > 0)
             setContent(tab.convertedElements.map { it.toView(this@TabActivity) })
         else

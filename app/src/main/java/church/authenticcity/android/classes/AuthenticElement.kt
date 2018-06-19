@@ -25,8 +25,8 @@ import kotlin.math.roundToInt
 
 class AuthenticElement(private val map: HashMap<String, Any>) {
     companion object {
-        fun createImage(context: Context, image: String, enlargable: Boolean): View {
-            val imageView = ImageView(context).apply { Utils.loadFirebaseImage(context, image, this) }
+        fun createImage(context: Context, image: ImageResource, enlargable: Boolean): View {
+            val imageView = ImageView(context).apply { Utils.loadFirebaseImage(context, image.imageName, this) }
             if (enlargable)
                 return LinearLayout(context).apply {
                     orientation = LinearLayout.VERTICAL
@@ -131,7 +131,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
 
     fun toView(context: Context) =
             when (type) {
-                "image" -> createImage(context, getProperty("image", ""), getProperty("enlargeButton", false))
+                "image" -> createImage(context, getProperty("image", ImageResource("unknown.png", 720, 1080)), getProperty("enlargeButton", false))
                 "video" -> createVideo(context, getProperty("videoId", ""), getProperty("provider", ""))
                 "title" -> createTitle(context, getProperty("title", ""), getProperty("alignment", "center"))
                 "text" -> createText(context, getProperty("text", ""), getProperty("alignment", "left"))
