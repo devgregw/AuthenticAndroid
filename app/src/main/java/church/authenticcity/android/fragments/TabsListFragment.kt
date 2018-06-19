@@ -165,19 +165,11 @@ class TabsListFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        /*loadTabs()
-        view!!.swipe_refresh_layout.apply {
-            setOnRefreshListener {
-                loadTabs()
-            }
-        }*/
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_tabs_list, container, false).apply {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if (!::activity.isInitialized)
+            activity = requireActivity()
+        view!!.apply {
             Handler().postDelayed({
                 activity.runOnUiThread {
                     swipe_refresh_layout.isRefreshing = true
@@ -190,6 +182,11 @@ class TabsListFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_tabs_list, container, false)
     }
 
 
