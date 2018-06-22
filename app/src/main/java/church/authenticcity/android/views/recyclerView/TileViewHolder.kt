@@ -11,6 +11,7 @@ import church.authenticcity.android.R
 import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.helpers.Utils
 import kotlinx.android.synthetic.main.view_tile.view.*
+import java.util.*
 import kotlin.math.roundToInt
 
 /**
@@ -20,14 +21,15 @@ import kotlin.math.roundToInt
  */
 class TileViewHolder(private val activity: Activity, private val fullWidth: Boolean, viewGroup: ViewGroup) : RecyclerView.ViewHolder(LayoutInflater.from(activity).inflate(R.layout.view_tile, viewGroup, false)) {
     init {
-        itemView.setBackgroundColor(Color.BLACK)
+        val rand = Random().nextInt(256)
+        itemView.setBackgroundColor(Color.argb(255, rand, rand, rand))
     }
 
     private val logging = false
 
     private fun setHeight(header: ImageResource) {
         val adjustedWidth = activity.resources.displayMetrics.widthPixels / (if (fullWidth) 1 else 2)
-        val ratio = header.width.toFloat() / header.height.toFloat()
+        val ratio = header.width.toFloat() / (if (header.height == 0) 1 else header.height).toFloat()
         val adjustedHeight = (adjustedWidth / ratio).roundToInt()
         if (logging) {
             var log = "Applying ${header.imageName}:\n"
