@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
+import java.util.*
 import kotlin.math.roundToInt
 
 
@@ -26,7 +27,15 @@ import kotlin.math.roundToInt
 class AuthenticElement(private val map: HashMap<String, Any>) {
     companion object {
         fun createImage(context: Context, image: ImageResource, enlargable: Boolean): View {
-            val imageView = ImageView(context).apply { Utils.loadFirebaseImage(context, image.imageName, this) }
+            val imageView = ImageView(context).apply {
+                val adjustedWidth = context.resources.displayMetrics.widthPixels
+                val ratio = image.width.toFloat() / (if (image.height == 0) 1 else image.height).toFloat()
+                val adjustedHeight = (adjustedWidth / ratio).roundToInt()
+                layoutParams = ViewGroup.LayoutParams(adjustedWidth, adjustedHeight)
+                Utils.loadFirebaseImage(context, image.imageName, this)
+                val rand = Random().nextInt(256)
+                setBackgroundColor(Color.argb(255, rand, rand, rand))
+            }
             if (enlargable)
                 return LinearLayout(context).apply {
                     orientation = LinearLayout.VERTICAL
@@ -132,7 +141,11 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
 
     fun toView(context: Context) =
             when (type) {
-                "image" -> createImage(context, getProperty("image", ImageResource("unknown.png", 720, 1080)), getProperty("enlargeButton", false))
+                "image" -> createImage(context, ImageResource(getProperty("image", HashMap<String, Any>().apply {
+                    put("name", "unknown.png")
+                    put("width", 720)
+                    put("height", 1080)
+                })), getProperty("enlargeButton", false))
                 "video" -> createVideo(context, getProperty("videoId", ""), getProperty("provider", ""))
                 "title" -> createTitle(context, getProperty("title", ""), getProperty("alignment", "center"))
                 "text" -> createText(context, getProperty("text", ""), getProperty("alignment", "left"))
