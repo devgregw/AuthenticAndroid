@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.PopupMenu
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ import church.authenticcity.android.classes.AuthenticAppearance
 import church.authenticcity.android.classes.AuthenticTab
 import church.authenticcity.android.helpers.SimpleAnimatorListener
 import church.authenticcity.android.helpers.Utils
+import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.views.LivestreamView
 import church.authenticcity.android.views.recyclerView.DualRecyclerView
 import church.authenticcity.android.views.recyclerView.Tile
@@ -139,9 +141,12 @@ class TabsListFragment : Fragment() {
                                     })
                                 }
                                 view!!.swipe_refresh_layout.isRefreshing = false
-                                initializeAdapter(p0.children.map { Utils.Constructors.constructTab(it.value!!) }.filter {
+                                val constructed = p0.children.map { Utils.Constructors.constructTab(it.value!!) }
+                                initializeAdapter(constructed.filter { it != null }.map { it!! }.filter {
                                     !it.getShouldBeHidden()
                                 }, appearance)
+                                if (constructed.count { it == null } > 0)
+                                    AlertDialog.Builder(requireContext()).setTitle("Error").setMessage("We're having trouble loading content.  Please try again later.  We apologise for the inconvenience.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
                             }
                         })
                     }

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -18,6 +19,7 @@ import church.authenticcity.android.classes.AuthenticAppearance
 import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.helpers.SimpleAnimatorListener
 import church.authenticcity.android.helpers.Utils
+import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.helpers.applyTypeface
 import church.authenticcity.android.views.recyclerView.Tile
 import church.authenticcity.android.views.recyclerView.TileAdapter
@@ -60,7 +62,8 @@ class EventListActivity : AppCompatActivity() {
                             return
                         }
                         runOnUiThread {
-                            val tiles = p0.children.map { Utils.Constructors.constructEvent(it.value!!) }.filter { !it.getShouldBeHidden() }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.header, it, { e -> EventActivity.start(this@EventListActivity, e) }) }
+                            val constructed = p0.children.map { Utils.Constructors.constructEvent(it.value!!) }
+                            val tiles = constructed.filter { it != null }.map { it!! }.filter { !it.getShouldBeHidden() }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.header, it) { e -> EventActivity.start(this@EventListActivity, e) } }
                             if (tiles.isEmpty()) {
                                 root.addView(AuthenticElement.createText(this@EventListActivity, "There are no upcoming events.", "center", size = 22f))
                             } else {
@@ -75,6 +78,8 @@ class EventListActivity : AppCompatActivity() {
                                     animate().setStartDelay(250L).alpha(1f).duration = 250L
                                 })
                             }
+                            if (constructed.count { it == null } > 0)
+                                AlertDialog.Builder(this@EventListActivity).setTitle("Error").setMessage("We're having trouble loading content.  Please try again later.  We apologise for the inconvenience.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
                         }
                     }
                 })

@@ -110,14 +110,24 @@ class Utils {
 
     class Constructors {
         companion object {
-            fun constructEvent(value: Any): AuthenticEvent {
-                val map = value as HashMap<String, Any>
-                return AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), ImageResource(map.getAs("header")), map.getAs("dateTime"), map.getAs("hideEndDate"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
+            fun constructEvent(value: Any): AuthenticEvent? {
+                try {
+                    val map = value as HashMap<String, Any>
+                    return AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), ImageResource(map.getAs("header")), map.getAs("dateTime"), map.getAs("hideEndDate"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
+                } catch (e: Exception) {
+                    Crashlytics.logException(e)
+                    return null
+                }
             }
 
-            fun constructTab(value: Any): AuthenticTab {
-                val map = value as HashMap<String, Any>
-                return AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("hideTitle"), map.getAs("hideHeader"), map.getAs("title"), map.getAs("elements"), map.getAs("visibility"))
+            fun constructTab(value: Any): AuthenticTab? {
+                try {
+                    val map = value as HashMap<String, Any>
+                    return AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("hideTitle"), map.getAs("hideHeader"), map.getAs("title"), map.getAs("elements"), map.getAs("visibility"))
+                } catch (e: Exception) {
+                    Crashlytics.logException(e)
+                    return null
+                }
             }
         }
     }
@@ -136,7 +146,7 @@ class Utils {
             var msg = "Unfortunately, an unexpected error occurred and has been reported.  We apologize for the inconvenience.  If you need them, here are the details:\n"
             msg += "\nLocation: $location"
             msg += "\nType: ${ex.javaClass.canonicalName ?: "<null>"}"
-            msg+= "\nMessage: ${ex.message ?: "<null>"}"
+            msg += "\nMessage: ${ex.message ?: "<null>"}"
             AlertDialog.Builder(context).setTitle("Unexpected Error").setMessage(msg).setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
         }
 
