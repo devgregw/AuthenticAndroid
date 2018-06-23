@@ -27,6 +27,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.perf.FirebasePerformance
 import kotlinx.android.synthetic.main.activity_event_list.*
 
 class EventListActivity : AppCompatActivity() {
@@ -38,7 +39,10 @@ class EventListActivity : AppCompatActivity() {
         }
     }
 
-    private fun loadEvents() {
+    private fun loadEvents(refreshed: Boolean) {
+        val trace = FirebasePerformance.startTrace("load events")
+        if (refreshed)
+            trace.incrementMetric("refresh events", 1L)
         val eventsRef = FirebaseDatabase.getInstance().getReference("/events/")
         eventsRef.keepSynced(true)
         eventsRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -80,6 +84,7 @@ class EventListActivity : AppCompatActivity() {
                             }
                             if (constructed.count { it == null } > 0)
                                 AlertDialog.Builder(this@EventListActivity).setTitle("Error").setMessage("We're having trouble loading content.  Please try again later.  We apologise for the inconvenience.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
+                            trace.stop()
                         }
                     }
                 })
@@ -120,12 +125,12 @@ class EventListActivity : AppCompatActivity() {
         Handler().postDelayed({
             runOnUiThread {
                 swipe_refresh_layout.isRefreshing = true
-                loadEvents()
+                loadEvents(false)
             }
         }, 500L)
         swipe_refresh_layout.apply {
             setOnRefreshListener {
-                loadEvents()
+                loadEvents(true)
             }
         }
     }

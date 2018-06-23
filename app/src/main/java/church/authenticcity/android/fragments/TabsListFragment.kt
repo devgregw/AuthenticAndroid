@@ -36,6 +36,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.perf.FirebasePerformance
 import kotlinx.android.synthetic.main.fragment_tabs_list.view.*
 import java.util.*
 import kotlin.math.roundToInt
@@ -47,7 +48,10 @@ class TabsListFragment : Fragment() {
 
     private lateinit var activity: Activity
 
-    private fun loadTabs() {
+    private fun loadTabs(refreshed: Boolean) {
+        val trace = FirebasePerformance.startTrace("load tabs")
+        if (refreshed)
+            trace.incrementMetric("refresh tabs", 1L)
         val appRef = FirebaseDatabase.getInstance().getReference("/appearance/")
         appRef.keepSynced(true)
         appRef.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -147,6 +151,7 @@ class TabsListFragment : Fragment() {
                                 }, appearance)
                                 if (constructed.count { it == null } > 0)
                                     AlertDialog.Builder(requireContext()).setTitle("Error").setMessage("We're having trouble loading content.  Please try again later.  We apologise for the inconvenience.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
+                                trace.stop()
                             }
                         })
                     }
@@ -178,12 +183,12 @@ class TabsListFragment : Fragment() {
             Handler().postDelayed({
                 activity.runOnUiThread {
                     swipe_refresh_layout.isRefreshing = true
-                    loadTabs()
+                    loadTabs(false)
                 }
             }, 1750L)
             swipe_refresh_layout.apply {
                 setOnRefreshListener {
-                    loadTabs()
+                    loadTabs(true)
                 }
             }
         }
