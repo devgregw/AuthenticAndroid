@@ -123,7 +123,7 @@ class Utils {
             fun constructTab(value: Any): AuthenticTab? {
                 try {
                     val map = value as HashMap<String, Any>
-                    return AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("hideTitle"), map.getAs("hideHeader"), map.getAs("title"), map.getAs("elements"), map.getAs("visibility"))
+                    return AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("hideTitle"), map.getAs("hideHeader"), map.getAs("title"), if (map.containsKey("action")) map.getAs<HashMap<String, Any>, String, Any>("action") else null, map.getAs("elements"), map.getAs("visibility"))
                 } catch (e: Exception) {
                     Crashlytics.logException(e)
                     return null

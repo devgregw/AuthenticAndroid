@@ -157,7 +157,7 @@ class TabsListFragment : Fragment() {
 
     private fun initializeAdapter(tabs: List<AuthenticTab>, appearance: AuthenticAppearance) {
         val toTile: (AuthenticTab) -> Tile<AuthenticTab> = { t ->
-            Tile(t.title, t.header, t) { tab -> TabActivity.start(requireContext(), tab) }
+            Tile(t.title, t.header, t) { tab -> if (tab.action == null) TabActivity.start(requireContext(), tab) else tab.action.invoke(requireContext()) }
         }
         requireActivity().runOnUiThread {
             val ueTile = Tile(appearance.events.title, appearance.events.header, appearance.events) { a -> EventListActivity.start(requireActivity(), a) }
