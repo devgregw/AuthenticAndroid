@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'com.google.firebase.firebase-perf'
 
+apply plugin: 'com.google.gms.oss.licenses.plugin'
+
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-kapt'
@@ -58,6 +60,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.2.50"
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.4'
+    implementation 'com.google.android.gms:play-services-oss-licenses:15.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
