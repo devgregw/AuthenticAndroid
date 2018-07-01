@@ -3,6 +3,7 @@ package church.authenticcity.android
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -81,6 +82,12 @@ class TabActivity : AppCompatActivity() {
         val tab = Utils.Temp.getTab(intent.getStringExtra("id"))!!
         this.title = tab.title
         supportActionBar?.applyTypeface(this, tab.title)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+        findViewById<TextView>(R.id.toolbar_title).apply {
+            typeface = Utils.getTitleTypeface(this@TabActivity)
+            text = tab.title
+        }
         if (tab.hideHeader) findViewById<ImageView>(R.id.image).visibility = View.GONE else Utils.loadFirebaseImage(this, tab.header.imageName, findViewById(R.id.image))
         if (tab.elementCount > 0)
             setContent(tab.convertedElements.map { it.toView(this@TabActivity) })

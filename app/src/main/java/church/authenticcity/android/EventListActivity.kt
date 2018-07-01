@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
@@ -120,6 +121,12 @@ class EventListActivity : AppCompatActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.applyTypeface(this, title as String)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+        findViewById<TextView>(R.id.toolbar_title).apply {
+            typeface = Utils.getTitleTypeface(this@EventListActivity)
+            text = title as String
+        }
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_down_white_36dp)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         Handler().postDelayed({

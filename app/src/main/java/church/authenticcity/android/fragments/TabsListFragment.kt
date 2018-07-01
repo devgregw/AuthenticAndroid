@@ -8,13 +8,10 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.RippleDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.PopupMenu
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -90,32 +87,47 @@ class TabsListFragment : Fragment() {
                                         id = R.id.toolbar
                                         layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                                         val buttonWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48f, resources.displayMetrics).roundToInt()
+                                        setBackgroundColor(Color.BLACK)
                                         addView(RelativeLayout(this@TabsListFragment.requireContext()).apply {
                                             setPadding(px, px / 4, px, 0)
                                             layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                                            setPadding(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25f, context.resources.displayMetrics).roundToInt(), 0, 0)
                                             id = R.id.title
                                             addView(ImageButton(this@TabsListFragment.requireContext()).apply {
-                                                layoutParams = RelativeLayout.LayoutParams(buttonWidth, ViewGroup.LayoutParams.WRAP_CONTENT).apply { addRule(RelativeLayout.ALIGN_PARENT_LEFT) }
-                                                setImageResource(R.drawable.ic_keyboard_arrow_down_black_36dp)
+                                                layoutParams = RelativeLayout.LayoutParams(buttonWidth, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                                                    addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+                                                    addRule(RelativeLayout.CENTER_VERTICAL)
+                                                }
+                                                setPadding(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25f, context.resources.displayMetrics).roundToInt(), 0, 0)
+                                                setImageResource(R.drawable.ic_keyboard_arrow_down_white_36dp)
                                                 setBackgroundColor(Color.TRANSPARENT)
                                                 if (Utils.checkSdk(23))
-                                                    foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(128, 0, 0, 0)), null, null).apply { radius = buttonWidth / 2 }
+                                                    foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 255, 255, 255)), null, null).apply { radius = buttonWidth / 2 }
                                                 setOnClickListener { (this@TabsListFragment.requireActivity() as HomeActivity).goHome() }
                                             })
                                             addView(TextView(this@TabsListFragment.requireContext()).apply {
                                                 text = Utils.makeTypefaceSpan("HOME", Utils.getTitleTypeface(this@TabsListFragment.requireContext()))
                                                 textSize = 30f
-                                                setTextColor(Color.BLACK)
+                                                letterSpacing = 0.15f
+                                                setTextColor(Color.WHITE)
+                                                setPadding(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25f, context.resources.displayMetrics).roundToInt(), 0, 0)
                                                 layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { addRule(RelativeLayout.CENTER_IN_PARENT) }
                                             })
                                             addView(ImageButton(this@TabsListFragment.requireContext()).apply {
-                                                layoutParams = RelativeLayout.LayoutParams(buttonWidth, ViewGroup.LayoutParams.WRAP_CONTENT).apply { addRule(RelativeLayout.ALIGN_PARENT_RIGHT) }
+                                                layoutParams = RelativeLayout.LayoutParams(buttonWidth, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                                                    addRule(RelativeLayout.ALIGN_PARENT_RIGHT)
+                                                    addRule(RelativeLayout.CENTER_VERTICAL)
+                                                }
+                                                setPadding(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25f, context.resources.displayMetrics).roundToInt(), 0, 0)
                                                 id = R.id.expanded_menu
-                                                setImageResource(R.drawable.ic_more_vert_black_36dp)
+                                                setImageResource(R.drawable.outline_info_white_24)
                                                 setBackgroundColor(Color.TRANSPARENT)
                                                 if (Utils.checkSdk(23))
-                                                    foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, null).apply { radius = buttonWidth / 2 }
-                                                val menu = PopupMenu(this@TabsListFragment.requireContext(), this)
+                                                    foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 255, 255, 255)), null, null).apply { radius = buttonWidth / 2 }
+                                                setOnClickListener {
+                                                    this@TabsListFragment.startActivity(Intent(this@TabsListFragment.requireContext(), AboutActivity::class.java))
+                                                }
+                                                /*val menu = PopupMenu(this@TabsListFragment.requireContext(), this)
                                                 menu.inflate(R.menu.menu_tab_list_popup)
                                                 menu.menu.getItem(0).title = Utils.makeTypefaceSpan("About", Utils.getTextTypeface(this@TabsListFragment.requireContext()))
                                                 menu.menu.getItem(1).title = Utils.makeTypefaceSpan("Settings", Utils.getTextTypeface(this@TabsListFragment.requireContext()))
@@ -132,14 +144,14 @@ class TabsListFragment : Fragment() {
                                                 }
                                                 setOnClickListener {
                                                     menu.show()
-                                                }
+                                                }*/
                                             })
                                         })
                                         addView(RelativeLayout(this@TabsListFragment.requireContext()).apply {
-                                            layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (resources.displayMetrics.widthPixels * 0.4).roundToInt()).apply {
+                                            layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, resources.displayMetrics.widthPixels / 3).apply {
                                                 addRule(RelativeLayout.BELOW, R.id.title)
                                             }
-                                            setBackgroundColor(Color.BLACK)
+                                            setBackgroundColor(Color.WHITE)
                                             addView(LivestreamView.create(context, this))
                                         })
                                     })

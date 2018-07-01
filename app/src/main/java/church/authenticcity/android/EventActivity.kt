@@ -3,12 +3,14 @@ package church.authenticcity.android
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.widget.LinearLayout
+import android.widget.TextView
 import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.AuthenticEvent
 import church.authenticcity.android.classes.ButtonAction
@@ -63,6 +65,12 @@ class EventActivity : AppCompatActivity() {
     private fun initialize() {
         val event = Utils.Temp.getEvent(intent.getStringExtra("id"))!!
         supportActionBar?.applyTypeface(this, event.title)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+        findViewById<TextView>(R.id.toolbar_title).apply {
+            typeface = Utils.getTitleTypeface(this@EventActivity)
+            text = event.title
+        }
         findViewById<LinearLayout>(R.id.content_list).apply {
             addView(AuthenticElement.createImage(this@EventActivity, event.header, false))
             addView(AuthenticElement.createTitle(this@EventActivity, event.title, "center", size = 32f)/*.apply {

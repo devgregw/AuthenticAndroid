@@ -11,7 +11,7 @@
         android:contentDescription="@string/header_image_content_description"
         android:background="@android:color/transparent"
         android:scaleType="centerCrop"
-        android:tint="#66000000" />
+        android:tint="#80000000" />
 
     <TextView
         android:id="@+id/tile_title"
@@ -22,8 +22,8 @@
         android:background="@android:color/transparent"
         android:ellipsize="end"
         android:gravity="center"
-        android:letterSpacing="0.1"
+        android:letterSpacing="0.15"
         android:padding="8dp"
         android:textColor="@android:color/white"
-        android:textSize="26sp" />
+        android:textSize="24sp" />
 </RelativeLayout>

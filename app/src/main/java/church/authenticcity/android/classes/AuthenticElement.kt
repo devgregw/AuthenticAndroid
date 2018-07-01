@@ -41,10 +41,10 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     orientation = LinearLayout.VERTICAL
                     layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     imageView.setOnClickListener {
-                        ButtonAction.openUrl("https://accams.devgregw.com/meta/storage/$image").invoke(context)
+                        ButtonAction.openUrl("https://accams.devgregw.com/meta/storage/${image.imageName}").invoke(context)
                     }
                     addView(imageView)
-                    addView(createText(context, "Tap image to enlarge.", "left", color = Color.DKGRAY, size = 14f))
+                    addView(createText(context, "Tap to open.", "left", color = Color.DKGRAY, size = 14f))
                 }
             return imageView
         }
@@ -57,7 +57,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     setBackgroundColor(Color.BLACK)
                 }
 
-        fun createTitle(context: Context, text: String, alignment: String, size: Float = 26f, selectable: Boolean = false) = TextView(context).apply {
+        fun createTitle(context: Context, text: String, alignment: String, size: Float = 24f, selectable: Boolean = false) = TextView(context).apply {
             textSize = size
             setTextIsSelectable(selectable)
             val dimen = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, context.resources.displayMetrics).roundToInt()
@@ -71,7 +71,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
             setBackgroundResource(R.drawable.title_border_black)
             this.typeface = Utils.getTitleTypeface(context)
             this.text = text
-            letterSpacing = 0.1f
+            letterSpacing = 0.15f
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                 gravity = when (alignment) {
                     "center" -> Gravity.CENTER_HORIZONTAL

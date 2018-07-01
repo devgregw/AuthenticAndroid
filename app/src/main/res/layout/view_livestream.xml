@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+    android:background="@android:color/white">
         <ProgressBar
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:indeterminate="true"
-            android:indeterminateTint="@android:color/white"
+            android:indeterminateTint="@android:color/black"
             android:layout_centerInParent="true"
             android:alpha="0"
             android:id="@+id/livestream_progress"
@@ -18,7 +19,7 @@
             android:padding="8dp"
             android:id="@+id/livestream_textView"
             android:textSize="26sp"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:letterSpacing="0.1"
             android:gravity="center"
             android:layout_centerInParent="true"

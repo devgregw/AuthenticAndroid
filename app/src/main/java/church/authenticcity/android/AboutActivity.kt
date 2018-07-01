@@ -2,7 +2,10 @@ package church.authenticcity.android
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -10,10 +13,7 @@ import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.*
 import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.helpers.Utils
@@ -22,6 +22,7 @@ import church.authenticcity.android.helpers.applyTypeface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlin.math.roundToInt
 
@@ -56,6 +57,12 @@ class AboutActivity : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_white_36dp)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.applyTypeface(this, "ABOUT")
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.BLACK))
+        findViewById<TextView>(R.id.toolbar_title).apply {
+            typeface = Utils.getTitleTypeface(this@AboutActivity)
+            text = "ABOUT"
+        }
         findViewById<LinearLayout>(R.id.content_list).apply {
             val image = ImageView(this@AboutActivity)
             Glide.with(context).load(R.drawable.banner).transition(DrawableTransitionOptions.withCrossFade()).into(image)
@@ -72,6 +79,21 @@ class AboutActivity : AppCompatActivity() {
             addView(image)
             addView(AuthenticElement.createTitle(this@AboutActivity, "AUTHENTIC CITY CHURCH", "center"))
             addView(AuthenticElement.createText(this@AboutActivity, "Version ${BuildConfig.VERSION_NAME}-u${BuildConfig.VERSION_CODE} for Android devices", "center"))
+            addView(Button(context).apply {
+                this.text = "Settings"
+                val dimen = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, context.resources.displayMetrics).roundToInt()
+                setPadding(dimen, dimen, dimen, dimen)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+                typeface = Utils.getTextTypeface(context)
+                setOnClickListener {
+                    this@AboutActivity.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.parse("package:${this@AboutActivity.packageName}")
+                    }) }
+                layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                    val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, context.resources.displayMetrics).toInt()
+                    setMargins(px, 0, px, 0)
+                }
+            })
             addView(AuthenticElement.createSeparator(this@AboutActivity, true))
             addView(AuthenticElement.createText(this@AboutActivity, "FOR ALL TO LOVE GOD, LOVE PEOPLE, AND IMPACT THE KINGDOM.", "center", size = 33f))
             addView(AuthenticElement.createSeparator(this@AboutActivity, true))
@@ -88,7 +110,7 @@ class AboutActivity : AppCompatActivity() {
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.youtube.com/channel/UCxrYck_z50n5It7ifj1LCjA"), "YouTube"))
             addView(AuthenticElement.createSeparator(this@AboutActivity, true))
             addView(AuthenticElement.createText(this@AboutActivity, "Designed and developed by Greg Whatley for Authentic City Church", "center"))
-            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://devgregw.com"), "Learn More"))
+            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://devgregw.com"), "Visit My Website"))
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://github.com/devgregw/AuthenticAndroid"), "GitHub Repository"))
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://trello.com/b/QUgekVh6"), "Trello Roadmap"))
             addView(AuthenticElement.createSeparator(this@AboutActivity, true))
@@ -107,6 +129,8 @@ class AboutActivity : AppCompatActivity() {
                     setMargins(px, 0, px, 0)
                 }
             })
+            addView(AuthenticElement.createSeparator(this@AboutActivity, false))
+            addView(AuthenticElement.createText(this@AboutActivity, FirebaseInstanceId.getInstance().token ?: "Unknown", "center", Color.GRAY, 16f, true))
             addView(AuthenticElement.createSeparator(this@AboutActivity, false))
         }
     }
