@@ -78,7 +78,7 @@ class AboutActivity : AppCompatActivity() {
             }
             addView(image)
             addView(AuthenticElement.createTitle(this@AboutActivity, "AUTHENTIC CITY CHURCH", "center"))
-            addView(AuthenticElement.createText(this@AboutActivity, "Version ${BuildConfig.VERSION_NAME}-u${BuildConfig.VERSION_CODE} for Android devices", "center"))
+            addView(AuthenticElement.createText(this@AboutActivity, "Version ${BuildConfig.VERSION_NAME} build ${BuildConfig.VERSION_CODE} for Android devices", "center"))
             addView(Button(context).apply {
                 this.text = "Settings"
                 val dimen = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, context.resources.displayMetrics).roundToInt()
@@ -130,7 +130,7 @@ class AboutActivity : AppCompatActivity() {
                 }
             })
             addView(AuthenticElement.createSeparator(this@AboutActivity, false))
-            addView(AuthenticElement.createText(this@AboutActivity, FirebaseInstanceId.getInstance().token ?: "Unknown", "center", Color.GRAY, 16f, true))
+            addView(AuthenticElement.createText(this@AboutActivity, FirebaseInstanceId.getInstance().token ?: "Unknown", "left", Color.GRAY, 16f, true))
             addView(AuthenticElement.createSeparator(this@AboutActivity, false))
         }
     }
