@@ -67,13 +67,13 @@ class AboutActivity : AppCompatActivity() {
             val image = ImageView(this@AboutActivity)
             Glide.with(context).load(R.drawable.banner).transition(DrawableTransitionOptions.withCrossFade()).into(image)
             image.setOnLongClickListener {
-                AlertDialog.Builder(this@AboutActivity).setTitle("Development Notifications").setMessage("Development notifications are for internal testing use only.  Interacting with them may cause instability.\n\n/topics/dev").setPositiveButton("Subscribe", { _, _ ->
+                AlertDialog.Builder(this@AboutActivity).setTitle("Development Notifications").setMessage("Development notifications are for internal testing use only.  Interacting with them may cause instability.\n\n/topics/dev").setPositiveButton("Subscribe") { _, _ ->
                     FirebaseMessaging.getInstance().subscribeToTopic("dev")
                     Utils.makeToast(this@AboutActivity, "Subscribed to /topics/dev", Toast.LENGTH_SHORT).show()
-                }).setNegativeButton("Unsubscribe", { _, _ ->
+                }.setNegativeButton("Unsubscribe") { _, _ ->
                     FirebaseMessaging.getInstance().unsubscribeFromTopic("dev")
                     Utils.makeToast(this@AboutActivity, "Unsubscribed from /topics/dev", Toast.LENGTH_SHORT).show()
-                }).create().applyColorsAndTypefaces().show()
+                }.create().applyColorsAndTypefaces().show()
                 true
             }
             addView(image)
