@@ -110,24 +110,20 @@ class Utils {
 
     class Constructors {
         companion object {
-            fun constructEvent(value: Any): AuthenticEvent? {
-                try {
-                    val map = value as HashMap<String, Any>
-                    return AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), ImageResource(map.getAs("header")), map.getAs("dateTime"), map.getAs("hideEndDate"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
-                } catch (e: Exception) {
-                    Crashlytics.logException(e)
-                    return null
-                }
+            fun constructEvent(value: Any): AuthenticEvent? = try {
+                val map = value as HashMap<String, Any>
+                AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), ImageResource(map.getAs("header")), map.getAs("dateTime"), map.getAs("hideEndDate"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
+            } catch (e: Exception) {
+                Crashlytics.logException(e)
+                null
             }
 
-            fun constructTab(value: Any): AuthenticTab? {
-                try {
-                    val map = value as HashMap<String, Any>
-                    return AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("hideTitle"), map.getAs("hideHeader"), map.getAs("title"), if (map.containsKey("action")) map.getAs<HashMap<String, Any>, String, Any>("action") else null, map.getAs("elements"), map.getAs("visibility"))
-                } catch (e: Exception) {
-                    Crashlytics.logException(e)
-                    return null
-                }
+            fun constructTab(value: Any): AuthenticTab? = try {
+                val map = value as HashMap<String, Any>
+                AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("hideTitle"), map.getAs("hideHeader"), map.getAs("title"), if (map.containsKey("action")) map.getAs<HashMap<String, Any>, String, Any>("action") else null, map.getAs("elements"), map.getAs("visibility"))
+            } catch (e: Exception) {
+                Crashlytics.logException(e)
+                null
             }
         }
     }

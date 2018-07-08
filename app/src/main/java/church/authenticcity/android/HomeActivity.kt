@@ -63,7 +63,7 @@ class HomeActivity : AppCompatActivity() {
         FirebaseMessagingService.setAction(intent.extras)
         FirebaseMessagingService.invokeNotificationAction(this)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !getSharedPreferences("private", 0).getBoolean("permissionsRequested", false) && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED)
-            requestPermissions(Array(1, { _ -> Manifest.permission.WRITE_CALENDAR }), 100)
+            requestPermissions(Array(1) { _ -> Manifest.permission.WRITE_CALENDAR }, 100)
         else
             initialize()
     }

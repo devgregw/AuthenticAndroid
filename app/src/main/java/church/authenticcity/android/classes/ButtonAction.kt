@@ -110,12 +110,12 @@ class ButtonAction(private val map: HashMap<String, Any>) {
                         Utils.makeToast(context, "\"$eventTitle\" was added to your calendar.", Toast.LENGTH_LONG).show()
                     } catch (ex: SecurityException) {
                         ex.printStackTrace()
-                        AlertDialog.Builder(context).setTitle("Permission Denied").setMessage("\"$eventTitle\" could not be added to your calendar because you didn't grant the Authentic app access to your calendar.").setNeutralButton("Settings", { _, _ ->
+                        AlertDialog.Builder(context).setTitle("Permission Denied").setMessage("\"$eventTitle\" could not be added to your calendar because you didn't grant the Authentic app access to your calendar.").setNeutralButton("Settings") { _, _ ->
                             context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}")).apply {
                                 addCategory(Intent.CATEGORY_DEFAULT)
                                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             })
-                        }).setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
+                        }.setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
                     }
                 }
                 else -> showAlert(context, "Error", "We were unable to run this action because the type \"$type\" is undefined.")

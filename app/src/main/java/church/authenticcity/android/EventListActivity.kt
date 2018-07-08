@@ -106,11 +106,6 @@ class EventListActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.empty, R.anim.slide_down)
     }
 
-    override fun onStart() {
-        super.onStart()
-        //loadEvents()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = intent.getStringExtra("title")

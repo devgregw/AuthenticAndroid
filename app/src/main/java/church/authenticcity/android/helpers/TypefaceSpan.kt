@@ -8,7 +8,7 @@ import android.text.style.MetricAffectingSpan
 
 /**
  * NOTICE: this file was modified by Greg Whatley on 2/2/2018 at 1:15 PM.
- * Changes include conversion to Kotlin and support for [Typeface]s in the constructor.
+ * Changes include conversion to Kotlin and support for Typefaces in the constructor.
  * Because of these changes, some of the original code was removed.
  *
  * See: https://gist.github.com/twaddington/b91341ea5615698b53b8

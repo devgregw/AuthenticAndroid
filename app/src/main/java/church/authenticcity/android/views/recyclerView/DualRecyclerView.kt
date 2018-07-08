@@ -24,7 +24,7 @@ class DualRecyclerView {
             adapter = TileAdapter(activity, tiles, false)
         }
 
-        fun create(activity: Activity, tiles: List<Tile<*>>) = create(activity, tiles.filterIndexed({i, t -> i % 2 == 0}), tiles.filterIndexed({i, _ -> i % 2 != 0}))
+        fun create(activity: Activity, tiles: List<Tile<*>>) = create(activity, tiles.filterIndexed { i, t -> i % 2 == 0}, tiles.filterIndexed { i, _ -> i % 2 != 0})
 
         fun create(activity: Activity, leftTiles: List<Tile<*>>, rightTiles: List<Tile<*>>) = LinearLayout(activity).apply {
             weightSum = 1f

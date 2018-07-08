@@ -64,12 +64,12 @@ class HomeFragment : Fragment() {
         }
         FirebaseDatabase.getInstance().reference.child("versions").child("android").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
-                AlertDialog.Builder(this@HomeFragment.requireContext()).setTitle("Unexpected Error").setCancelable(false).setMessage("An unexpected error occurred while checking for updates. You may be able to continue using the app.\n\nCode: ${p0.code}\nMessage: ${p0.message}\nDetails: ${p0.details}").setPositiveButton("Dismiss", { _, _ -> this@HomeFragment.finishInitialization() }).create().applyColorsAndTypefaces().show()
+                AlertDialog.Builder(this@HomeFragment.requireContext()).setTitle("Unexpected Error").setCancelable(false).setMessage("An unexpected error occurred while checking for updates. You may be able to continue using the app.\n\nCode: ${p0.code}\nMessage: ${p0.message}\nDetails: ${p0.details}").setPositiveButton("Dismiss") { _, _ -> this@HomeFragment.finishInitialization() }.create().applyColorsAndTypefaces().show()
             }
 
             override fun onDataChange(p0: DataSnapshot) {
                 if (Utils.isUpdateAvailable(p0.value!!.toString().toInt())) {
-                    AlertDialog.Builder(this@HomeFragment.requireContext()).setTitle("Update Available").setCancelable(false).setMessage("An update is available for the Authentic City Church app.  We highly recommend that you update to avoid missing out on new features.").setPositiveButton("Update", { _, _ -> this@HomeFragment.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${this@HomeFragment.requireContext().packageName}"))) }).setNegativeButton("Not Now", { _, _ -> this@HomeFragment.finishInitialization() }).create().applyColorsAndTypefaces().show()
+                    AlertDialog.Builder(this@HomeFragment.requireContext()).setTitle("Update Available").setCancelable(false).setMessage("An update is available for the Authentic City Church app.  We highly recommend that you update to avoid missing out on new features.").setPositiveButton("Update") { _, _ -> this@HomeFragment.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${this@HomeFragment.requireContext().packageName}"))) }.setNegativeButton("Not Now") { _, _ -> this@HomeFragment.finishInitialization() }.create().applyColorsAndTypefaces().show()
                 } else {
                     this@HomeFragment.finishInitialization()
                 }
