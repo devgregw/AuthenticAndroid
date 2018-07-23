@@ -1,7 +1,10 @@
 package church.authenticcity.android.views.recyclerView
 
 import android.app.Activity
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.RippleDrawable
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.util.TypedValue
@@ -47,8 +50,10 @@ class TileViewHolder(private val activity: Activity, private val fullWidth: Bool
     fun <T> initialize(tile: Tile<T>) {
         setHeight(tile.header)
         Utils.loadFirebaseImage(activity, tile.header.imageName, itemView.tile_image)
+        if (Utils.checkSdk(23))
+        itemView.foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
         itemView.tile_title.text = tile.title
-        itemView.tile_title.typeface = Utils.getTitleTypeface(activity)
+        itemView.tile_title.typeface = Utils.getTitleTypeface(activity, true)
         itemView.setOnClickListener {
             tile.handler(tile.argument)
         }

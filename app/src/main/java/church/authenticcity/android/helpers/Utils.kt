@@ -155,7 +155,12 @@ class Utils {
             return span
         }
 
-        fun getTitleTypeface(context: Context): Typeface {
+        fun getTitleTypeface(context: Context, bold: Boolean = false): Typeface {
+            if (bold) {
+                if (titleb == null)
+                    titleb = ResourcesCompat.getFont(context, R.font.effra_bold)
+                return titleb!!
+            }
             if (title == null)
                 title = ResourcesCompat.getFont(context, R.font.effra)
             return title!!

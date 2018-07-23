@@ -25,5 +25,5 @@
         android:letterSpacing="0.15"
         android:padding="8dp"
         android:textColor="@android:color/white"
-        android:textSize="24sp" />
+        android:textSize="22sp" />
 </RelativeLayout>
