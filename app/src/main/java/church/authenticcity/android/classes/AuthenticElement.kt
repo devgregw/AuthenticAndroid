@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
+import church.authenticcity.android.helpers.saveToGallery
 import church.authenticcity.android.views.VideoLinkView
 import java.util.*
 import kotlin.math.roundToInt
@@ -43,8 +44,8 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     imageView.setOnClickListener {
                         image.saveToGallery(context)
                     }
+                    addView(createText(context, "Tap to download.", "left", color = Color.DKGRAY, size = 14f))
                     addView(imageView)
-                    addView(createText(context, "Tap to open.", "left", color = Color.DKGRAY, size = 14f))
                 }
             return imageView
         }
