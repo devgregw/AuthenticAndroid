@@ -54,7 +54,7 @@
                 android:id="@+id/toolbar_title"
                 android:background="@android:color/transparent"
                 android:ellipsize="end"
-                android:letterSpacing="0.15"
+                android:letterSpacing="0.25"
                 android:textSize="24sp"
                 android:textColor="@android:color/white"/>
 

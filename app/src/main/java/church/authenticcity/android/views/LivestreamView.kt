@@ -30,7 +30,7 @@ class LivestreamView {
             view.livestream_progress.animate().setStartDelay(0L).alpha(1f).duration = 250L
             view.livestream_textView.typeface = Utils.getTitleTypeface(context)
             val setText: (Boolean) -> Unit = { isLive ->
-                view.livestream_textView.text = if (isLive) "WATCH LIVE ON YOUTUBE" else "SUNDAYS AT 6:30 PM"
+                view.livestream_textView.text = if (isLive) "WATCH LIVE ON YOUTUBE" else "SUNDAY AT 6:30 PM"
                 view.livestream_progress.animate().setStartDelay(0L).alpha(0f).duration = 250L
                 view.livestream_textView.animate().setStartDelay(250L).alpha(1f).duration = 250L
             }
