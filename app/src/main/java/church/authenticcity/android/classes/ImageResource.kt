@@ -9,4 +9,5 @@ import church.authenticcity.android.helpers.getAs
  */
 class ImageResource(val imageName: String, val width: Int, val height: Int) {
     constructor(map: HashMap<String, Any>) : this(map.getAs("name"), map.getAs("width"), map.getAs("height"))
+    constructor() : this("unknown.png", 720, 1080)
 }
