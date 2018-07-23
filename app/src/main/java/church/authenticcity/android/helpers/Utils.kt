@@ -212,6 +212,7 @@ class Utils {
             get() = DateTimeFormatter.ofPattern("h:mm a")!!
 
         private var title: Typeface? = null
+        private var titleb: Typeface? = null
         private var text: Typeface? = null
 
         fun reportAndAlertException(context: Context, ex: Exception, location: String) {
