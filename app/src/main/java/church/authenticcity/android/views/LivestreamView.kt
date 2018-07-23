@@ -25,7 +25,7 @@ class LivestreamView {
         fun create(context: Context, viewGroup: ViewGroup): RelativeLayout {
             val view = LayoutInflater.from(context).inflate(R.layout.view_livestream, viewGroup, false) as RelativeLayout
             view.apply {
-                layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, context.resources.displayMetrics.widthPixels / 3).apply { addRule(RelativeLayout.BELOW, R.id.title) }
+                layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT/*context.resources.displayMetrics.widthPixels / 4*/).apply { addRule(RelativeLayout.BELOW, R.id.title) }
             }
             view.livestream_progress.animate().setStartDelay(0L).alpha(1f).duration = 250L
             view.livestream_textView.typeface = Utils.getTitleTypeface(context)

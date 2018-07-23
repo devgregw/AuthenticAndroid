@@ -106,9 +106,9 @@ class TabsListFragment : Fragment() {
                                                 setOnClickListener { (this@TabsListFragment.requireActivity() as HomeActivity).goHome() }
                                             })
                                             addView(TextView(this@TabsListFragment.requireContext()).apply {
-                                                text = Utils.makeTypefaceSpan("HOME", Utils.getTitleTypeface(this@TabsListFragment.requireContext()))
+                                                text = Utils.makeTypefaceSpan("AUTHENTIC", Utils.getTitleTypeface(this@TabsListFragment.requireContext()))
                                                 textSize = 30f
-                                                letterSpacing = 0.15f
+                                                letterSpacing = 0.25f
                                                 setTextColor(Color.WHITE)
                                                 setPadding(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25f, context.resources.displayMetrics).roundToInt(), 0, 0)
                                                 layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { addRule(RelativeLayout.CENTER_IN_PARENT) }
@@ -127,28 +127,10 @@ class TabsListFragment : Fragment() {
                                                 setOnClickListener {
                                                     this@TabsListFragment.startActivity(Intent(this@TabsListFragment.requireContext(), AboutActivity::class.java))
                                                 }
-                                                /*val menu = PopupMenu(this@TabsListFragment.requireContext(), this)
-                                                menu.inflate(R.menu.menu_tab_list_popup)
-                                                menu.menu.getItem(0).title = Utils.makeTypefaceSpan("About", Utils.getTextTypeface(this@TabsListFragment.requireContext()))
-                                                menu.menu.getItem(1).title = Utils.makeTypefaceSpan("Settings", Utils.getTextTypeface(this@TabsListFragment.requireContext()))
-                                                menu.setOnMenuItemClickListener { item ->
-                                                    var handled = true
-                                                    when (item.itemId) {
-                                                        R.id.popupMenu_about -> this@TabsListFragment.startActivity(Intent(this@TabsListFragment.requireContext(), AboutActivity::class.java))
-                                                        R.id.popupMenu_settings -> this@TabsListFragment.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                                            data = Uri.parse("package:${this@TabsListFragment.requireContext().packageName}")
-                                                        })
-                                                        else -> handled = false
-                                                    }
-                                                    handled
-                                                }
-                                                setOnClickListener {
-                                                    menu.show()
-                                                }*/
                                             })
                                         })
                                         addView(RelativeLayout(this@TabsListFragment.requireContext()).apply {
-                                            layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, resources.displayMetrics.widthPixels / 3).apply {
+                                            layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT/*resources.displayMetrics.widthPixels / 4*/).apply {
                                                 addRule(RelativeLayout.BELOW, R.id.title)
                                             }
                                             setBackgroundColor(Color.WHITE)
@@ -178,10 +160,10 @@ class TabsListFragment : Fragment() {
         }
         requireActivity().runOnUiThread {
             val ueTile = Tile(appearance.events.title, appearance.events.header, appearance.events) { a -> EventListActivity.start(requireActivity(), a) }
-            val layout = DualRecyclerView.create(requireActivity(), ArrayList<Tile<*>>().apply {
+            val layout = DualRecyclerView.create(requireActivity(), tabs.filter { t -> t.index % 2 == 0 }.map(toTile), ArrayList<Tile<*>>().apply {
                 add(ueTile)
-                addAll(tabs.filterIndexed { i, _ -> i % 2 != 0 }.map(toTile))
-            }, tabs.filterIndexed { i, _ -> i % 2 == 0 }.map(toTile))
+                addAll(tabs.filter { t -> t.index % 2 != 0 }.map(toTile))
+            })
             view!!.root.addView(layout)
             layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
         }
