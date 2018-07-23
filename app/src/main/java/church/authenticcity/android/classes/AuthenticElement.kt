@@ -41,7 +41,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     orientation = LinearLayout.VERTICAL
                     layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                     imageView.setOnClickListener {
-                        ButtonAction.openUrl("https://accams.devgregw.com/meta/storage/${image.imageName}").invoke(context)
+                        image.saveToGallery(context)
                     }
                     addView(imageView)
                     addView(createText(context, "Tap to open.", "left", color = Color.DKGRAY, size = 14f))
