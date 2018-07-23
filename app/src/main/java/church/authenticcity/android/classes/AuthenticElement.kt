@@ -7,13 +7,13 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
+import church.authenticcity.android.views.VideoLinkView
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -49,13 +49,14 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
             return imageView
         }
 
-        fun createVideo(context: Context, videoId: String, provider: String) =
-                WebView(context).apply {
+        fun createVideo(context: Context, provider: String, id: String, thumbnail: String, title: String) =
+                VideoLinkView(context, provider, id, thumbnail, title)
+                /*WebView(context).apply {
                     this.loadUrl(if (provider == "YouTube") "https://www.youtube.com/embed/$videoId" else "https://player.vimeo.com/video/$videoId")
                     layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300f, context.resources.displayMetrics).toInt()).apply { setMargins(0, 0, 0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f, context.resources.displayMetrics).toInt()) }
                     this.settings.javaScriptEnabled = true
                     setBackgroundColor(Color.BLACK)
-                }
+                }*/
 
         fun createTitle(context: Context, text: String, alignment: String, size: Float = 24f, selectable: Boolean = false) = TextView(context).apply {
             textSize = size
@@ -146,7 +147,10 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     put("width", 720)
                     put("height", 1080)
                 })), getProperty("enlargeButton", false))
-                "video" -> createVideo(context, getProperty("videoId", ""), getProperty("provider", ""))
+                "video" -> {
+                    val info = getProperty("videoInfo", HashMap<String, Any>())
+                    createVideo(context, info["provider"] as String, info["id"] as String, info["thumbnail"] as String, info["title"] as String)
+                }
                 "title" -> createTitle(context, getProperty("title", ""), getProperty("alignment", "center"))
                 "text" -> createText(context, getProperty("text", ""), getProperty("alignment", "left"))
                 "button" -> createButton(context, getProperty("_buttonInfo", HashMap()))
