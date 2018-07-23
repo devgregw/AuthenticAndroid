@@ -139,6 +139,13 @@ fun ActionBar.applyTypeface(context: Context, text: String) {
 @Suppress("IMPLICIT_CAST_TO_ANY")
 inline fun <reified T, V, K> HashMap<V, K>.getAs(key: V) = (if (T::class.simpleName == Int::class.simpleName) this[key].toString().toInt() else if (T::class.simpleName == Float::class.simpleName) this[key].toString().toFloat() else this[key]) as T
 
+@Suppress("IMPLICIT_CAST_TO_ANY")
+inline fun <reified T, V, K> HashMap<V, K>.getAs(key: V, default: T) = try {
+    this.getAs<T, V, K>(key)
+} catch (e: Exception) {
+    default
+}
+
 open class SimpleAnimatorListener : Animator.AnimatorListener {
     override fun onAnimationRepeat(animator: Animator?) {
         // nothing
@@ -183,14 +190,16 @@ class Utils {
                 AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), ImageResource(map.getAs("header")), map.getAs("dateTime"), map.getAs("hideEndDate"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
             } catch (e: Exception) {
                 Crashlytics.logException(e)
+                e.printStackTrace()
                 null
             }
 
             fun constructTab(value: Any): AuthenticTab? = try {
                 val map = value as HashMap<String, Any>
-                AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("hideTitle"), map.getAs("hideHeader"), map.getAs("title"), if (map.containsKey("action")) map.getAs<HashMap<String, Any>, String, Any>("action") else null, map.getAs("elements"), map.getAs("visibility"))
+                AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("hideTitle", false), map.getAs("hideHeader"), map.getAs("title"), if (map.containsKey("action")) map.getAs<HashMap<String, Any>, String, Any>("action") else null, if (map.containsKey("elements")) map.getAs<List<HashMap<String, Any>>, String, Any>("elements") else null, map.getAs("visibility"))
             } catch (e: Exception) {
                 Crashlytics.logException(e)
+                e.printStackTrace()
                 null
             }
         }
