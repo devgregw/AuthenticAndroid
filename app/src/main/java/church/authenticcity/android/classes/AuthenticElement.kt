@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
-import church.authenticcity.android.helpers.saveToGallery
 import church.authenticcity.android.views.ThumbnailButtonView
 import java.util.*
 import kotlin.collections.HashMap
