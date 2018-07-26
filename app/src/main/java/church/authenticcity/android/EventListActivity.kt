@@ -73,7 +73,7 @@ class EventListActivity : AppCompatActivity() {
                                 root.addView(AuthenticElement.createText(this@EventListActivity, "There are no upcoming events.", "center", size = 22f))
                             } else {
                                 val recyclerView = RecyclerView(this@EventListActivity)
-                                recyclerView.adapter = TileAdapter(this@EventListActivity, tiles, true)
+                                recyclerView.adapter = TileAdapter(this@EventListActivity, tiles, true, false, 0)
                                 recyclerView.layoutManager = LinearLayoutManager(this@EventListActivity)
                                 root.addView(LinearLayout(this@EventListActivity).apply {
                                     addView(recyclerView)

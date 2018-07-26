@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import church.authenticcity.android.R
+import church.authenticcity.android.classes.AuthenticAppearance
 
 /**
  * Project AuthenticAndroid
@@ -15,18 +16,18 @@ import church.authenticcity.android.R
  */
 class DualRecyclerView {
     companion object {
-        private fun createRecyclerView(activity: Activity, tiles: List<Tile<*>>) = RecyclerView(activity).apply {
+        private fun createRecyclerView(activity: Activity, tiles: List<Tile<*>>, fillColumn: Boolean, height: Int) = RecyclerView(activity).apply {
             isNestedScrollingEnabled = false
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                 weight = 0.5f
             }
             layoutManager = LinearLayoutManager(context)
-            adapter = TileAdapter(activity, tiles, false)
+            adapter = TileAdapter(activity, tiles, false, fillColumn, height)
         }
 
-        fun create(activity: Activity, tiles: List<Tile<*>>) = create(activity, tiles.filterIndexed { i, t -> i % 2 == 0}, tiles.filterIndexed { i, _ -> i % 2 != 0})
+        fun create(activity: Activity, tiles: List<Tile<*>>, appearance: AuthenticAppearance, height: Int) = create(activity, tiles.filterIndexed { i, _ -> i % 2 == 0}, tiles.filterIndexed { i, _ -> i % 2 != 0}, appearance, height)
 
-        fun create(activity: Activity, leftTiles: List<Tile<*>>, rightTiles: List<Tile<*>>) = LinearLayout(activity).apply {
+        fun create(activity: Activity, leftTiles: List<Tile<*>>, rightTiles: List<Tile<*>>, appearance: AuthenticAppearance, height: Int) = LinearLayout(activity).apply {
             weightSum = 1f
             orientation = LinearLayout.HORIZONTAL
             layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
@@ -34,8 +35,8 @@ class DualRecyclerView {
             }
             alpha = 0f
             tag = "recyclerViewHost"
-            addView(createRecyclerView(activity, leftTiles))
-            addView(createRecyclerView(activity, rightTiles))
+            addView(createRecyclerView(activity, leftTiles, appearance.tabs.fillLeft, height))
+            addView(createRecyclerView(activity, rightTiles, appearance.tabs.fillRight, height))
         }
     }
 }

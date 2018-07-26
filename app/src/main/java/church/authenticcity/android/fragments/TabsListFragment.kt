@@ -158,15 +158,17 @@ class TabsListFragment : Fragment() {
         val toTile: (AuthenticTab) -> Tile<AuthenticTab> = { t ->
             Tile(t.title, t.header, t) { tab -> if (tab.action == null) TabActivity.start(requireContext(), tab) else tab.action.invoke(requireContext()) }
         }
-        requireActivity().runOnUiThread {
-            val ueTile = Tile(appearance.events.title, appearance.events.header, appearance.events) { a -> EventListActivity.start(requireActivity(), a) }
-            val layout = DualRecyclerView.create(requireActivity(), tabs.filter { t -> t.index % 2 == 0 }.map(toTile), ArrayList<Tile<*>>().apply {
-                add(ueTile)
-                addAll(tabs.filter { t -> t.index % 2 != 0 }.map(toTile))
-            })
-            view!!.root.addView(layout)
-            layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
-        }
+        view!!.postDelayed({
+            requireActivity().runOnUiThread {
+                val ueTile = Tile(appearance.events.title, appearance.events.header, appearance.events) { a -> EventListActivity.start(requireActivity(), a) }
+                val layout = DualRecyclerView.create(requireActivity(), tabs.filter { t -> t.index % 2 == 0 }.map(toTile), ArrayList<Tile<*>>().apply {
+                    add(ueTile)
+                    addAll(tabs.filter { t -> t.index % 2 != 0 }.map(toTile))
+                }, appearance, requireContext().resources.displayMetrics.heightPixels - view!!.findViewById<View>(R.id.toolbar).height)
+                view!!.root.addView(layout)
+                layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
+            }
+        }, 250L)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
