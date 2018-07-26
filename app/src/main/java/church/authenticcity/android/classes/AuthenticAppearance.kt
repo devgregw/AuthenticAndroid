@@ -14,10 +14,11 @@ class AuthenticAppearance(data: HashMap<String, Any>) {
 
     }
 
-    val events: Events
-
-    init {
-        events = Events(data["events"] as HashMap<String, Any>)
+    class Tabs(data: HashMap<String, Any>) {
+        val fillLeft: Boolean = data["fillLeft"].toString().toBoolean()
+        val fillRight: Boolean = data["fillRight"].toString().toBoolean()
     }
 
+    val events = Events(data["events"] as HashMap<String, Any>)
+    val tabs = Tabs(data["tabs"] as HashMap<String, Any>)
 }
