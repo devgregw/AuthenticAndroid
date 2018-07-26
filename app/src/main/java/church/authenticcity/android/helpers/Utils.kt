@@ -4,15 +4,20 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.Handler
+import android.provider.Settings
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
@@ -40,64 +45,6 @@ import com.google.firebase.storage.FirebaseStorage
 import org.threeten.bp.format.DateTimeFormatter
 import java.io.File
 import java.io.FileOutputStream
-
-fun ImageResource.saveToGallery(context: Context) {
-    /*val uri = MediaStore.Images.Media.insertImage(context.contentResolver, drawingCache, title, description)
-    Utils.makeToast(context, "Image saved to gallery.", Toast.LENGTH_SHORT).show()
-    Log.w("SAVE IMAGE", uri ?: "null")*/
-    val dialog = ProgressDialog(context, R.style.ProgressDialog).apply {
-        setMessage(Utils.makeTypefaceSpan("Downloading image...", Utils.getTitleTypeface(context)))
-        isIndeterminate = true
-    }
-    val handler = Handler(context.mainLooper)
-    dialog.show()
-    Log.i("Save to gallery", "Load url")
-    FirebaseStorage.getInstance().reference.child(imageName).downloadUrl.addOnCompleteListener {
-        Log.i("Save to gallery", "Load image")
-        Glide.with(context).asBitmap().load(it.result.toString()).into(object : SimpleTarget<Bitmap>() {
-            override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
-                Log.i("Save to gallery", "Loaded image")
-                if (resource == null) {
-                    handler.post {
-                        dialog.dismiss()
-                        Utils.makeToast(context, "Unable to save image.", Toast.LENGTH_SHORT).show()
-                    }
-                    return
-                }
-                val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageName.removeRange(imageName.lastIndexOf('.'), imageName.length - 1) + ".png")
-                val stream = FileOutputStream(file)
-                resource.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                stream.close()
-                MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null) { s, uri ->
-                    handler.post {
-                        dialog.dismiss()
-                        Utils.makeToast(context, "Image saved", Toast.LENGTH_SHORT).show()
-                    }
-                    Log.i("Save to gallery", s)
-                    Log.i("Save to gallery", uri.toString())
-                }
-            }
-        })
-    }
-
-
-    /*val bitmap = (this.drawable as BitmapDrawable).bitmap
-    val values = ContentValues().apply {
-        put(MediaStore.Images.Media.TITLE, title)
-        put(MediaStore.Images.Media.DISPLAY_NAME, title)
-        put(MediaStore.Images.Media.DESCRIPTION, description)
-        put(MediaStore.Images.Media.MIME_TYPE, MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl("https://accams.devgregw.com/meta/storage/${res.imageName}")))
-        put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis())
-        put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
-        var url: Uri? = null
-        var urlString: String? = null
-        val cr = context.contentResolver
-        try {
-            url = cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-
-        }
-    }*/
-}
 
 fun String.Companion.isNullOrWhiteSpace(string: String?): Boolean {
     if (string != null) {

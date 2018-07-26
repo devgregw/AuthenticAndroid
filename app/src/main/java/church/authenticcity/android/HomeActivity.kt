@@ -1,12 +1,10 @@
 package church.authenticcity.android
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import church.authenticcity.android.fragments.HomeFragment
 import church.authenticcity.android.fragments.TabsListFragment
@@ -62,9 +60,15 @@ class HomeActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.home_view_pager)
         FirebaseMessagingService.setAction(intent.extras)
         FirebaseMessagingService.invokeNotificationAction(this)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !getSharedPreferences("private", 0).getBoolean("permissionsRequested", false) && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED)
-            requestPermissions(Array(1) { _ -> Manifest.permission.WRITE_CALENDAR }, 100)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !getSharedPreferences("private", 0).getBoolean("permissionsRequested", false))
+            requestPermissions(ArrayList<String>().apply {
+                add(Manifest.permission.READ_CALENDAR)
+                add(Manifest.permission.WRITE_CALENDAR)
+                add(Manifest.permission.READ_EXTERNAL_STORAGE)
+                add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }.toTypedArray(), 100)
         else
             initialize()
     }
 }
+
