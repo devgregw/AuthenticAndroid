@@ -15,7 +15,9 @@ import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.saveToGallery
 import church.authenticcity.android.views.VideoLinkView
+import church.authenticcity.android.views.ThumbnailButtonView
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.math.roundToInt
 
 
@@ -51,7 +53,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
         }
 
         fun createVideo(context: Context, provider: String, id: String, thumbnail: String, title: String) =
-                VideoLinkView(context, provider, id, thumbnail, title)
+                ThumbnailButtonView(context, provider, id, title, thumbnail)
                 /*WebView(context).apply {
                     this.loadUrl(if (provider == "YouTube") "https://www.youtube.com/embed/$videoId" else "https://player.vimeo.com/video/$videoId")
                     layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300f, context.resources.displayMetrics).toInt()).apply { setMargins(0, 0, 0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f, context.resources.displayMetrics).toInt()) }
@@ -123,6 +125,10 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
 
         fun createButton(context: Context, info: HashMap<String, Any>) = createButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String)
 
+        fun createThumbnailButton(context: Context, action: ButtonAction, text: String, resource: ImageResource) = ThumbnailButtonView(context, text, resource, action)
+
+        fun createThumbnailButton(context: Context, info: HashMap<String, Any>, resource: HashMap<String, Any>) = createThumbnailButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String, ImageResource(resource))
+
         fun createSeparator(context: Context, visible: Boolean) =
                 LinearLayout(context).apply {
                     visibility = if (visible) View.VISIBLE else View.INVISIBLE
@@ -139,7 +145,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
     val type: String = map["type"] as String
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getProperty(key: String, default: T) = if (map.containsKey(key)) map[key] as T else default
+    fun <T> getProperty(key: String, default: T) = if (map.containsKey(key)) map[key] as T else default
 
     fun toView(context: Context) =
             when (type) {

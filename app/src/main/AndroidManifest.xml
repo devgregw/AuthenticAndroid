@@ -57,6 +57,9 @@
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".VideoActivity"
+            android:configChanges="screenSize|orientation" />
     </application>
 
 </manifest>
