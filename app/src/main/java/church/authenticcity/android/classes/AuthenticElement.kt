@@ -14,7 +14,6 @@ import android.widget.TextView
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.saveToGallery
-import church.authenticcity.android.views.VideoLinkView
 import church.authenticcity.android.views.ThumbnailButtonView
 import java.util.*
 import kotlin.collections.HashMap
@@ -161,6 +160,11 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                 "title" -> createTitle(context, getProperty("title", ""), getProperty("alignment", "center"))
                 "text" -> createText(context, getProperty("text", ""), getProperty("alignment", "left"))
                 "button" -> createButton(context, getProperty("_buttonInfo", HashMap()))
+                "thumbnailButton" -> createThumbnailButton(context, getProperty("_buttonInfo", HashMap()), getProperty("thumbnail", HashMap<String, Any>().apply {
+                    put("name", "unknown.png")
+                    put("width", 720)
+                    put("height", 1080)
+                }))
                 "separator" -> createSeparator(context, getProperty("visible", true))
                 else -> createText(context, String.format("Invalid element type: %s; ID: %s; parent: %s", type, this@AuthenticElement.id, this@AuthenticElement.parent), "left", Color.RED)
             }
