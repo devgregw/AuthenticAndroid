@@ -2,6 +2,7 @@ package church.authenticcity.android.views
 
 import android.content.Context
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.RelativeLayout
@@ -14,6 +15,7 @@ import com.android.volley.toolbox.Volley
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import kotlinx.android.synthetic.main.view_livestream.view.*
+import kotlin.math.roundToInt
 
 /**
  * Project AuthenticAndroid
@@ -25,7 +27,7 @@ class LivestreamView {
         fun create(context: Context, viewGroup: ViewGroup): RelativeLayout {
             val view = LayoutInflater.from(context).inflate(R.layout.view_livestream, viewGroup, false) as RelativeLayout
             view.apply {
-                layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT/*context.resources.displayMetrics.widthPixels / 4*/).apply { addRule(RelativeLayout.BELOW, R.id.title) }
+                layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60f, context.resources.displayMetrics).roundToInt()/*context.resources.displayMetrics.widthPixels / 4*/).apply { addRule(RelativeLayout.BELOW, R.id.title) }
             }
             view.livestream_progress.animate().setStartDelay(0L).alpha(1f).duration = 250L
             view.livestream_textView.typeface = Utils.getTitleTypeface(context)
