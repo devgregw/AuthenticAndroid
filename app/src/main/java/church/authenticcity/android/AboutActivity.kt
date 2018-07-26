@@ -10,7 +10,6 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.TypedValue
-import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.*
@@ -22,23 +21,13 @@ import church.authenticcity.android.helpers.applyTypeface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlin.math.roundToInt
 
 class AboutActivity : AppCompatActivity() {
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_about, menu)
-        return true
-    }
-
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         return when (item!!.itemId) {
-            R.id.action_launchAms -> {
-                ButtonAction.openUrl("https://accams.devgregw.com").invoke(this)
-                true
-            }
             android.R.id.home -> {
                 finish()
                 true
@@ -95,22 +84,6 @@ class AboutActivity : AppCompatActivity() {
                 }
             })
             addView(AuthenticElement.createSeparator(this@AboutActivity, true))
-            addView(AuthenticElement.createText(this@AboutActivity, "FOR ALL TO LOVE GOD, LOVE PEOPLE, AND IMPACT THE KINGDOM.", "center", size = 33f))
-            addView(AuthenticElement.createSeparator(this@AboutActivity, true))
-            addView(AuthenticElement.createTitle(this@AboutActivity, "CONNECT WITH US", "center"))
-            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.authenticcity.church"), "Visit Our Website"))
-            addView(AuthenticElement.createSeparator(this@AboutActivity, false))
-            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.authenticcity.church/next/"), "Take the Next Step"))
-            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.authenticcity.church/new-products/"), "Merchandise"))
-            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.authenticcity.church/give/"), "Give"))
-            addView(AuthenticElement.createSeparator(this@AboutActivity, false))
-            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.instagram.com/authentic_city_church/"), "Instagram"))
-            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.facebook.com/AuthenticCityChurch/"), "Facebook"))
-            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://twitter.com/AuthenticCity_"), "Twitter"))
-            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://www.youtube.com/channel/UCxrYck_z50n5It7ifj1LCjA"), "YouTube"))
-            addView(AuthenticElement.createSeparator(this@AboutActivity, true))
-            addView(AuthenticElement.createText(this@AboutActivity, "Designed and developed by Greg Whatley for Authentic City Church", "center"))
-            addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://devgregw.com"), "Visit My Website"))
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://github.com/devgregw/AuthenticAndroid"), "GitHub Repository"))
             addView(AuthenticElement.createButton(this@AboutActivity, ButtonAction.openUrl("https://trello.com/b/QUgekVh6"), "Trello Roadmap"))
             addView(AuthenticElement.createSeparator(this@AboutActivity, true))
@@ -129,8 +102,6 @@ class AboutActivity : AppCompatActivity() {
                     setMargins(px, 0, px, 0)
                 }
             })
-            addView(AuthenticElement.createSeparator(this@AboutActivity, false))
-            addView(AuthenticElement.createText(this@AboutActivity, FirebaseInstanceId.getInstance().token ?: "Unknown", "left", Color.GRAY, 16f, true))
             addView(AuthenticElement.createSeparator(this@AboutActivity, false))
         }
     }
