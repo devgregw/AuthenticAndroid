@@ -7,6 +7,8 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.view.View
@@ -17,6 +19,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.AuthenticTab
+import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.helpers.applyTypeface
@@ -24,6 +27,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import java.util.*
 
 class TabActivity : AppCompatActivity() {
     companion object {
@@ -78,8 +82,10 @@ class TabActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var tab: AuthenticTab
+
     private fun initialize() {
-        val tab = Utils.Temp.getTab(intent.getStringExtra("id"))!!
+        tab = Utils.Temp.getTab(intent.getStringExtra("id"))!!
         this.title = tab.title
         supportActionBar?.applyTypeface(this, tab.title)
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -89,6 +95,10 @@ class TabActivity : AppCompatActivity() {
             text = tab.title
         }
         if (tab.hideHeader) findViewById<ImageView>(R.id.image).visibility = View.GONE else Utils.loadFirebaseImage(this, tab.header.imageName, findViewById(R.id.image))
+        if (tab.specialType != null) {
+            initialize(tab.specialType!!)
+            return
+        }
         if (tab.elementCount > 0)
             setContent(tab.convertedElements.map { it.toView(this@TabActivity) })
         else
@@ -101,6 +111,54 @@ class TabActivity : AppCompatActivity() {
                     layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply { addRule(RelativeLayout.CENTER_IN_PARENT) }
                 })
             })
+    }
+
+    private class WallpaperViewHolder(private val context: Context) : RecyclerView.ViewHolder(ImageView(context).apply {
+        scaleType = ImageView.ScaleType.CENTER_CROP
+        val size = context.resources.displayMetrics.widthPixels / 2
+        layoutParams = RecyclerView.LayoutParams(size, size)
+    }) {
+        private val rand = Random().nextInt(256)
+
+        fun initialize(resource: ImageResource) {
+            itemView.setBackgroundColor(Color.argb(255, rand, rand, rand))
+            Utils.loadFirebaseImage(context, resource.imageName, itemView as ImageView)
+            itemView.setOnClickListener {
+                val img = ImageView(context).apply {
+                    scaleType = ImageView.ScaleType.CENTER_INSIDE
+                    Utils.loadFirebaseImage(this@WallpaperViewHolder.context, resource.imageName, this, { d -> this.setImageDrawable(d) })
+                }
+                AlertDialog.Builder(context).setCancelable(true).setTitle("Preview").setPositiveButton("Save") { _, _ ->
+                    resource.saveToGallery(context)
+                }.setNeutralButton("Back", null).setView(img).create().applyColorsAndTypefaces().show()
+                //Utils.makeToast(context, resource.imageName, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun initialize(specialType: String) {
+        when (specialType) {
+            "wallpapers" -> {
+                val recyclerView = RecyclerView(this)
+                recyclerView.isNestedScrollingEnabled = false
+                recyclerView.layoutManager = GridLayoutManager(this, 2)
+                recyclerView.adapter = object : RecyclerView.Adapter<WallpaperViewHolder>() {
+                    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WallpaperViewHolder = WallpaperViewHolder(this@TabActivity)
+
+                    override fun getItemCount(): Int = tab.elementCount
+
+                    override fun onBindViewHolder(holder: WallpaperViewHolder, position: Int) {
+                        val element = tab.convertedElements[position]
+                        holder.initialize(ImageResource(element.getProperty("image", HashMap<String, Any>().apply {
+                            put("name", "unknown.png")
+                            put("width", 720)
+                            put("height", 1080)
+                        })))
+                    }
+                }
+                setContent(recyclerView)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
