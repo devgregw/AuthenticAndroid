@@ -1,12 +1,12 @@
 package church.authenticcity.android
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.TypedValue
@@ -16,11 +16,11 @@ import android.widget.*
 import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.helpers.Utils
-import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.helpers.applyTypeface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlin.math.roundToInt
 
@@ -55,16 +55,6 @@ class AboutActivity : AppCompatActivity() {
         findViewById<LinearLayout>(R.id.content_list).apply {
             val image = ImageView(this@AboutActivity)
             Glide.with(context).load(R.drawable.banner).transition(DrawableTransitionOptions.withCrossFade()).into(image)
-            image.setOnLongClickListener {
-                AlertDialog.Builder(this@AboutActivity).setTitle("Development Notifications").setMessage("Development notifications are for internal testing use only.  Interacting with them may cause instability.\n\n/topics/dev").setPositiveButton("Subscribe") { _, _ ->
-                    FirebaseMessaging.getInstance().subscribeToTopic("dev")
-                    Utils.makeToast(this@AboutActivity, "Subscribed to /topics/dev", Toast.LENGTH_SHORT).show()
-                }.setNegativeButton("Unsubscribe") { _, _ ->
-                    FirebaseMessaging.getInstance().unsubscribeFromTopic("dev")
-                    Utils.makeToast(this@AboutActivity, "Unsubscribed from /topics/dev", Toast.LENGTH_SHORT).show()
-                }.create().applyColorsAndTypefaces().show()
-                true
-            }
             addView(image)
             addView(AuthenticElement.createTitle(this@AboutActivity, "AUTHENTIC CITY CHURCH", "center"))
             addView(AuthenticElement.createText(this@AboutActivity, "Version ${BuildConfig.VERSION_NAME} build ${BuildConfig.VERSION_CODE} for Android devices", "center"))
@@ -92,6 +82,7 @@ class AboutActivity : AppCompatActivity() {
             OssLicensesMenuActivity.setActivityTitle("Licenses")
             addView(Button(context).apply {
                 this.text = "Licenses"
+                textSize = 18f
                 val dimen = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, context.resources.displayMetrics).roundToInt()
                 setPadding(dimen, dimen, dimen, dimen)
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
@@ -102,6 +93,28 @@ class AboutActivity : AppCompatActivity() {
                     setMargins(px, 0, px, 0)
                 }
             })
+            addView(AuthenticElement.createSeparator(this@AboutActivity, false))
+            addView(CheckBox(this@AboutActivity).apply {
+                layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                    val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16f, context.resources.displayMetrics).toInt()
+                    setMargins(px, 0, px, 0)
+                }
+                text = Utils.makeTypefaceSpan("Development notifications", Utils.getTextTypeface(this@AboutActivity))
+                textSize = 18f
+                setTextColor(Color.BLACK)
+                isChecked = this@AboutActivity.getSharedPreferences("private", 0).getBoolean("devNotifications", false)
+                buttonTintList = ColorStateList.valueOf(Color.BLACK)
+                setOnCheckedChangeListener { _, b ->
+                    this@AboutActivity.getSharedPreferences("private", 0).edit().putBoolean("devNotifications", b).apply()
+                    if (b)
+                        FirebaseMessaging.getInstance().subscribeToTopic("dev")
+                    else
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic("dev")
+                }
+            })
+            addView(AuthenticElement.createText(this@AboutActivity, "Development notifications are for internal testing use only.", "left", Color.DKGRAY, 14f))
+            if (this@AboutActivity.getSharedPreferences("private", 0).getBoolean("devNotifications", false))
+                addView(AuthenticElement.createText(this@AboutActivity, FirebaseInstanceId.getInstance().token ?: "<unavailable>", "left", Color.DKGRAY, 14f, selectable = true))
             addView(AuthenticElement.createSeparator(this@AboutActivity, false))
         }
     }
