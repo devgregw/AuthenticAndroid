@@ -9,7 +9,6 @@
             android:indeterminate="true"
             android:indeterminateTint="@android:color/black"
             android:layout_centerInParent="true"
-            android:alpha="0"
             android:id="@+id/livestream_progress"
             />
         <TextView
@@ -17,11 +16,42 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:padding="8dp"
-            android:id="@+id/livestream_textView"
+            android:id="@+id/livestream_watch"
+            android:text="WATCH LIVE ON YOUTUBE"
             android:textSize="26sp"
             android:textColor="@android:color/black"
             android:letterSpacing="0.1"
             android:gravity="center"
             android:layout_centerInParent="true"
             android:alpha="0"/>
+
+    <LinearLayout
+        android:id="@+id/livestream_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:alpha="0"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/livestream_sundays"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:letterSpacing="0.1"
+            android:text="SUNDAYS"
+            android:textColor="@android:color/black"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/livestream_services"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            android:letterSpacing="0.1"
+            android:text="THE 5PM | THE 7PM"
+            android:textColor="@android:color/black"
+            android:textSize="22sp" />
+    </LinearLayout>
     </RelativeLayout>

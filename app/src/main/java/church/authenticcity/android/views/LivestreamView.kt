@@ -2,12 +2,11 @@ package church.authenticcity.android.views
 
 import android.content.Context
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import church.authenticcity.android.R
-import church.authenticcity.android.classes.ButtonAction
+import church.authenticcity.android.VideoActivity
 import church.authenticcity.android.helpers.Utils
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
@@ -15,7 +14,6 @@ import com.android.volley.toolbox.Volley
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import kotlinx.android.synthetic.main.view_livestream.view.*
-import kotlin.math.roundToInt
 
 /**
  * Project AuthenticAndroid
@@ -24,17 +22,21 @@ import kotlin.math.roundToInt
  */
 class LivestreamView {
     companion object {
+        const val height = 80
+
         fun create(context: Context, viewGroup: ViewGroup): RelativeLayout {
             val view = LayoutInflater.from(context).inflate(R.layout.view_livestream, viewGroup, false) as RelativeLayout
             view.apply {
-                layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60f, context.resources.displayMetrics).roundToInt()/*context.resources.displayMetrics.widthPixels / 4*/).apply { addRule(RelativeLayout.BELOW, R.id.title) }
+                layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT/*context.resources.displayMetrics.widthPixels / 4*/).apply { addRule(RelativeLayout.BELOW, R.id.title) }
             }
             view.livestream_progress.animate().setStartDelay(0L).alpha(1f).duration = 250L
-            view.livestream_textView.typeface = Utils.getTitleTypeface(context)
+            view.livestream_watch.typeface = Utils.getTitleTypeface(context)
+            view.livestream_sundays.typeface = Utils.getTitleTypeface(context)
+            view.livestream_services.typeface = Utils.getTitleTypeface(context)
             val setText: (Boolean) -> Unit = { isLive ->
-                view.livestream_textView.text = if (isLive) "WATCH LIVE ON YOUTUBE" else "SUNDAY AT 6:30 PM"
                 view.livestream_progress.animate().setStartDelay(0L).alpha(0f).duration = 250L
-                view.livestream_textView.animate().setStartDelay(250L).alpha(1f).duration = 250L
+                view.livestream_watch.animate().setStartDelay(250L).alpha(if (isLive) 1f else 0f).duration = 250L
+                view.livestream_text.animate().setStartDelay(250L).alpha(if (isLive) 0f else 1f).duration = 250L
             }
             val queue = Volley.newRequestQueue(context)
             //authentic: UCxrYck_z50n5It7ifj1LCjA
@@ -48,9 +50,10 @@ class LivestreamView {
                     setText(false)
                 } else {
                     val result = items[0]
-                    val videoId = result.obj("id")!!.string("videoId")
+                    val videoId = result.obj("id")!!.string("videoId")!!
                     view.setOnClickListener {
-                        ButtonAction.openUrl("https://youtube.com/watch?v=$videoId").invoke(context)
+                        VideoActivity.start(context, "YouTube", videoId, "LIVESTREAM")
+                        //ButtonAction.openUrl("https://youtube.com/watch?v=$videoId").invoke(context)
                     }
                     setText(true)
                 }

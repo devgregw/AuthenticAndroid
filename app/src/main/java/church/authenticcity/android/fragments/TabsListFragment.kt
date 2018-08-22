@@ -130,7 +130,7 @@ class TabsListFragment : Fragment() {
                                             })
                                         })
                                         addView(RelativeLayout(this@TabsListFragment.requireContext()).apply {
-                                            layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT/*resources.displayMetrics.widthPixels / 4*/).apply {
+                                            layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, LivestreamView.height.toFloat(), resources.displayMetrics).roundToInt()/*resources.displayMetrics.widthPixels / 4*/).apply {
                                                 addRule(RelativeLayout.BELOW, R.id.title)
                                             }
                                             setBackgroundColor(Color.WHITE)
