@@ -29,17 +29,10 @@ class VideoActivity : AppCompatActivity() {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_video)
-        Utils.makeToast(this, "Swipe down from the top of the screen and press the back button to go exit.", Toast.LENGTH_LONG).apply {
+        Utils.makeToast(this, "Swipe down from the top of the screen and press the back button to exit.", Toast.LENGTH_LONG).apply {
             setGravity(Gravity.CENTER, 0, 0)
             show()
         }
-        /*findViewById<Toolbar>(R.id.toolbar).apply {
-            this@VideoActivity.setSupportActionBar(this)
-            setBackgroundColor(Color.parseColor("#212121"))
-        }
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_white_36dp)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.applyTypeface(this, intent.getStringExtra("title"))*/
         Handler().postDelayed({
             video_webview.apply {
                 val provider = this@VideoActivity.intent.getStringExtra("provider")
