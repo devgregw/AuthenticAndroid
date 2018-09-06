@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.AuthenticEvent
+import church.authenticcity.android.classes.AuthenticEventPlaceholder
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
@@ -50,7 +51,7 @@ class EventActivity : AppCompatActivity() {
                         AlertDialog.Builder(context).setTitle("Error").setCancelable(false).setMessage("We were unable to open the event details because the event does not exist.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
                         return
                     }
-                    start(context, p0.getValue(AuthenticEvent::class.java)!!)
+                    start(context, Utils.Constructors.constructEvent(p0.value!!)!!)
                 }
             })
         }
@@ -72,6 +73,10 @@ class EventActivity : AppCompatActivity() {
             text = event.title
         }
         findViewById<LinearLayout>(R.id.content_list).apply {
+            if (event is AuthenticEventPlaceholder) {
+                event.convertedElements.forEach { e -> addView(e.toView(this@EventActivity)) }
+                return
+            }
             addView(AuthenticElement.createImage(this@EventActivity, event.header, false))
             addView(AuthenticElement.createTitle(this@EventActivity, event.title, "center", size = 32f)/*.apply {
                 layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
