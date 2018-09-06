@@ -15,6 +15,8 @@ import android.widget.TextView
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.views.ThumbnailButtonView
+import church.authenticcity.android.views.recyclerView.Tile
+import church.authenticcity.android.views.recyclerView.TileViewHolder
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.roundToInt
@@ -128,6 +130,16 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
 
         fun createThumbnailButton(context: Context, info: HashMap<String, Any>, resource: HashMap<String, Any>) = createThumbnailButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String, ImageResource(resource))
 
+        fun createTile(context: Context, title: String, action: ButtonAction, resource: ImageResource): View {
+            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150f, context.resources.displayMetrics).roundToInt()
+            val viewGroup = LinearLayout(context).apply { layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height) }
+            val viewHolder = TileViewHolder(context, false, height, viewGroup)
+            viewHolder.initialize(Tile(title, false, resource, action) { a -> a.invoke(context) })
+            return viewHolder.itemView
+        }
+
+        fun createTile(context: Context, title: String, action: HashMap<String, Any>, resource: HashMap<String, Any>) = createTile(context, title, ButtonAction(action), ImageResource(resource))
+
         fun createSeparator(context: Context, visible: Boolean) =
                 LinearLayout(context).apply {
                     visibility = if (visible) View.VISIBLE else View.INVISIBLE
@@ -174,6 +186,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     put("width", 720)
                     put("height", 1080)
                 }))
+                "tile" -> createTile(context, getProperty("title", ""), getProperty("action", HashMap()), getProperty("header", HashMap<String, Any>()))
                 "separator" -> createSeparator(context, getProperty("visible", true))
                 "html" -> createHtmlReader(context, getProperty("html", "<p></p>"))
                 else -> createText(context, String.format("Invalid element type: %s; ID: %s; parent: %s", type, this@AuthenticElement.id, this@AuthenticElement.parent), "left", Color.RED)
