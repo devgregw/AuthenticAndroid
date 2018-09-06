@@ -156,11 +156,11 @@ class TabsListFragment : Fragment() {
 
     private fun initializeAdapter(tabs: List<AuthenticTab>, appearance: AuthenticAppearance) {
         val toTile: (AuthenticTab) -> Tile<AuthenticTab> = { t ->
-            Tile(t.title, t.header, t) { tab -> if (tab.action == null) TabActivity.start(requireContext(), tab) else tab.action.invoke(requireContext()) }
+            Tile(t.title, false, t.header, t) { tab -> if (tab.action == null) TabActivity.start(requireContext(), tab) else tab.action.invoke(requireContext()) }
         }
         view!!.postDelayed({
             requireActivity().runOnUiThread {
-                val ueTile = Tile(appearance.events.title, appearance.events.header, appearance.events) { a -> EventListActivity.start(requireActivity(), a) }
+                val ueTile = Tile(appearance.events.title, false, appearance.events.header, appearance.events) { a -> EventListActivity.start(requireActivity(), a) }
                 val layout = DualRecyclerView.create(requireActivity(), tabs.filter { t -> t.index % 2 == 0 }.map(toTile), ArrayList<Tile<*>>().apply {
                     add(ueTile)
                     addAll(tabs.filter { t -> t.index % 2 != 0 }.map(toTile))
