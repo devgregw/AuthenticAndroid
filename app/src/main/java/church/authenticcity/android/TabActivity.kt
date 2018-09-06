@@ -56,7 +56,7 @@ class TabActivity : AppCompatActivity() {
                         AlertDialog.Builder(context).setTitle("Error").setCancelable(false).setMessage("We were unable to open the page because it does not exist.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
                         return
                     }
-                    start(context, p0.getValue(AuthenticTab::class.java)!!)
+                    start(context, Utils.Constructors.constructTab(p0.value!!)!!)
                 }
             })
         }
