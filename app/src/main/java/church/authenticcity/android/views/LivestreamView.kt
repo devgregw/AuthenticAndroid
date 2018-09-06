@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import church.authenticcity.android.R
-import church.authenticcity.android.VideoActivity
+import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.helpers.Utils
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
@@ -52,8 +52,8 @@ class LivestreamView {
                     val result = items[0]
                     val videoId = result.obj("id")!!.string("videoId")!!
                     view.setOnClickListener {
-                        VideoActivity.start(context, "YouTube", videoId, "LIVESTREAM")
-                        //ButtonAction.openUrl("https://youtube.com/watch?v=$videoId").invoke(context)
+                        //VideoActivity.start(context, "YouTube", videoId, "LIVESTREAM")
+                        ButtonAction.openUrl("https://youtube.com/watch?v=$videoId").invoke(context)
                     }
                     setText(true)
                 }
