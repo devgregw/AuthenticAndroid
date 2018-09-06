@@ -94,7 +94,7 @@ class TabActivity : AppCompatActivity() {
             typeface = Utils.getTitleTypeface(this@TabActivity)
             text = tab.title
         }
-        if (tab.hideHeader) findViewById<ImageView>(R.id.image).visibility = View.GONE else Utils.loadFirebaseImage(this, tab.header.imageName, findViewById(R.id.image))
+        findViewById<ImageView>(R.id.image).visibility = View.GONE
         if (tab.specialType != null) {
             initialize(tab.specialType!!)
             return
