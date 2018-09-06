@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:letterSpacing="0.1"
-            android:text="SUNDAYS"
+            android:text="SUNDAY NIGHT"
             android:textColor="@android:color/black"
             android:textSize="30sp" />
 
