@@ -2,28 +2,17 @@ package church.authenticcity.android.helpers
 
 import android.animation.Animator
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.media.MediaScannerConnection
-import android.net.Uri
 import android.os.Build
-import android.os.Environment
-import android.os.Handler
-import android.provider.Settings
-import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.text.Spannable
 import android.text.SpannableString
-import android.util.Log
 import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.*
@@ -38,14 +27,10 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.storage.FirebaseStorage
 import org.threeten.bp.format.DateTimeFormatter
-import java.io.File
-import java.io.FileOutputStream
 
 fun String.Companion.isNullOrWhiteSpace(string: String?): Boolean {
     if (string != null) {
