@@ -7,6 +7,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -136,6 +137,15 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                         setMargins(px, px, px, px)
                     }
                 }
+
+        fun createHtmlReader(context: Context, htmlString: String): WebView {
+            val webView = WebView(context)
+            webView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val html = "<!DOCTYPE html><html><head><style type=\"text/css\">@font-face {\nfont-family: Proxima;\nsrc: url(\"file:///android_asset/fonts/proxima_nova.ttf\");\n}\nbody {\nfont-family: Proxima; \n}</style></head><body>$htmlString</body></html>"
+            webView.loadDataWithBaseURL("", html, "text/html", "utf-8", null)
+            webView.settings.defaultFontSize = 20
+            return webView
+        }
     }
 
     val id: String = map["id"] as String
@@ -165,6 +175,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     put("height", 1080)
                 }))
                 "separator" -> createSeparator(context, getProperty("visible", true))
+                "html" -> createHtmlReader(context, getProperty("html", "<p></p>"))
                 else -> createText(context, String.format("Invalid element type: %s; ID: %s; parent: %s", type, this@AuthenticElement.id, this@AuthenticElement.parent), "left", Color.RED)
             }
 }
