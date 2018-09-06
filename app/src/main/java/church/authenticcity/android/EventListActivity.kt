@@ -123,7 +123,7 @@ class EventListActivity : AppCompatActivity() {
             typeface = Utils.getTitleTypeface(this@EventListActivity)
             text = title as String
         }
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_down_white_36dp)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_keyboard_arrow_left_white_36dp)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         Handler().postDelayed({
             runOnUiThread {
