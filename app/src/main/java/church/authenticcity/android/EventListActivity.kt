@@ -37,7 +37,7 @@ class EventListActivity : AppCompatActivity() {
     companion object {
         fun start(parentActivity: Activity, appearance: AuthenticAppearance.Events) {
             parentActivity.startActivity(Intent(parentActivity, EventListActivity::class.java).apply { putExtra("title", appearance.title) })
-            parentActivity.overridePendingTransition(R.anim.slide_up, R.anim.empty)
+            //parentActivity.overridePendingTransition(R.anim.slide_up, R.anim.empty)
         }
     }
 
@@ -104,7 +104,7 @@ class EventListActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         finish()
-        overridePendingTransition(R.anim.empty, R.anim.slide_down)
+        //overridePendingTransition(R.anim.empty, R.anim.slide_down)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
