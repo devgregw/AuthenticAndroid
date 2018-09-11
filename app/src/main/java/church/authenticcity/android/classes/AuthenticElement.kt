@@ -131,7 +131,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
         fun createThumbnailButton(context: Context, info: HashMap<String, Any>, resource: HashMap<String, Any>) = createThumbnailButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String, ImageResource(resource))
 
         fun createTile(context: Context, title: String, action: ButtonAction, resource: ImageResource): View {
-            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150f, context.resources.displayMetrics).roundToInt()
+            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200f, context.resources.displayMetrics).roundToInt()
             val viewGroup = LinearLayout(context).apply { layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height) }
             val viewHolder = TileViewHolder(context, false, height, viewGroup)
             viewHolder.initialize(Tile(title, false, resource, action) { a -> a.invoke(context) })
