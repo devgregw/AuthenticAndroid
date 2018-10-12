@@ -57,6 +57,20 @@ class ButtonAction(private val map: HashMap<String, Any>) {
                         else -> context.startActivity(Intent.createChooser(intent, "Choose an app to open this"))
                     }
                 }
+                "OpenYouTubeAction" -> {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(get<String>("youtubeUri")))
+                    when (context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).count()) {
+                        0 -> context.startActivity(Intent.createChooser(Intent(Intent.ACTION_VIEW, Uri.parse(get<String>("watchUrl"))), "Choose an app to open this"))
+                        else -> context.startActivity(intent)
+                    }
+                }
+                "OpenSpotifyAction" -> {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(get<String>("spotifyUri")))
+                    when (context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).count()) {
+                        0 -> context.startActivity(Intent.createChooser(Intent(Intent.ACTION_VIEW, Uri.parse(get<String>("spotifyUrl"))), "Choose an app to open this"))
+                        else -> context.startActivity(intent)
+                    }
+                }
                 "ShowMapAction" -> context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=" + Uri.encode(get<String>("address")))).apply { `package` = "com.google.android.apps.maps" })
                 "GetDirectionsAction" -> context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + Uri.encode(get<String>("address")))).apply { `package` = "com.google.android.apps.maps" })
                 "EmailAction" -> context.startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + get<String>("emailAddress"))))
