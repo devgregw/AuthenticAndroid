@@ -20,7 +20,7 @@ class AuthenticTab(val header: ImageResource, val id: String, val index: Int, va
             if (elements == null)
                 _elements = ArrayList()
             else if (_elements.count() == 0)
-                _elements = elements.filterNotNull().map { AuthenticElement(it) }
+                _elements = elements.asSequence().filterNotNull().map { AuthenticElement(it) }.toList()
             return _elements
         }
 
