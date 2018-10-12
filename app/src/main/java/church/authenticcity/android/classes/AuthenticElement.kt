@@ -130,15 +130,22 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
 
         fun createThumbnailButton(context: Context, info: HashMap<String, Any>, resource: HashMap<String, Any>) = createThumbnailButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String, ImageResource(resource))
 
-        fun createTile(context: Context, title: String, action: ButtonAction, resource: ImageResource): View {
-            val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200f, context.resources.displayMetrics).roundToInt()
+        fun createTile(context: Context, title: String, height: Int, action: ButtonAction, resource: ImageResource): View {
+            val h = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height.toFloat(), context.resources.displayMetrics).roundToInt()
             val viewGroup = LinearLayout(context).apply { layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height) }
-            val viewHolder = TileViewHolder(context, false, height, viewGroup)
+            val viewHolder = TileViewHolder(context, false, h, viewGroup, false)
             viewHolder.initialize(Tile(title, false, resource, action) { a -> a.invoke(context) })
-            return viewHolder.itemView
+            return LinearLayout(context).apply {
+                orientation = LinearLayout.VERTICAL
+                addView(viewHolder.itemView)
+                addView(View(context).apply {
+                    setBackgroundColor(Color.WHITE)
+                    layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f, context.resources.displayMetrics).roundToInt())
+                })
+            }
         }
 
-        fun createTile(context: Context, title: String, action: HashMap<String, Any>, resource: HashMap<String, Any>) = createTile(context, title, ButtonAction(action), ImageResource(resource))
+        fun createTile(context: Context, title: String, height: Int, action: HashMap<String, Any>, resource: HashMap<String, Any>) = createTile(context, title, height, ButtonAction(action), ImageResource(resource))
 
         fun createSeparator(context: Context, visible: Boolean) =
                 LinearLayout(context).apply {

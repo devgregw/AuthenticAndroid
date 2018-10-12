@@ -23,10 +23,12 @@ import kotlin.math.roundToInt
  * Created by Greg Whatley on 6/8/2018 at 8:27 PM.
  * Licensed under the MIT License.
  */
-class TileViewHolder(private val context: Context, private val fullWidth: Boolean, private val height: Int?, viewGroup: ViewGroup) : RecyclerView.ViewHolder(LayoutInflater.from(context).inflate(R.layout.view_tile, viewGroup, false)) {
+class TileViewHolder(private val context: Context, private val fullWidth: Boolean, private val height: Int?, viewGroup: ViewGroup, backgroundColor: Boolean = true) : RecyclerView.ViewHolder(LayoutInflater.from(context).inflate(R.layout.view_tile, viewGroup, false)) {
     init {
-        val rand = Random().nextInt(256)
-        itemView.setBackgroundColor(Color.argb(255, rand, rand, rand))
+        if (backgroundColor) {
+            val rand = Random().nextInt(256)
+            itemView.setBackgroundColor(Color.argb(255, rand, rand, rand))
+        }
     }
 
     private val logging = false
@@ -56,7 +58,8 @@ class TileViewHolder(private val context: Context, private val fullWidth: Boolea
         setHeight(tile.header)
         Utils.loadFirebaseImage(context, tile.header.imageName, itemView.tile_image)
         if (Utils.checkSdk(23))
-        itemView.foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
+            itemView.foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
+        itemView.tile_image.imageTintList = if (tile.hideTitle || tile.title == "") ColorStateList.valueOf(Color.TRANSPARENT) else ColorStateList.valueOf(Color.argb(128, 0, 0, 0))
         itemView.tile_title.text = tile.title
         itemView.tile_title.visibility = if (tile.hideTitle) View.INVISIBLE else View.VISIBLE
         itemView.tile_title.typeface = Utils.getTitleTypeface(context, true)
