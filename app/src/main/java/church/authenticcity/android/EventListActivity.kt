@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -68,14 +69,22 @@ class EventListActivity : AppCompatActivity() {
                             return
                         }
                         runOnUiThread {
+                            val createHandler: (AuthenticEventPlaceholder) -> ((e: AuthenticEventPlaceholder) -> Unit) = {
+                                when {
+                                    it.action != null -> { e -> e.action!!.invoke(this@EventListActivity) }
+                                    it.canOpen -> { e -> EventActivity.start(this@EventListActivity, e) }
+                                    else -> { _ -> }
+                                }
+                            }
                             val constructed = p0.children.map { Utils.Constructors.constructEvent(it.value!!) }.filter { it != null }.map { it!! }
-                            val tiles = constructed.filter { it is AuthenticEventPlaceholder }.map { it as AuthenticEventPlaceholder }.sortedBy { it.index }.map { Tile(it.title, it.hideTitle, it.header, it) { e -> EventActivity.start(this@EventListActivity, e) } } + constructed.filter { it !is AuthenticEventPlaceholder }.filter { !it.getShouldBeHidden() }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.hideTitle, it.header, it) { e -> EventActivity.start(this@EventListActivity, e) } }
+                            val tiles = constructed.filter { it is AuthenticEventPlaceholder }.map { it as AuthenticEventPlaceholder }.sortedBy { it.index }.map { Tile(it.title, it.hideTitle, it.header, it, createHandler(it)) } + constructed.filter { it !is AuthenticEventPlaceholder }.filter { !it.getShouldBeHidden() }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.hideTitle, it.header, it) { e -> EventActivity.start(this@EventListActivity, e) } }
                             if (tiles.isEmpty()) {
                                 root.addView(AuthenticElement.createText(this@EventListActivity, "There are no upcoming events.", "center", size = 22f))
                             } else {
                                 val recyclerView = RecyclerView(this@EventListActivity)
                                 recyclerView.adapter = TileAdapter(this@EventListActivity, tiles, true, false, 0)
                                 recyclerView.layoutManager = LinearLayoutManager(this@EventListActivity)
+                                recyclerView.addItemDecoration(DividerItemDecoration(this@EventListActivity, (recyclerView.layoutManager as LinearLayoutManager).orientation))
                                 root.addView(LinearLayout(this@EventListActivity).apply {
                                     addView(recyclerView)
                                     tag = "recyclerViewHost"

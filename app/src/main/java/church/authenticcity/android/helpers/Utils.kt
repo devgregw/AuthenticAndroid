@@ -18,10 +18,7 @@ import android.view.ViewGroup
 import android.widget.*
 import church.authenticcity.android.BuildConfig
 import church.authenticcity.android.R
-import church.authenticcity.android.classes.AuthenticEvent
-import church.authenticcity.android.classes.AuthenticEventPlaceholder
-import church.authenticcity.android.classes.AuthenticTab
-import church.authenticcity.android.classes.ImageResource
+import church.authenticcity.android.classes.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -121,7 +118,7 @@ class Utils {
             fun constructEvent(value: Any): AuthenticEvent? = try {
                 val map = value as HashMap<String, Any>
                 if (map.containsKey("index"))
-                    AuthenticEventPlaceholder(map.getAs("id"), map.getAs("index"), map.getAs("title"), map.getAs("hideTitle", false), ImageResource(map.getAs("header")), map.getAs("elements", ArrayList()))
+                    AuthenticEventPlaceholder(map.getAs("id"), map.getAs("index"), map.getAs("title"), map.getAs("hideTitle", false), ImageResource(map.getAs("header")), map.getAs("elements", ArrayList()), if (map.containsKey("action")) ButtonAction(map.getAs("action")) else null)
                 else
                     AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), ImageResource(map.getAs("header")), map.getAs("dateTime"), map.getAs("hideEndDate"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
             } catch (e: Exception) {
