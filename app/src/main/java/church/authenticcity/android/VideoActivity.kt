@@ -35,11 +35,20 @@ class VideoActivity : AppCompatActivity() {
         }
         Handler().postDelayed({
             video_webview.apply {
-                val provider = this@VideoActivity.intent.getStringExtra("provider")
-                val videoId = this@VideoActivity.intent.getStringExtra("id")
-                loadUrl(if (provider == "YouTube") "https://www.youtube.com/embed/$videoId" else "https://player.vimeo.com/video/$videoId")
+                settings.mediaPlaybackRequiresUserGesture = false
                 settings.javaScriptEnabled = true
                 setBackgroundColor(Color.BLACK)
+                val provider = this@VideoActivity.intent.getStringExtra("provider")
+                val videoId = this@VideoActivity.intent.getStringExtra("id")
+                when (provider) {
+                    "YouTube" -> {
+                        loadData("<!DOCTYPE html> <html> <head> <meta charset=\"utf-8\"> <meta name=\"viewport\" content=\"width=device-width,initial-scale=1,shrink-to-fit=no\"> <style type=\"text/css\"> *{margin:0;padding:0;}html,body{height:100%; width:100%;}body{display:table;}div{width: 100%; display:table-row;}iframe{width: 100%; height: 100%;}</style> </head> <body style=\"height: 100%;\"> <div/> <div id=\"player\"></div><script>var tag=document.createElement('script'); tag.src=\"https://www.youtube.com/iframe_api\"; var firstScriptTag=document.getElementsByTagName('script')[0]; firstScriptTag.parentNode.insertBefore(tag, firstScriptTag); var player; function onYouTubeIframeAPIReady(){player=new YT.Player('player',{height: '$height', width: '$width', videoId: '$videoId', events:{'onReady': onPlayerReady}});}function onPlayerReady(event){event.target.playVideo();}</script> </body> </html>", "text/html", "UTF-8")
+
+                    }
+                    "Vimeo" -> loadUrl("https://player.vimeo.com/video/$videoId?autoplay=1")
+                }
+                //loadUrl(if (provider == "YouTube") "https://www.youtube.com/embed/$videoId" else "https://player.vimeo.com/video/$videoId")
+
             }
         }, 500L)
     }
