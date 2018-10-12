@@ -1,7 +1,10 @@
 package church.authenticcity.android.classes
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.RippleDrawable
 import android.support.v4.content.ContextCompat
 import android.util.TypedValue
 import android.view.Gravity
@@ -147,6 +150,17 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
 
         fun createTile(context: Context, title: String, height: Int, action: HashMap<String, Any>, resource: HashMap<String, Any>) = createTile(context, title, height, ButtonAction(action), ImageResource(resource))
 
+        fun createFullExperienceController(context: Context, image: ImageResource, action: ButtonAction) =
+                ImageView(context).apply {
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    isClickable = true
+                    setBackgroundColor(Color.BLACK)
+                    Utils.loadFirebaseImage(context, image.imageName, this)
+                    setOnClickListener { action.invoke(context) }
+                    if (Utils.checkSdk(23))
+                        foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
+                }
+
         fun createSeparator(context: Context, visible: Boolean) =
                 LinearLayout(context).apply {
                     visibility = if (visible) View.VISIBLE else View.INVISIBLE
@@ -194,6 +208,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     put("height", 1080)
                 }))
                 "tile" -> createTile(context, getProperty("title", ""), getProperty("action", HashMap()), getProperty("header", HashMap<String, Any>()))
+                "fullExpController" -> createFullExperienceController(context, ImageResource(getProperty("image", HashMap())), ButtonAction(getProperty("action", HashMap())))
                 "separator" -> createSeparator(context, getProperty("visible", true))
                 "html" -> createHtmlReader(context, getProperty("html", "<p></p>"))
                 else -> createText(context, String.format("Invalid element type: %s; ID: %s; parent: %s", type, this@AuthenticElement.id, this@AuthenticElement.parent), "left", Color.RED)

@@ -27,6 +27,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.activity_content_basic.*
 import java.util.*
 
 class TabActivity : AppCompatActivity() {
@@ -157,6 +158,12 @@ class TabActivity : AppCompatActivity() {
                     }
                 }
                 setContent(recyclerView)
+            }
+            "fullexp" -> {
+                coordinator_layout.apply {
+                    removeViewAt(0)
+                    addView(tab.convertedElements[0].toView(this@TabActivity), ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+                }
             }
         }
     }
