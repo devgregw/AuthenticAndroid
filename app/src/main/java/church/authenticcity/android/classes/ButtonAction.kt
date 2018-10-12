@@ -39,6 +39,8 @@ class ButtonAction(private val map: HashMap<String, Any>) {
     @Suppress("UNCHECKED_CAST")
     fun <T> get(name: String): T = properties[name] as T
 
+    fun <T> tryGet(name: String): T? = if (properties.containsKey(name)) get(name) else null
+
     private fun showAlert(context: Context, title: String, message: String) {
         AlertDialog.Builder(context).setTitle(Utils.makeTypefaceSpan(title, Utils.getTitleTypeface(context))).setCancelable(true).setMessage(Utils.makeTypefaceSpan(message, Utils.getTextTypeface(context))).setPositiveButton(Utils.makeTypefaceSpan("Dismiss", Utils.getTextTypeface(context)), null).create().applyColorsAndTypefaces().show()
     }
@@ -95,11 +97,12 @@ class ButtonAction(private val map: HashMap<String, Any>) {
                         }
                         1 -> {
                             eventTitle = get("title")
-                            val dates = get<HashMap<String, Any>>("dateTime")
+                            val dates = get<HashMap<String, Any>>("dates")
                             startDate = OffsetDateTime.parse(dates["start"] as String, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault())
                             endDate = OffsetDateTime.parse(dates["end"] as String, DateTimeFormatter.ISO_DATE_TIME).atZoneSameInstant(ZoneId.systemDefault())
                             location = get("location")
-                            recurrenceRule = null
+                            val rrule = tryGet<HashMap<String, Any>>("recurrence")
+                            recurrenceRule = if (rrule == null) null else RecurrenceRule(rrule)
                         }
                         else -> throw IllegalStateException("Group $group is not legal for AddToCalendarAction")
                     }
