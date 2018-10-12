@@ -18,6 +18,7 @@ import android.widget.TextView
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.views.ThumbnailButtonView
+import church.authenticcity.android.views.ToolbarView
 import church.authenticcity.android.views.recyclerView.Tile
 import church.authenticcity.android.views.recyclerView.TileViewHolder
 import java.util.*
@@ -211,8 +212,8 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     put("width", 720)
                     put("height", 1080)
                 }))
-                "tile" -> createTile(context, getProperty("title", ""), getProperty("action", HashMap()), getProperty("header", HashMap<String, Any>()))
                 "toolbar" -> createToolbar(context, getProperty<HashMap<String, Any>>("image", HashMap()), getProperty("leftAction", HashMap()), getProperty("rightAction", HashMap()))
+                "tile" -> createTile(context, getProperty("title", ""), getProperty("height", 200), getProperty("action", HashMap()), getProperty("header", HashMap<String, Any>()))
                 "fullExpController" -> createFullExperienceController(context, ImageResource(getProperty("image", HashMap())), ButtonAction(getProperty("action", HashMap())))
                 "separator" -> createSeparator(context, getProperty("visible", true))
                 "html" -> createHtmlReader(context, getProperty("html", "<p></p>"))
