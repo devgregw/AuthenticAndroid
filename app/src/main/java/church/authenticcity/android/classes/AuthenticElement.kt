@@ -171,6 +171,10 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     }
                 }
 
+        fun createToolbar(context: Context, image: ImageResource, leftAction: ButtonAction, rightAction: ButtonAction) = ToolbarView(context, image, leftAction, rightAction)
+
+        fun createToolbar(context: Context, image: HashMap<String, Any>, leftAction: HashMap<String, Any>, rightAction: HashMap<String, Any>) = createToolbar(context, ImageResource(image), ButtonAction(leftAction), ButtonAction(rightAction))
+
         fun createHtmlReader(context: Context, htmlString: String): WebView {
             val webView = WebView(context)
             webView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -208,6 +212,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     put("height", 1080)
                 }))
                 "tile" -> createTile(context, getProperty("title", ""), getProperty("action", HashMap()), getProperty("header", HashMap<String, Any>()))
+                "toolbar" -> createToolbar(context, getProperty<HashMap<String, Any>>("image", HashMap()), getProperty("leftAction", HashMap()), getProperty("rightAction", HashMap()))
                 "fullExpController" -> createFullExperienceController(context, ImageResource(getProperty("image", HashMap())), ButtonAction(getProperty("action", HashMap())))
                 "separator" -> createSeparator(context, getProperty("visible", true))
                 "html" -> createHtmlReader(context, getProperty("html", "<p></p>"))
