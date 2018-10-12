@@ -50,7 +50,7 @@
             android:layout_marginTop="2dp"
             android:gravity="center"
             android:letterSpacing="0.1"
-            android:text="THE 5PM | THE 7PM"
+            android:text="THE 5 | THE 7"
             android:textColor="@android:color/black"
             android:textSize="22sp" />
     </LinearLayout>
