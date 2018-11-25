@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.Toast
 import church.authenticcity.android.EventActivity
+import church.authenticcity.android.EventListActivity
 import church.authenticcity.android.TabActivity
 import church.authenticcity.android.helpers.RecurrenceRule
 import church.authenticcity.android.helpers.Utils
@@ -49,6 +50,7 @@ class ButtonAction(private val map: HashMap<String, Any>) {
         try {
             Log.v("ButtonAction", String.format("Invoking %s", map))
             when (type) {
+                "OpenEventsPageAction" -> EventListActivity.start(context, "UPCOMING EVENTS")
                 "OpenTabAction" -> TabActivity.start(context, get<String>("tabId"))
                 "OpenEventAction" -> EventActivity.start(context, get<String>("eventId"))
                 "OpenURLAction" -> {
