@@ -1,6 +1,7 @@
 package church.authenticcity.android
 
 import android.app.Application
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.database.FirebaseDatabase
 
 /**
@@ -9,8 +10,13 @@ import com.google.firebase.database.FirebaseDatabase
  * Licensed under the MIT License.
  */
 class AuthenticApplication: Application() {
+    companion object {
+        var useDevelopmentDatabase = false
+    }
+
     override fun onCreate() {
         super.onCreate()
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        FirebaseAnalytics.getInstance(this).setAnalyticsCollectionEnabled(!BuildConfig.DEBUG)
     }
 }

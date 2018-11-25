@@ -5,4 +5,13 @@
     <string name="open_tabs_button_content_description">Open tabs button</string>
     <string name="authentic_city_church_logo_content_description">Authentic City Church logo</string>
     <string name="action_menu_launch_ams">Launch AMS</string>
+    <string name="settings">Settings</string>
+    <string name="licenses">Licenses</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="development_database">Development Database</string>
+    <string name="production_database">Production Database</string>
+    <string name="copy_fcm_registration_token">Copy FCM Registration Token</string>
+    <string name="db_dev">Switch to Development Database</string>
+    <string name="db_prod">Switch to Production Database</string>
+    <string name="advanced">Advanced</string>
 </resources>

@@ -19,6 +19,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
+import church.authenticcity.android.BuildConfig
 import church.authenticcity.android.HomeActivity
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.SimpleAnimatorListener
@@ -28,6 +29,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlin.math.roundToInt
 
 class HomeFragment : Fragment() {
@@ -56,6 +58,12 @@ class HomeFragment : Fragment() {
         if (context == null) {
             Log.w("HomeFragment", "WARNING: skipping animations!")
             return
+        }
+        if (BuildConfig.DEBUG) {
+            debug_label.text = "DEBUG BUILD NOT FOR PRODUCTION\nVERSION ${BuildConfig.VERSION_NAME} BUILD ${BuildConfig.VERSION_CODE}"
+        }
+        else {
+            debug_label.visibility = View.GONE
         }
         view!!.findViewById<ImageButton>(R.id.tabsButton).apply {
             translationY = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75f, resources.displayMetrics)

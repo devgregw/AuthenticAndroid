@@ -37,6 +37,8 @@ class TabActivity : AppCompatActivity() {
             context.startActivity(Intent(context, TabActivity::class.java).apply { putExtra("id", tab.id) })
         }
 
+        private fun makePath(path: String) = (if (AuthenticApplication.useDevelopmentDatabase) "/dev" else "") + path
+
         fun start(context: Context, tabId: String) {
             val tab = Utils.Temp.getTab(tabId)
             if (tab != null) {
@@ -45,7 +47,7 @@ class TabActivity : AppCompatActivity() {
             }
             val dialog = Utils.createIndeterminateDialog(context, "Loading...")
             dialog.show()
-            FirebaseDatabase.getInstance().getReference("/tabs/$tabId").addListenerForSingleValueEvent(object : ValueEventListener {
+            FirebaseDatabase.getInstance().getReference(makePath("/tabs/$tabId")).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
                     dialog.dismiss()
                     AlertDialog.Builder(context).setTitle("Unexpected Error").setCancelable(false).setMessage("An unexpected error occurred while loading data.\n\nCode: ${p0.code}\nMessage: ${p0.message}\nDetails: ${p0.details}").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()

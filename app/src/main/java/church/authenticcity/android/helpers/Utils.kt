@@ -8,6 +8,7 @@ import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
@@ -16,6 +17,7 @@ import android.text.SpannableString
 import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.*
+import church.authenticcity.android.AuthenticApplication
 import church.authenticcity.android.BuildConfig
 import church.authenticcity.android.R
 import church.authenticcity.android.classes.*
@@ -184,15 +186,22 @@ class Utils {
         }
 
         fun loadFirebaseImage(context: Context, name: String, view: ImageView, callback: ((Drawable) -> Unit)? = null) {
-            val request = Glide.with(context).load(FirebaseStorage.getInstance().reference.child(if (String.isNullOrWhiteSpace(name)) "unknown.png" else name)).transition(DrawableTransitionOptions.withCrossFade())
+            var ref = FirebaseStorage.getInstance().reference
+            if (AuthenticApplication.useDevelopmentDatabase)
+                ref = ref.child("dev")
+            val request = Glide.with(context).load(ref.child(if (String.isNullOrWhiteSpace(name)) "unknown.png" else name)).transition(DrawableTransitionOptions.withCrossFade()).error(Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.unknown)).transition(DrawableTransitionOptions.withCrossFade()))
             if (callback != null)
                 request.listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        callback(ContextCompat.getDrawable(context, R.drawable.unknown)!!)
                         return true
                     }
 
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        callback(resource!!)
+                        if (resource == null)
+                            callback(ContextCompat.getDrawable(context, R.drawable.unknown)!!)
+                        else
+                            callback(resource)
                         return true
                     }
                 }).submit()

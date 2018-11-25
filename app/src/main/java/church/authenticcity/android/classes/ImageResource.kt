@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.Toast
+import church.authenticcity.android.AuthenticApplication
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
@@ -50,7 +51,10 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
             val handler = Handler(context.mainLooper)
             dialog.show()
             Log.i("Save to gallery", "Load url")
-            FirebaseStorage.getInstance().reference.child(imageName).downloadUrl.addOnCompleteListener {
+            var ref = FirebaseStorage.getInstance().reference
+            if (AuthenticApplication.useDevelopmentDatabase)
+                ref = ref.child("dev")
+            ref.child(imageName).downloadUrl.addOnCompleteListener {
                 Log.i("Save to gallery", "Load image")
                 Glide.with(context).asBitmap().load(it.result.toString()).into(object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_settings" android:title="@string/settings"/>
+    <item android:id="@+id/menu_privacy" android:title="@string/privacy_policy"/>
+    <item android:id="@+id/menu_licenses" android:title="@string/licenses"/>
+    <item android:id="@+id/menu_advanced" android:title="@string/advanced">
+        <menu>
+            <item android:id="@+id/menu_copy_fcm" android:title="@string/copy_fcm_registration_token"/>
+            <item android:id="@+id/menu_db" android:title="@string/db_dev"/>
+        </menu>
+    </item>
+</menu>

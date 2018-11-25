@@ -9,6 +9,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="24dp"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:id="@+id/debug_label"
+            android:textColor="@android:color/white"/>
+
         <ProgressBar
             android:layout_width="64dp"
             android:layout_height="64dp"

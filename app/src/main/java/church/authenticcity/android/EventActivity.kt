@@ -31,6 +31,8 @@ class EventActivity : AppCompatActivity() {
             context.startActivity(Intent(context, EventActivity::class.java).apply { putExtra("id", event.id) })
         }
 
+        private fun makePath(path: String) = (if (AuthenticApplication.useDevelopmentDatabase) "/dev" else "") + path
+
         fun start(context: Context, eventId: String) {
             val event = Utils.Temp.getEvent(eventId)
             if (event != null) {
@@ -39,7 +41,7 @@ class EventActivity : AppCompatActivity() {
             }
             val dialog = Utils.createIndeterminateDialog(context, "Loading...")
             dialog.show()
-            FirebaseDatabase.getInstance().getReference("/events/$eventId").addListenerForSingleValueEvent(object : ValueEventListener {
+            FirebaseDatabase.getInstance().getReference(makePath("/events/$eventId")).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onCancelled(p0: DatabaseError) {
                     dialog.dismiss()
                     AlertDialog.Builder(context).setTitle("Unexpected Error").setCancelable(false).setMessage("An unexpected error occurred while loading data.\n\nCode: ${p0.code}\nMessage: ${p0.message}\nDetails: ${p0.details}").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
