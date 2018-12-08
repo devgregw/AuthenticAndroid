@@ -33,9 +33,13 @@ class TileViewHolder(private val context: Context, private val fullWidth: Boolea
 
     private val logging = false
 
-    private fun setHeight(header: ImageResource) {
+    private fun setHeight(header: ImageResource, override: Int?) {
         if (height != null) {
             itemView.tile_image.layoutParams.height = height
+            return
+        }
+        if (override != null) {
+            itemView.tile_image.layoutParams.height = override
             return
         }
         val adjustedWidth = context.resources.displayMetrics.widthPixels / (if (fullWidth) 1 else 2)
@@ -55,7 +59,7 @@ class TileViewHolder(private val context: Context, private val fullWidth: Boolea
     }
 
     fun <T> initialize(tile: Tile<T>) {
-        setHeight(tile.header)
+        setHeight(tile.header, tile.heightOverride)
         Utils.loadFirebaseImage(context, tile.header.imageName, itemView.tile_image)
         if (Utils.checkSdk(23))
             itemView.foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))

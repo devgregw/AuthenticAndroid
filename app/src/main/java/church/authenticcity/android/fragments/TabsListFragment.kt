@@ -17,7 +17,10 @@ import android.os.Handler
 import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.PopupMenu
+import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +38,7 @@ import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.views.LivestreamView
 import church.authenticcity.android.views.recyclerView.DualRecyclerView
 import church.authenticcity.android.views.recyclerView.Tile
+import church.authenticcity.android.views.recyclerView.TileAdapter
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.database.*
 import com.google.firebase.iid.FirebaseInstanceId
@@ -95,7 +99,7 @@ class TabsListFragment : Fragment() {
                                 })
                                 addView(TextView(this@TabsListFragment.requireContext()).apply {
                                     text = Utils.makeTypefaceSpan("AUTHENTIC", Utils.getTitleTypeface(this@TabsListFragment.requireContext()))
-                                    textSize = 30f
+                                    textSize = 24f
                                     letterSpacing = 0.25f
                                     setTextColor(Color.WHITE)
                                     setPadding(0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 25f, context.resources.displayMetrics).roundToInt(), 0, 0)
@@ -215,12 +219,34 @@ class TabsListFragment : Fragment() {
         view!!.postDelayed({
             requireActivity().runOnUiThread {
                 val ueTile = Tile(appearance.events.title, false, appearance.events.header, appearance.events) { a -> EventListActivity.start(requireActivity(), a) }
-                val layout = DualRecyclerView.create(requireActivity(), tabs.filter { t -> t.index % 2 == 0 }.map(toTile), ArrayList<Tile<*>>().apply {
-                    add(ueTile)
-                    addAll(tabs.filter { t -> t.index % 2 != 0 }.map(toTile))
-                }, appearance, requireContext().resources.displayMetrics.heightPixels - view!!.findViewById<View>(R.id.toolbar).height)
-                view!!.root.addView(layout)
-                layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
+                if (Utils.getScreenDiagonal(this@TabsListFragment.requireActivity()) >= 4.5) {
+                    val layout = DualRecyclerView.create(requireActivity(), tabs.filter { t -> t.index % 2 == 0 }.map(toTile), ArrayList<Tile<*>>().apply {
+                        add(ueTile)
+                        addAll(tabs.filter { t -> t.index % 2 != 0 }.map(toTile))
+                    }, appearance, requireContext().resources.displayMetrics.heightPixels - view!!.findViewById<View>(R.id.toolbar).height)
+                    view!!.root.addView(layout)
+                    layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
+                } else {
+                    val layout = LinearLayout(activity).apply {
+                        val recyclerView = RecyclerView(activity)
+                        recyclerView.adapter = TileAdapter(activity, ArrayList<Tile<*>>().apply {
+                            add(ueTile)
+                            addAll(tabs.sortedBy { t -> t.index }.map(toTile).map { t -> t.withHeightOverride(250) })
+                        }, true, false, 0)
+                        recyclerView.layoutManager = LinearLayoutManager(activity)
+                        layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                            addRule(RelativeLayout.BELOW, R.id.toolbar)
+                        }
+                        recyclerView.addItemDecoration(DividerItemDecoration(activity, (recyclerView.layoutManager as LinearLayoutManager).orientation))
+                        alpha = 0f
+                        tag = "recyclerViewHost"
+                        orientation = LinearLayout.VERTICAL
+                        addView(recyclerView)
+                    }
+
+                    view!!.root.addView(layout)
+                    layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
+                }
             }
         }, 250L)
     }

@@ -2,6 +2,7 @@ package church.authenticcity.android.helpers
 
 import android.animation.Animator
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
@@ -14,6 +15,7 @@ import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.text.Spannable
 import android.text.SpannableString
+import android.util.Log
 import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.*
@@ -183,6 +185,15 @@ class Utils {
             if (text == null)
                 text = ResourcesCompat.getFont(context, R.font.proxima_nova)
             return text!!
+        }
+
+        fun getScreenDiagonal(activity: Activity): Double {
+            var metrics = activity.resources.displayMetrics
+            val density = metrics.density * 160
+            val x = Math.pow(metrics.widthPixels.toDouble() / density, 2.0)
+            val y = Math.pow(metrics.heightPixels.toDouble() / density, 2.0)
+            Log.i("DIAGNONAL", (Math.sqrt(x + y)).toString() + " inches")
+            return Math.sqrt(x + y)
         }
 
         fun loadFirebaseImage(context: Context, name: String, view: ImageView, callback: ((Drawable) -> Unit)? = null) {
