@@ -27,7 +27,10 @@ class AuthenticTab(val header: ImageResource, val id: String, val index: Int, va
     val elementCount
         get() = convertedElements.count()
 
-    fun getShouldBeHidden(): Boolean {
+    val isVisible
+        get() = !getShouldBeHidden()
+
+    private fun getShouldBeHidden(): Boolean {
         if (elementCount == 0 && action == null)
             return true
         if (visibility["override"].toString().toBoolean())

@@ -30,5 +30,8 @@ open class AuthenticEvent(val id: String, val title: String, val hideTitle: Bool
 
     fun getNextOccurrence() = recurrenceRule?.getNextOccurrence(startDate, endDate) ?: RecurrenceRule.Occurrence(startDate, endDate)//if (recurs) recurrenceRule!!.getNextOccurrence(startDate, endDate) else RecurrenceRule.Occurrence(startDate, endDate)
 
-    fun getShouldBeHidden() = ZonedDateTime.now() > getNextOccurrence().endDate
+    open val isVisible
+        get() = !getShouldBeHidden()
+
+    private fun getShouldBeHidden() = ZonedDateTime.now() > getNextOccurrence().endDate
 }

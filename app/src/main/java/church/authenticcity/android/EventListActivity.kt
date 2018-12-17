@@ -74,7 +74,7 @@ class EventListActivity : AppCompatActivity() {
                             }
                         }
                         val constructed = p0.children.map { Utils.Constructors.constructEvent(it.value!!) }.filter { it != null }.map { it!! }
-                        val tiles = constructed.filter { it is AuthenticEventPlaceholder }.map { it as AuthenticEventPlaceholder }.sortedBy { it.index }.map { Tile(it.title, it.hideTitle, it.header, it, createHandler(it)) } + constructed.filter { it !is AuthenticEventPlaceholder }.filter { !it.getShouldBeHidden() }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.hideTitle, it.header, it) { e -> EventActivity.start(this@EventListActivity, e) } }
+                        val tiles = constructed.filter { it is AuthenticEventPlaceholder }.map { it as AuthenticEventPlaceholder }.filter { it.isVisible }.sortedBy { it.index }.map { Tile(it.title, it.hideTitle, it.header, it, createHandler(it)) } + constructed.filter { it !is AuthenticEventPlaceholder }.filter { it.isVisible }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.hideTitle, it.header, it) { e -> EventActivity.start(this@EventListActivity, e) } }
                         if (tiles.isEmpty()) {
                             root.addView(AuthenticElement.createText(this@EventListActivity, "There are no upcoming events.", "center", size = 22f))
                         } else {

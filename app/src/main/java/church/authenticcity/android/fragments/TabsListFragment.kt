@@ -173,7 +173,7 @@ class TabsListFragment : Fragment() {
                     view!!.swipe_refresh_layout.isRefreshing = false
                     val constructed = p0.children.map { Utils.Constructors.constructTab(it.value!!) }
                     initializeAdapter(constructed.filter { it != null }.map { it!! }.filter {
-                        !it.getShouldBeHidden()
+                        it.isVisible
                     }, appearance)
                     if (constructed.count { it == null } > 0)
                         AlertDialog.Builder(requireContext()).setTitle("Error").setMessage("We're having trouble loading content.  Please try again later.  We apologise for the inconvenience.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
