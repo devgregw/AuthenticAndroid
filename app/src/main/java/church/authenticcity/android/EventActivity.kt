@@ -66,7 +66,13 @@ class EventActivity : AppCompatActivity() {
     }
 
     private fun initialize() {
-        val event = Utils.Temp.getEvent(intent.getStringExtra("id"))!!
+        val event = Utils.Temp.getEvent(intent.getStringExtra("id"))
+        if (event == null) {
+            AlertDialog.Builder(this).setTitle("Not Found").setMessage("The event ${intent.getStringExtra("id")} could not be loaded.  It may have been deleted.").setPositiveButton("Dismiss") { _, _ ->
+                this@EventActivity.finish()
+            }.create().applyColorsAndTypefaces().show()
+            return
+        }
         supportActionBar?.applyTypeface(this, event.title)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.BLACK))

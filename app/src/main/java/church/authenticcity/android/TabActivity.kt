@@ -88,7 +88,14 @@ class TabActivity : AppCompatActivity() {
     private lateinit var tab: AuthenticTab
 
     private fun initialize() {
-        tab = Utils.Temp.getTab(intent.getStringExtra("id"))!!
+        val uncheckedTab = Utils.Temp.getTab(intent.getStringExtra("id"))
+        if (uncheckedTab == null) {
+            AlertDialog.Builder(this).setTitle("Not Found").setMessage("The tab ${intent.getStringExtra("id")} could not be loaded.  It may have been deleted.").setPositiveButton("Dismiss") { _, _ ->
+                this@TabActivity.finish()
+            }.create().applyColorsAndTypefaces().show()
+            return
+        }
+        tab = uncheckedTab
         this.title = tab.title
         supportActionBar?.applyTypeface(this, tab.title)
         supportActionBar?.setDisplayShowTitleEnabled(false)
