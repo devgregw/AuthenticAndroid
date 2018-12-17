@@ -42,18 +42,19 @@ import church.authenticcity.android.views.recyclerView.TileAdapter
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.database.*
 import com.google.firebase.iid.FirebaseInstanceId
+import kotlinx.android.synthetic.main.fragment_tabs_list.*
 import kotlinx.android.synthetic.main.fragment_tabs_list.view.*
 import java.util.*
 import kotlin.math.roundToInt
 
 class TabsListFragment : Fragment() {
     companion object {
-        fun create(activity: Activity) = TabsListFragment().apply { this.activity = activity }
+        fun create(activity: Activity) = TabsListFragment()//.apply { this.activity = activity }
     }
 
-    private lateinit var activity: Activity
-    private lateinit var appRef: DatabaseReference
-    private lateinit var tabsRef: DatabaseReference
+    //private lateinit var activity: Activity
+    private var appRef: DatabaseReference? = null
+    private var tabsRef: DatabaseReference? = null
     private lateinit var appearance: AuthenticAppearance
 
     private fun makePath(path: String) = (if (AuthenticApplication.useDevelopmentDatabase) "/dev" else "") + path
@@ -61,6 +62,8 @@ class TabsListFragment : Fragment() {
     private val tabsEventListener = object : ValueEventListener {
         @SuppressLint("SetTextI18n")
         override fun onCancelled(p0: DatabaseError) {
+            if (!this@TabsListFragment.isAdded)
+                return
             view!!.root.removeAllViews()
             view!!.root.addView(TextView(this@TabsListFragment.requireContext()).apply {
                 text = "ERROR: ${p0.message}"
@@ -193,11 +196,10 @@ class TabsListFragment : Fragment() {
 
         override fun onDataChange(p0: DataSnapshot) {
             appearance = AuthenticAppearance(p0.value as HashMap<String, Any>)
-            if (::tabsRef.isInitialized)
-                tabsRef.removeEventListener(tabsEventListener)
+            tabsRef?.removeEventListener(tabsEventListener)
             tabsRef = FirebaseDatabase.getInstance().getReference(makePath("/tabs/"))
-            tabsRef.keepSynced(true)
-            tabsRef.orderByChild("index").addValueEventListener(tabsEventListener)
+            tabsRef?.keepSynced(true)
+            tabsRef?.orderByChild("index")?.addValueEventListener(tabsEventListener)
         }
     }
 
@@ -205,14 +207,16 @@ class TabsListFragment : Fragment() {
         //val trace = FirebasePerformance.startTrace("load tabs")
         //if (refreshed)
         //    trace.incrementMetric("refresh tabs", 1L)
-        if (::appRef.isInitialized)
-            appRef.removeEventListener(appearanceEventListener)
+        swipe_refresh_layout.isRefreshing = true
+        appRef?.removeEventListener(appearanceEventListener)
         appRef = FirebaseDatabase.getInstance().getReference(makePath("/appearance/"))
-        appRef.keepSynced(true)
-        appRef.addValueEventListener(appearanceEventListener)
+        appRef?.keepSynced(true)
+        appRef?.addValueEventListener(appearanceEventListener)
     }
 
     private fun initializeAdapter(tabs: List<AuthenticTab>, appearance: AuthenticAppearance) {
+        if (!isAdded)
+            return
         val toTile: (AuthenticTab) -> Tile<AuthenticTab> = { t ->
             Tile(t.title, false, t.header, t) { tab -> if (tab.action == null) TabActivity.start(requireContext(), tab) else tab.action.invoke(requireContext()) }
         }
@@ -227,9 +231,9 @@ class TabsListFragment : Fragment() {
                     view!!.root.addView(layout)
                     layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
                 } else {
-                    val layout = LinearLayout(activity).apply {
-                        val recyclerView = RecyclerView(activity)
-                        recyclerView.adapter = TileAdapter(activity, ArrayList<Tile<*>>().apply {
+                    val layout = LinearLayout(requireContext()).apply {
+                        val recyclerView = RecyclerView(requireContext())
+                        recyclerView.adapter = TileAdapter(requireActivity(), ArrayList<Tile<*>>().apply {
                             add(ueTile)
                             addAll(tabs.sortedBy { t -> t.index }.map(toTile).map { t -> t.withHeightOverride(250) })
                         }, true, false, 0)
@@ -253,12 +257,11 @@ class TabsListFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        if (!::activity.isInitialized)
-            activity = requireActivity()
+        //if (!::activity.isInitialized)
+        //    activity = requireActivity()
         view!!.apply {
             Handler().postDelayed({
-                activity.runOnUiThread {
-                    swipe_refresh_layout.isRefreshing = true
+                requireActivity().runOnUiThread {
                     loadTabs(false)
                 }
             }, 1750L)
@@ -268,6 +271,12 @@ class TabsListFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        tabsRef?.removeEventListener(tabsEventListener)
+        appRef?.removeEventListener(appearanceEventListener)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
