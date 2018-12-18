@@ -107,7 +107,7 @@ class EventListActivity : AppCompatActivity() {
             eventsRef.removeEventListener(eventsEventListener)
         eventsRef = FirebaseDatabase.getInstance().getReference(makePath("/events/"))
         eventsRef.keepSynced(true)
-        eventsRef.addListenerForSingleValueEvent(eventsEventListener)
+        eventsRef.addValueEventListener(eventsEventListener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -121,6 +121,12 @@ class EventListActivity : AppCompatActivity() {
     override fun onBackPressed() {
         finish()
         //overridePendingTransition(R.anim.empty, R.anim.slide_down)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (::eventsRef.isInitialized)
+            eventsRef.removeEventListener(eventsEventListener)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
