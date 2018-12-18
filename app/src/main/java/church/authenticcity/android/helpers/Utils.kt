@@ -122,7 +122,7 @@ class Utils {
             fun constructEvent(value: Any): AuthenticEvent? = try {
                 val map = value as HashMap<String, Any>
                 if (map.containsKey("index"))
-                    AuthenticEventPlaceholder(map.getAs("id"), map.getAs("index"), map.getAs("title"), map.getAs("hideTitle", false), ImageResource(map.getAs("header")), map.getAs("elements", ArrayList()), if (map.containsKey("action")) ButtonAction(map.getAs("action")) else null)
+                    AuthenticEventPlaceholder(map.getAs("id"), map.getAs("index"), map.getAs("title"), map.getAs("hideTitle", false), ImageResource(map.getAs("header")), map.getAs("elements", ArrayList()), if (map.containsKey("action")) ButtonAction(map.getAs("action")) else null, if (map.containsKey("visibility")) map.getAs<String, String, Any>("visibility") else null)
                 else
                     AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), ImageResource(map.getAs("header")), map.getAs("dateTime"), map.getAs("hideEndDate"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
             } catch (e: Exception) {
