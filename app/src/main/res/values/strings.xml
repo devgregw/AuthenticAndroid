@@ -14,4 +14,7 @@
     <string name="db_dev">Switch to Development Database</string>
     <string name="db_prod">Switch to Production Database</string>
     <string name="advanced">Advanced</string>
+    <string name="info">Info</string>
+    <string name="authentic">AUTHENTIC</string>
+    <string name="back">Back</string>
 </resources>

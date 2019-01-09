@@ -36,6 +36,7 @@ import church.authenticcity.android.helpers.SimpleAnimatorListener
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.views.LivestreamView
+import church.authenticcity.android.views.TitleBarView
 import church.authenticcity.android.views.recyclerView.DualRecyclerView
 import church.authenticcity.android.views.recyclerView.Tile
 import church.authenticcity.android.views.recyclerView.TileAdapter
@@ -73,12 +74,15 @@ class TabsListFragment : Fragment() {
         }
 
         override fun onDataChange(p0: DataSnapshot) {
-            val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, this@TabsListFragment.resources.displayMetrics).roundToInt()
+            if (!this@TabsListFragment.isAdded)
+                return
+            //val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, this@TabsListFragment.resources.displayMetrics).roundToInt()
             view!!.root.findViewWithTag<LinearLayout>("recyclerViewHost").animate().alpha(0f).setDuration(250L).setStartDelay(0L).setListener(object : SimpleAnimatorListener() {
                 override fun onAnimationEnd(animator: Animator?) {
                     view!!.root.apply {
                         removeAllViews()
-                        addView(RelativeLayout(this@TabsListFragment.requireContext()).apply {
+                        addView(TitleBarView.create(this@TabsListFragment.requireContext(), this, (requireActivity() as HomeActivity)::goHome, ::loadTabs))
+                        /*addView(RelativeLayout(this@TabsListFragment.requireContext()).apply {
                             id = R.id.toolbar
                             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                             val buttonWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48f, resources.displayMetrics).roundToInt()
@@ -168,7 +172,7 @@ class TabsListFragment : Fragment() {
                                 setBackgroundColor(Color.WHITE)
                                 addView(LivestreamView.create(context, this))
                             })
-                        })
+                        })*/
                     }
                     view!!.swipe_refresh_layout.isRefreshing = false
                     val constructed = p0.children.map { Utils.Constructors.constructTab(it.value!!) }
@@ -261,9 +265,12 @@ class TabsListFragment : Fragment() {
         //    activity = requireActivity()
         view!!.apply {
             Handler().postDelayed({
-                requireActivity().runOnUiThread {
-                    loadTabs(false)
-                }
+                /*if (this@TabsListFragment.isAdded) {
+                    requireActivity().runOnUiThread {
+                        loadTabs(false)
+                    }
+                }*/
+                loadTabs(false)
             }, 1750L)
             swipe_refresh_layout.apply {
                 setOnRefreshListener {
