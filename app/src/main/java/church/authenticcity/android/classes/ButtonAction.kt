@@ -21,6 +21,7 @@ import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import java.time.Instant
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -108,7 +109,18 @@ class ButtonAction(private val map: HashMap<String, Any>) {
                         }
                         else -> throw IllegalStateException("Group $group is not legal for AddToCalendarAction")
                     }
-                    val uri = Uri.parse("content://com.android.calendar/events")
+                    // TESTING NEW IMPL
+                    val intent = Intent(Intent.ACTION_INSERT)
+                    intent.data = CalendarContract.Events.CONTENT_URI
+                    intent.putExtra(CalendarContract.Events.TITLE, eventTitle)
+                    intent.putExtra(CalendarContract.Events.ALL_DAY, false)
+                    intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startDate.toEpochSecond() * 1000)
+                    intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endDate.toEpochSecond() * 1000)
+                    intent.putExtra(CalendarContract.Events.EVENT_LOCATION, location)
+                    intent.putExtra(CalendarContract.Events.RRULE, recurrenceRule?.getRRule() ?: "")
+                    context.startActivity(intent)
+                    // END TEST
+                    /*val uri = Uri.parse("content://com.android.calendar/events")
                     val values = ContentValues().apply {
                         put(CalendarContract.Events.CALENDAR_ID, 1)
                         put(CalendarContract.Events.TITLE, eventTitle)
@@ -135,7 +147,7 @@ class ButtonAction(private val map: HashMap<String, Any>) {
                                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             })
                         }.setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
-                    }
+                    }*/
                 }
                 else -> showAlert(context, "Error", "We were unable to run this action because the type \"$type\" is undefined.")
             }
