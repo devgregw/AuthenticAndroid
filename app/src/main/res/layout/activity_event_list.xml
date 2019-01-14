@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF"
+    android:background="@android:color/white"
     android:fitsSystemWindows="false">
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh_layout"
@@ -57,7 +57,7 @@
                 android:background="@android:color/transparent"
                 android:ellipsize="end"
                 android:letterSpacing="0.25"
-                android:textSize="24sp"
+                android:textSize="18sp"
                 android:textColor="@android:color/white" />
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>

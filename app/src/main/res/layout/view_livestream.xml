@@ -2,7 +2,7 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-    android:background="@android:color/white">
+        android:background="@android:color/white">
         <ProgressBar
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -17,8 +17,8 @@
             android:layout_margin="8dp"
             android:padding="8dp"
             android:id="@+id/livestream_watch"
-            android:text="WATCH LIVE ON YOUTUBE"
-            android:textSize="26sp"
+            android:text="@string/watch_live_on_youtube"
+            android:textSize="20sp"
             android:textColor="@android:color/black"
             android:letterSpacing="0.1"
             android:gravity="center"
@@ -39,9 +39,9 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:letterSpacing="0.1"
-            android:text="SUNDAY NIGHT"
+            android:text="@string/sunday_night"
             android:textColor="@android:color/black"
-            android:textSize="30sp" />
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/livestream_services"
@@ -50,8 +50,8 @@
             android:layout_marginTop="2dp"
             android:gravity="center"
             android:letterSpacing="0.1"
-            android:text="THE 5 | THE 7"
+            android:text="@string/the_5_the_7"
             android:textColor="@android:color/black"
-            android:textSize="22sp" />
+            android:textSize="16sp" />
     </LinearLayout>
     </RelativeLayout>

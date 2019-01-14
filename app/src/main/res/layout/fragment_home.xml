@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginTop="24dp"
-            android:textSize="18sp"
+            android:textSize="12sp"
             android:textAlignment="center"
             android:id="@+id/debug_label"
             android:textColor="@android:color/white"/>
