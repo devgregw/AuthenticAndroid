@@ -4,12 +4,9 @@
     <string name="no_content">No content</string>
     <string name="open_tabs_button_content_description">Open tabs button</string>
     <string name="authentic_city_church_logo_content_description">Authentic City Church logo</string>
-    <string name="action_menu_launch_ams">Launch AMS</string>
     <string name="settings">Settings</string>
     <string name="licenses">Licenses</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="development_database">Development Database</string>
-    <string name="production_database">Production Database</string>
     <string name="copy_fcm_registration_token">Copy FCM Registration Token</string>
     <string name="db_dev">Switch to Development Database</string>
     <string name="db_prod">Switch to Production Database</string>
@@ -17,4 +14,8 @@
     <string name="info">Info</string>
     <string name="authentic">AUTHENTIC</string>
     <string name="back">Back</string>
+    <string name="thumbnail">Thumbnail</string>
+    <string name="watch_live_on_youtube">WATCH LIVE ON YOUTUBE</string>
+    <string name="sunday_night">SUNDAY NIGHT</string>
+    <string name="the_5_the_7">THE 5 | THE 7</string>
 </resources>

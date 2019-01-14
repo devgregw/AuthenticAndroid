@@ -33,11 +33,11 @@ class AuthenticEventPlaceholder(id: String, val index: Int, title: String, hideT
             if (elements == null)
                 _elements = ArrayList()
             else if (_elements.count() == 0)
-                _elements = elements.filterNotNull().map { AuthenticElement(it) }
+                _elements = elements.map { AuthenticElement(it) }
             return _elements
         }
 
-    val elementCount
+    private val elementCount
         get() = convertedElements.count()
 
     val canOpen

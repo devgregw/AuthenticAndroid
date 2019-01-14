@@ -130,11 +130,11 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
 
         fun createButton(context: Context, info: HashMap<String, Any>) = createButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String)
 
-        fun createThumbnailButton(context: Context, action: ButtonAction, text: String, resource: ImageResource) = ThumbnailButtonView(context, text, resource, action)
+        private fun createThumbnailButton(context: Context, action: ButtonAction, text: String, resource: ImageResource) = ThumbnailButtonView(context, text, resource, action)
 
         fun createThumbnailButton(context: Context, info: HashMap<String, Any>, resource: HashMap<String, Any>) = createThumbnailButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String, ImageResource(resource))
 
-        fun createTile(context: Context, title: String, height: Int, action: ButtonAction, resource: ImageResource): View {
+        private fun createTile(context: Context, title: String, height: Int, action: ButtonAction, resource: ImageResource): View {
             val h = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height.toFloat(), context.resources.displayMetrics).roundToInt()
             val viewGroup = LinearLayout(context).apply { layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height) }
             val viewHolder = TileViewHolder(context, false, h, viewGroup, false)
@@ -172,7 +172,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     }
                 }
 
-        fun createToolbar(context: Context, image: ImageResource, leftAction: ButtonAction, rightAction: ButtonAction) = ToolbarView(context, image, leftAction, rightAction)
+        private fun createToolbar(context: Context, image: ImageResource, leftAction: ButtonAction, rightAction: ButtonAction) = ToolbarView(context, image, leftAction, rightAction)
 
         fun createToolbar(context: Context, image: HashMap<String, Any>, leftAction: HashMap<String, Any>, rightAction: HashMap<String, Any>) = createToolbar(context, ImageResource(image), ButtonAction(leftAction), ButtonAction(rightAction))
 

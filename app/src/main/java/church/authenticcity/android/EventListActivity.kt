@@ -58,6 +58,7 @@ class EventListActivity : AppCompatActivity() {
 
         override fun onDataChange(p0: DataSnapshot) {
             root.findViewWithTag<LinearLayout>("recyclerViewHost").animate().alpha(0f).setDuration(250L).setStartDelay(0L).setListener(object : SimpleAnimatorListener() {
+                @Suppress("RedundantLambdaArrow")
                 override fun onAnimationEnd(animator: Animator?) {
                     root.removeAllViews()
                     swipe_refresh_layout.isRefreshing = false

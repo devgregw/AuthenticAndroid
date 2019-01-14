@@ -1,5 +1,6 @@
 package church.authenticcity.android.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
@@ -20,7 +21,7 @@ class VerticalViewPager : ViewPager {
         initialize()
     }
 
-    fun initialize() {
+    private fun initialize() {
         setPageTransformer(true, VerticalPageTransformer())
         overScrollMode = View.OVER_SCROLL_NEVER
         addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
@@ -46,13 +47,14 @@ class VerticalViewPager : ViewPager {
 
     var disabled: Boolean = false
 
-    fun swap(event: MotionEvent?): MotionEvent? {
+    private fun swap(event: MotionEvent?): MotionEvent? {
         if (event == null)
             return null
         event.setLocation((event.y / height) * width, (event.x / width) * height)
         return event
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent?): Boolean = if (disabled) false else super.onTouchEvent(swap(ev))
 
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {

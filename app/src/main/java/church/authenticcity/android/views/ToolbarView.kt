@@ -1,5 +1,6 @@
 package church.authenticcity.android.views
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -19,7 +20,8 @@ import kotlin.math.roundToInt
  * Created by Greg Whatley on 10/6/2018 at 3:42 PM.
  * Licensed under the MIT License.
  */
-class ToolbarView(context: Context, private val image: ImageResource, private val leftAction: ButtonAction, private val rightAction: ButtonAction) : RelativeLayout(context) {
+@SuppressLint("ViewConstructor")
+class ToolbarView(context: Context, image: ImageResource, private val leftAction: ButtonAction, private val rightAction: ButtonAction) : RelativeLayout(context) {
     init {
         val view = LayoutInflater.from(context).inflate(R.layout.view_toolbar, this, true)
         val leftView = view.toolbar_left

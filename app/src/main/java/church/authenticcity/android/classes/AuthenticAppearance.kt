@@ -9,7 +9,6 @@ class AuthenticAppearance(data: HashMap<String, Any>) {
 
     class Events(data: HashMap<String, Any>) {
         val title: String = data["title"] as String
-        val hideTitle: Boolean = data["hideTitle"] as Boolean
         val header: ImageResource = ImageResource(data["header"] as HashMap<String, Any>)
 
     }

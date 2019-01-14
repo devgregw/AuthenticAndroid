@@ -14,7 +14,7 @@ import church.authenticcity.android.views.VerticalViewPager
 class HomeActivity : AppCompatActivity() {
     private lateinit var viewPager: VerticalViewPager
 
-    fun initialize() {
+    private fun initialize() {
         viewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager) {
             override fun getItem(position: Int): Fragment {
                 return when (position) {

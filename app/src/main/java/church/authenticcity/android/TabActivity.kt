@@ -136,7 +136,7 @@ class TabActivity : AppCompatActivity() {
             itemView.setOnClickListener {
                 val img = ImageView(context).apply {
                     scaleType = ImageView.ScaleType.CENTER_INSIDE
-                    Utils.loadFirebaseImage(this@WallpaperViewHolder.context, resource.imageName, this, { d -> this.setImageDrawable(d) })
+                    Utils.loadFirebaseImage(this@WallpaperViewHolder.context, resource.imageName, this) { d -> this.setImageDrawable(d) }
                 }
                 AlertDialog.Builder(context).setCancelable(true).setTitle("Preview").setPositiveButton("Save") { _, _ ->
                     resource.saveToGallery(context)

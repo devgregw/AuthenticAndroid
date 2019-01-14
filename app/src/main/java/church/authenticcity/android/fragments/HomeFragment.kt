@@ -2,6 +2,7 @@ package church.authenticcity.android.fragments
 
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -54,6 +55,7 @@ class HomeFragment : Fragment() {
         })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initialize() {
         if (context == null) {
             Log.w("HomeFragment", "WARNING: skipping animations!")

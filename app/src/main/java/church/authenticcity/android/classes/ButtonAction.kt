@@ -33,14 +33,14 @@ class ButtonAction(private val map: HashMap<String, Any>) {
         })
     }
 
-    val group = map["group"].toString().toInt()
+    private val group = map["group"].toString().toInt()
     val type = map["type"] as String
-    var properties = HashMap<String, Any>(map.filter { it.key != "group" && it.key != "type" })
+    private var properties = HashMap<String, Any>(map.filter { it.key != "group" && it.key != "type" })
 
     @Suppress("UNCHECKED_CAST")
     fun <T> get(name: String): T = properties[name] as T
 
-    fun <T> tryGet(name: String): T? = if (properties.containsKey(name)) get(name) else null
+    private fun <T> tryGet(name: String): T? = if (properties.containsKey(name)) get(name) else null
 
     private fun showAlert(context: Context, title: String, message: String) {
         AlertDialog.Builder(context).setTitle(Utils.makeTypefaceSpan(title, Utils.getTitleTypeface(context))).setCancelable(true).setMessage(Utils.makeTypefaceSpan(message, Utils.getTextTypeface(context))).setPositiveButton(Utils.makeTypefaceSpan("Dismiss", Utils.getTextTypeface(context)), null).create().applyColorsAndTypefaces().show()

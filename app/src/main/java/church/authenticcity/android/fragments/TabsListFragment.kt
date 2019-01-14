@@ -4,49 +4,33 @@ package church.authenticcity.android.fragments
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context.CLIPBOARD_SERVICE
-import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.RippleDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.PopupMenu
-import android.support.v7.widget.RecyclerView
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import church.authenticcity.android.*
-import church.authenticcity.android.BuildConfig
 import church.authenticcity.android.R
 import church.authenticcity.android.classes.AuthenticAppearance
 import church.authenticcity.android.classes.AuthenticTab
-import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.helpers.SimpleAnimatorListener
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
-import church.authenticcity.android.views.LivestreamView
+import church.authenticcity.android.helpers.setScrollingEnabled
 import church.authenticcity.android.views.TitleBarView
 import church.authenticcity.android.views.recyclerView.DualRecyclerView
 import church.authenticcity.android.views.recyclerView.Tile
-import church.authenticcity.android.views.recyclerView.TileAdapter
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.database.*
-import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.fragment_tabs_list.*
 import kotlinx.android.synthetic.main.fragment_tabs_list.view.*
 import java.util.*
-import kotlin.math.roundToInt
+import kotlin.concurrent.thread
 
 class TabsListFragment : Fragment() {
     companion object {
@@ -59,6 +43,19 @@ class TabsListFragment : Fragment() {
     private lateinit var appearance: AuthenticAppearance
 
     private fun makePath(path: String) = (if (AuthenticApplication.useDevelopmentDatabase) "/dev" else "") + path
+
+    private fun getRecyclerViewHost(): LinearLayout {
+        val host = view!!.root.findViewWithTag<LinearLayout>("recyclerViewHost")
+        return if (host == null) {
+            view!!.root.removeAllViews()
+            LinearLayout(context).apply {
+                layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                tag = "recyclerViewHost"
+                view!!.root.addView(this)
+            }
+        } else
+            host
+    }
 
     private val tabsEventListener = object : ValueEventListener {
         @SuppressLint("SetTextI18n")
@@ -77,7 +74,7 @@ class TabsListFragment : Fragment() {
             if (!this@TabsListFragment.isAdded)
                 return
             //val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, this@TabsListFragment.resources.displayMetrics).roundToInt()
-            view!!.root.findViewWithTag<LinearLayout>("recyclerViewHost").animate().alpha(0f).setDuration(250L).setStartDelay(0L).setListener(object : SimpleAnimatorListener() {
+            this@TabsListFragment.getRecyclerViewHost().animate().alpha(0f).setDuration(250L).setStartDelay(0L).setListener(object : SimpleAnimatorListener() {
                 override fun onAnimationEnd(animator: Animator?) {
                     view!!.root.apply {
                         removeAllViews()
@@ -175,12 +172,14 @@ class TabsListFragment : Fragment() {
                         })*/
                     }
                     view!!.swipe_refresh_layout.isRefreshing = false
-                    val constructed = p0.children.map { Utils.Constructors.constructTab(it.value!!) }
-                    initializeAdapter(constructed.filter { it != null }.map { it!! }.filter {
-                        it.isVisible
-                    }, appearance)
-                    if (constructed.count { it == null } > 0)
-                        AlertDialog.Builder(requireContext()).setTitle("Error").setMessage("We're having trouble loading content.  Please try again later.  We apologise for the inconvenience.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
+                    thread {
+                        val constructed = p0.children.map { Utils.Constructors.constructTab(it.value!!) }
+                        initializeAdapter(constructed.filter { it != null }.map { it!! }.filter {
+                            it.isVisible
+                        }, appearance)
+                        if (constructed.count { it == null } > 0)
+                            AlertDialog.Builder(requireContext()).setTitle("Error").setMessage("We're having trouble loading content.  Please try again later.  We apologise for the inconvenience.").setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
+                    }
                     //trace.stop()
                 }
             })
@@ -212,10 +211,12 @@ class TabsListFragment : Fragment() {
         //if (refreshed)
         //    trace.incrementMetric("refresh tabs", 1L)
         swipe_refresh_layout.isRefreshing = true
-        appRef?.removeEventListener(appearanceEventListener)
-        appRef = FirebaseDatabase.getInstance().getReference(makePath("/appearance/"))
-        appRef?.keepSynced(true)
-        appRef?.addValueEventListener(appearanceEventListener)
+        thread {
+            appRef?.removeEventListener(appearanceEventListener)
+            appRef = FirebaseDatabase.getInstance().getReference(makePath("/appearance/"))
+            appRef?.keepSynced(true)
+            appRef?.addValueEventListener(appearanceEventListener)
+        }
     }
 
     private fun initializeAdapter(tabs: List<AuthenticTab>, appearance: AuthenticAppearance) {
@@ -224,54 +225,46 @@ class TabsListFragment : Fragment() {
         val toTile: (AuthenticTab) -> Tile<AuthenticTab> = { t ->
             Tile(t.title, false, t.header, t) { tab -> if (tab.action == null) TabActivity.start(requireContext(), tab) else tab.action.invoke(requireContext()) }
         }
-        view!!.postDelayed({
+        thread {
+            val ueTile = Tile(appearance.events.title, false, appearance.events.header, appearance.events) { a -> EventListActivity.start(requireActivity(), a) }
+            val leftTiles = tabs.filter { t -> t.index % 2 == 0 }.map(toTile)
+            val rightTiles = ArrayList<Tile<*>>().apply {
+                add(ueTile)
+                addAll(tabs.filter { t -> t.index % 2 != 0 }.map(toTile))
+            }
+            val willFillLeft = if (leftTiles.count() > 4) false else appearance.tabs.fillLeft
+            val willFillRight = if (rightTiles.count() > 4) false else appearance.tabs.fillRight
+            this@TabsListFragment.requireActivity().runOnUiThread {
+                view!!.tabs_scroll_view.setScrollingEnabled((willFillLeft && willFillRight).not())
+                val layout = DualRecyclerView.create(requireActivity(), leftTiles, rightTiles, appearance, requireContext().resources.displayMetrics.heightPixels - view!!.findViewById<View>(R.id.toolbar).height)
+                view!!.root.addView(layout)
+                layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
+            }
+        }
+        /*view!!.postDelayed({
             requireActivity().runOnUiThread {
                 val ueTile = Tile(appearance.events.title, false, appearance.events.header, appearance.events) { a -> EventListActivity.start(requireActivity(), a) }
-                if (Utils.getScreenDiagonal(this@TabsListFragment.requireActivity()) >= 4.5) {
-                    val layout = DualRecyclerView.create(requireActivity(), tabs.filter { t -> t.index % 2 == 0 }.map(toTile), ArrayList<Tile<*>>().apply {
-                        add(ueTile)
-                        addAll(tabs.filter { t -> t.index % 2 != 0 }.map(toTile))
-                    }, appearance, requireContext().resources.displayMetrics.heightPixels - view!!.findViewById<View>(R.id.toolbar).height)
-                    view!!.root.addView(layout)
-                    layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
-                } else {
-                    val layout = LinearLayout(requireContext()).apply {
-                        val recyclerView = RecyclerView(requireContext())
-                        recyclerView.adapter = TileAdapter(requireActivity(), ArrayList<Tile<*>>().apply {
-                            add(ueTile)
-                            addAll(tabs.sortedBy { t -> t.index }.map(toTile).map { t -> t.withHeightOverride(250) })
-                        }, true, false, 0)
-                        recyclerView.layoutManager = LinearLayoutManager(activity)
-                        layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
-                            addRule(RelativeLayout.BELOW, R.id.toolbar)
-                        }
-                        recyclerView.addItemDecoration(DividerItemDecoration(activity, (recyclerView.layoutManager as LinearLayoutManager).orientation))
-                        alpha = 0f
-                        tag = "recyclerViewHost"
-                        orientation = LinearLayout.VERTICAL
-                        addView(recyclerView)
-                    }
-
-                    view!!.root.addView(layout)
-                    layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
+                val leftTiles = tabs.filter { t -> t.index % 2 == 0 }.map(toTile)
+                val rightTiles = ArrayList<Tile<*>>().apply {
+                    add(ueTile)
+                    addAll(tabs.filter { t -> t.index % 2 != 0 }.map(toTile))
                 }
+                val willFillLeft = if (leftTiles.count() > 4) false else appearance.tabs.fillLeft
+                val willFillRight = if (rightTiles.count() > 4) false else appearance.tabs.fillRight
+                view!!.tabs_scroll_view.setScrollingEnabled((willFillLeft && willFillRight).not())
+                val layout = DualRecyclerView.create(requireActivity(), leftTiles, rightTiles, appearance, requireContext().resources.displayMetrics.heightPixels - view!!.findViewById<View>(R.id.toolbar).height)
+                view!!.root.addView(layout)
+                layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
             }
-        }, 250L)
+        }, 250L)*/
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //if (!::activity.isInitialized)
-        //    activity = requireActivity()
         view!!.apply {
-            Handler().postDelayed({
-                /*if (this@TabsListFragment.isAdded) {
-                    requireActivity().runOnUiThread {
-                        loadTabs(false)
-                    }
-                }*/
+            //Handler().postDelayed({
                 loadTabs(false)
-            }, 1750L)
+            //}, 1750L)
             swipe_refresh_layout.apply {
                 setOnRefreshListener {
                     loadTabs(true)

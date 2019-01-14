@@ -12,7 +12,7 @@ import kotlin.collections.ArrayList
  * Created by Greg Whatley on 4/8/2018 at 9:29 PM.
  * Licensed under the MIT License.
  */
-class RecurrenceRule(val frequency: String, val interval: Int, val endDate: ZonedDateTime?, val count: Int?) {
+class RecurrenceRule(private val frequency: String, private val interval: Int, private val endDate: ZonedDateTime?, private val count: Int?) {
     class Occurrence(val startDate: ZonedDateTime, val endDate: ZonedDateTime) {
         fun format(hideEndDate: Boolean): String {
             return if (startDate.dayOfYear != endDate.dayOfYear || startDate.year != endDate.year) {
@@ -26,7 +26,7 @@ class RecurrenceRule(val frequency: String, val interval: Int, val endDate: Zone
         }
     }
 
-    val infinite: Boolean = count == null && endDate == null
+    private val infinite: Boolean = count == null && endDate == null
 
     fun getRRule(): String {
         val main = "FREQ=${frequency.toUpperCase()};INTERVAL=$interval"
@@ -71,7 +71,7 @@ class RecurrenceRule(val frequency: String, val interval: Int, val endDate: Zone
         return occurrences
     }*/
 
-    fun getOccurrences(originalStart: ZonedDateTime, originalEnd: ZonedDateTime): List<Occurrence> {
+    private fun getOccurrences(originalStart: ZonedDateTime, originalEnd: ZonedDateTime): List<Occurrence> {
         val duration = originalEnd.toEpochSecond() - originalStart.toEpochSecond()
         val occurrences = ArrayList<Occurrence>()
         when {

@@ -11,7 +11,7 @@ import kotlin.math.roundToInt
  * Licensed under the MIT License.
  */
 class TileAdapter(private val activity: Activity, private val tiles: List<Tile<*>>, private val fullWidth: Boolean, private val fillColumn: Boolean, private val height: Int) : RecyclerView.Adapter<TileViewHolder>() {
-    private fun getHeight() = if (itemCount > 4) null else (height.toFloat() / itemCount.toFloat()).roundToInt()
+    private fun getHeight() = if (itemCount > 4) null else (height.toDouble() / itemCount).roundToInt()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TileViewHolder(activity, fullWidth, if (fillColumn) getHeight() else null, parent)
 

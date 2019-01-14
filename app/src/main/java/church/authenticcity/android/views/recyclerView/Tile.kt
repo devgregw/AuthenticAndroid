@@ -10,9 +10,4 @@ import church.authenticcity.android.classes.ImageResource
 
 class Tile<T>(val title: String, val hideTitle: Boolean, val header: ImageResource, val argument: T, val handler: (T) -> Unit) {
     var heightOverride: Int? = null
-
-    fun withHeightOverride(override: Int?): Tile<T> {
-        heightOverride = override
-        return this
-    }
 }

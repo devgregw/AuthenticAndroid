@@ -18,7 +18,6 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import church.authenticcity.android.AuthenticApplication
 import church.authenticcity.android.BuildConfig
-import church.authenticcity.android.HomeActivity
 import church.authenticcity.android.R
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.helpers.Utils
