@@ -55,7 +55,7 @@ class TitleBarView {
                             true
                         }
                         R.id.menu_privacy -> {
-                            ButtonAction.openUrl("https://docs.accams.devgregw.com/privacy-policy").invoke(context)
+                            ButtonAction.openUrl("https://authenticdocs.gregwhatley.dev/privacy-policy").invoke(context)
                             true
                         }
                         R.id.menu_licenses -> {
