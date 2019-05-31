@@ -2,6 +2,7 @@ package church.authenticcity.android
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -10,25 +11,25 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.util.TypedValue
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.AuthenticTab
 import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.helpers.applyTypeface
+import church.authenticcity.android.views.LoadingIndicatorImageView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_content_basic.*
 import java.util.*
+import kotlin.math.roundToInt
 
 class TabActivity : AppCompatActivity() {
     companion object {
@@ -123,25 +124,38 @@ class TabActivity : AppCompatActivity() {
             })
     }
 
-    private class WallpaperViewHolder(private val context: Context) : RecyclerView.ViewHolder(ImageView(context).apply {
-        scaleType = ImageView.ScaleType.CENTER_CROP
+    private class WallpaperViewHolder(private val context: Context) : RecyclerView.ViewHolder(RelativeLayout(context).apply {
+        val rand = Random().nextInt(256)
         val size = context.resources.displayMetrics.widthPixels / 2
         layoutParams = RecyclerView.LayoutParams(size, size)
+        setBackgroundColor(Color.argb(255, rand, rand, rand))
+        addView(ProgressBar(context).apply {
+            val psize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20f, context.resources.displayMetrics).roundToInt()
+            isIndeterminate = true
+            indeterminateTintList = ColorStateList.valueOf(Color.argb(255, 255 - rand, 255 - rand, 255 - rand))
+            layoutParams = RelativeLayout.LayoutParams(psize, psize).apply {
+                addRule(RelativeLayout.CENTER_IN_PARENT)
+            }
+        })
+        addView(ImageView(context).apply {
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+            id = R.id.image
+        })
     }) {
-        private val rand = Random().nextInt(256)
 
         fun initialize(resource: ImageResource) {
-            itemView.setBackgroundColor(Color.argb(255, rand, rand, rand))
-            Utils.loadFirebaseImage(context, resource.imageName, itemView as ImageView)
+            //Utils.loadFirebaseImage(context, resource.imageName, itemView.findViewById(R.id.image) as ImageView)
+            resource.load(context, itemView.findViewById(R.id.image) as ImageView)
             itemView.setOnClickListener {
-                val img = ImageView(context).apply {
-                    scaleType = ImageView.ScaleType.CENTER_INSIDE
-                    Utils.loadFirebaseImage(this@WallpaperViewHolder.context, resource.imageName, this) { d -> this.setImageDrawable(d) }
-                }
-                AlertDialog.Builder(context).setCancelable(true).setTitle("Preview").setPositiveButton("Save") { _, _ ->
+                /*AlertDialog.Builder(context).setCancelable(true).setTitle("Preview").setPositiveButton("Save") { _, _ ->
                     resource.saveToGallery(context)
-                }.setNeutralButton("Back", null).setView(img).create().applyColorsAndTypefaces().show()
-                //Utils.makeToast(context, resource.imageName, Toast.LENGTH_SHORT).show()
+                }.setNeutralButton("Back", null).setView(LoadingIndicatorImageView.create(context, resource, LoadingIndicatorImageView.ANCHOR_CENTER, ImageView.ScaleType.CENTER_INSIDE, false, LoadingIndicatorImageView.WRAP_CONTENT, LoadingIndicatorImageView.WRAP_CONTENT)).create().applyColorsAndTypefaces().show()*/
+                context.startActivity(Intent(context, WallpaperPreviewActivity::class.java).apply {
+                    putExtra("imageName", resource.imageName)
+                    putExtra("width", resource.width)
+                    putExtra("height", resource.height)
+                })
             }
         }
     }

@@ -18,4 +18,7 @@
     <string name="watch_live_on_youtube">WATCH LIVE ON YOUTUBE</string>
     <string name="sunday_night">SUNDAY NIGHT</string>
     <string name="the_5_the_7">THE 5 | THE 7</string>
+
+    <string name="title_activity_wallpaper_preview">WallpaperPreviewActivity</string>
+    <string name="wallpaper_preview">Wallpaper Preview</string>
 </resources>
