@@ -1,15 +1,12 @@
 package church.authenticcity.android.classes
 
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.CalendarContract
-import android.provider.Settings
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.util.Log
-import android.widget.Toast
 import church.authenticcity.android.EventActivity
 import church.authenticcity.android.EventListActivity
 import church.authenticcity.android.TabActivity
@@ -21,8 +18,6 @@ import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
-import java.time.Instant
-import java.util.*
 import kotlin.collections.HashMap
 
 class ButtonAction(private val map: HashMap<String, Any>) {

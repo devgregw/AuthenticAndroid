@@ -13,7 +13,6 @@ import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.helpers.Utils
 import kotlinx.android.synthetic.main.view_toolbar.view.*
-import kotlin.math.roundToInt
 
 /**
  * Project AuthenticAndroid
@@ -35,11 +34,10 @@ class ToolbarView(context: Context, image: ImageResource, private val leftAction
         leftView.setOnClickListener { leftAction.invoke(context) }
         rightView.isClickable = true
         rightView.setOnClickListener { rightAction.invoke(context) }
-        val adjustedWidth = context.resources.displayMetrics.widthPixels
-        val ratio = image.width.toFloat() / (if (image.height == 0) 1 else image.height).toFloat()
-        val adjustedHeight = (adjustedWidth / ratio).roundToInt()
+        val adjustedHeight = image.calculateHeight(context, true)
         imageView.layoutParams.height = adjustedHeight
         view.toolbar_buttons.layoutParams.height = adjustedHeight
-        Utils.loadFirebaseImage(context, image.imageName, imageView)
+        //Utils.loadFirebaseImage(context, image.imageName, imageView)
+        image.load(context, imageView)
     }
 }

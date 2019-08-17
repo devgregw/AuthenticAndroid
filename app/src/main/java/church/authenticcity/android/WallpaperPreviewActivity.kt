@@ -1,15 +1,12 @@
 package church.authenticcity.android
 
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import church.authenticcity.android.classes.ImageResource
 import kotlinx.android.synthetic.main.activity_wallpaper_preview.*
-import kotlin.random.Random
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

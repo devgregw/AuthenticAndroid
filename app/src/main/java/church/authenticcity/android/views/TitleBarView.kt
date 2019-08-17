@@ -9,7 +9,8 @@ import android.graphics.Color
 import android.graphics.drawable.RippleDrawable
 import android.net.Uri
 import android.provider.Settings
-import android.support.v7.widget.PopupMenu
+import androidx.appcompat.widget.PopupMenu
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +37,7 @@ class TitleBarView {
                 view.home_down_arrow.foreground = ripple
                 view.expanded_menu.foreground = ripple
             }
+            view.tag = "titlebar"
             view.home_livestream_container.addView(LivestreamView.create(context, viewGroup))
             view.home_title.typeface = Utils.getTitleTypeface(context)
             view.home_down_arrow.setOnClickListener { goHome() }
@@ -63,10 +65,17 @@ class TitleBarView {
                             true
                         }
                         R.id.menu_copy_fcm -> {
-                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            clipboard.primaryClip = ClipData.newPlainText("fcm", FirebaseInstanceId.getInstance().token
-                                    ?: "<unavailable>")
-                            Utils.makeToast(context, "Your FCM Registration Token was copied.", Toast.LENGTH_SHORT).show()
+                            FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+                                if (!task.isSuccessful) {
+                                    Log.w("CopyIID", "Unable to copy IID", task.exception)
+                                    Utils.makeToast(context, "Unable to copy registration token.", Toast.LENGTH_SHORT).show()
+                                    return@addOnCompleteListener
+                                }
+                                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                clipboard.setPrimaryClip(ClipData.newPlainText("fcm", task.result?.token ?: "<unavailable>"))
+                                Utils.makeToast(context, "Your registration token was copied.", Toast.LENGTH_SHORT).show()
+                            }
+
                             true
                         }
                         R.id.menu_db -> {

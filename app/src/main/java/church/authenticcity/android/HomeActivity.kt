@@ -6,26 +6,22 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.RippleDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.view.PagerAdapter
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager.widget.PagerAdapter
 import church.authenticcity.android.classes.AuthenticAppearance
 import church.authenticcity.android.classes.AuthenticTab
-import church.authenticcity.android.fragments.HomeFragment
-import church.authenticcity.android.fragments.TabsListFragment
 import church.authenticcity.android.helpers.SimpleAnimatorListener
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
@@ -37,11 +33,11 @@ import church.authenticcity.android.views.recyclerView.DualRecyclerView
 import church.authenticcity.android.views.recyclerView.Tile
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.database.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.fragment_tabs_list.*
 import kotlinx.android.synthetic.main.fragment_tabs_list.view.*
-import java.util.HashMap
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.thread
 import kotlin.math.roundToInt
 
@@ -53,6 +49,13 @@ class HomeActivity : AppCompatActivity() {
     private var appRef: DatabaseReference? = null
     private var tabsRef: DatabaseReference? = null
     private lateinit var appearance: AuthenticAppearance
+
+    private fun clear() {
+        tabsView!!.root.apply {
+            while (childCount > 2)
+                removeViewAt(childCount - 1)
+        }
+    }
 
     private fun makePath(path: String) = (if (AuthenticApplication.useDevelopmentDatabase) "/dev" else "") + path
 
@@ -84,8 +87,9 @@ class HomeActivity : AppCompatActivity() {
             this@HomeActivity.getRecyclerViewHost().animate().alpha(0f).setDuration(250L).setStartDelay(0L).setListener(object : SimpleAnimatorListener() {
                 override fun onAnimationEnd(animator: Animator?) {
                     tabsView!!.root.apply {
-                        removeAllViews()
-                        addView(TitleBarView.create(this@HomeActivity, this, ::goHome, ::loadTabs))
+                        clear()
+                        //removeAllViews()
+                        //addView(TitleBarView.create(this@HomeActivity, this, ::goHome, ::loadTabs))
                     }
                     tabsView!!.swipe_refresh_layout.isRefreshing = false
                     thread {
@@ -126,6 +130,10 @@ class HomeActivity : AppCompatActivity() {
         //val trace = FirebasePerformance.startTrace("load tabs")
         //if (refreshed)
         //    trace.incrementMetric("refresh tabs", 1L)
+        if (!refreshed)
+            tabsView!!.root.apply {
+                addView(TitleBarView.create(this@HomeActivity, this, ::goHome, ::loadTabs))
+            }
         swipe_refresh_layout.isRefreshing = true
         thread {
             appRef?.removeEventListener(appearanceEventListener)
@@ -136,27 +144,38 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun initializeAdapter(tabs: List<AuthenticTab>, appearance: AuthenticAppearance) {
-        if (tabsView?.findViewById<View>(R.id.toolbar) == null) {
-            Crashlytics.log("WARNING: TabsListFragment toolbar is null!  Skipping adapter initialization.")
-            return
-        }
         val toTile: (AuthenticTab) -> Tile<AuthenticTab> = { t ->
             Tile(t.title, false, t.header, t) { tab -> if (tab.action == null) TabActivity.start(this@HomeActivity, tab) else tab.action.invoke(this@HomeActivity) }
         }
         thread {
-            val ueTile = Tile(appearance.events.title, false, appearance.events.header, appearance.events) { a -> EventListActivity.start(this@HomeActivity, a) }
-            val leftTiles = tabs.filter { t -> t.index % 2 == 0 }.map(toTile)
-            val rightTiles = java.util.ArrayList<Tile<*>>().apply {
-                add(ueTile)
-                addAll(tabs.filter { t -> t.index % 2 != 0 }.map(toTile))
-            }
-            val willFillLeft = if (leftTiles.count() > 4) false else appearance.tabs.fillLeft
-            val willFillRight = if (rightTiles.count() > 4) false else appearance.tabs.fillRight
-            this@HomeActivity.runOnUiThread {
-                tabsView!!.tabs_scroll_view.setScrollingEnabled((willFillLeft && willFillRight).not())
-                val layout = DualRecyclerView.create(this@HomeActivity, leftTiles, rightTiles, appearance, this@HomeActivity.resources.displayMetrics.heightPixels - tabsView!!.findViewById<View>(R.id.toolbar).height)
-                tabsView!!.root.addView(layout)
-                layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
+            if (tabsView?.findViewById<View>(R.id.toolbar) == null) {
+                Crashlytics.log("WARNING: TabsListFragment toolbar is null!  Skipping adapter initialization.")
+            } else {
+                val ueTile = Tile(appearance.events.title, false, appearance.events.header, appearance.events) { a -> EventListActivity.start(this@HomeActivity, a) }
+                val leftTiles = tabs.filter { t -> t.index % 2 == 0 }.map(toTile)
+                val rightTiles = java.util.ArrayList<Tile<*>>().apply {
+                    add(ueTile)
+                    addAll(tabs.filter { t -> t.index % 2 != 0 }.map(toTile))
+                }
+                val willFillLeft = if (leftTiles.count() > 4) false else appearance.tabs.fill
+                val willFillRight = if (rightTiles.count() > 4) false else appearance.tabs.fill
+                val willFill = willFillLeft and willFillRight
+                this@HomeActivity.runOnUiThread {
+                    tabsView!!.tabs_scroll_view.setScrollingEnabled(!willFill)
+                    var sb = 0
+                    if (Build.VERSION.SDK_INT >= 28) {
+                        val cutout = window.decorView.rootWindowInsets.displayCutout
+                        sb += cutout?.safeInsetTop ?: 0
+                        sb += (cutout?.safeInsetBottom ?: 0) / 4
+
+                    }
+                    val rect = Rect()
+                    window.decorView.getWindowVisibleDisplayFrame(rect)
+                    sb -= rect.top
+                    val layout = DualRecyclerView.create(this@HomeActivity, leftTiles, rightTiles, appearance, this@HomeActivity.resources.displayMetrics.heightPixels - tabsView!!.findViewById<View>(R.id.toolbar).height + sb)
+                    tabsView!!.root.addView(layout)
+                    layout.animate().setStartDelay(250L).alpha(1f).duration = 250L
+                }
             }
         }
     }

@@ -95,7 +95,7 @@ class RecurrenceRule(private val frequency: String, private val interval: Int, p
             }
             count != null -> {
                 occurrences.add(Occurrence(originalStart, originalEnd))
-                for (i in 1..(count - 1)) {
+                for (i in 1 until count) {
                     val oc = occurrences.last()
                     occurrences.add(Occurrence(addInterval(oc.startDate), addInterval(oc.endDate)))
                 }

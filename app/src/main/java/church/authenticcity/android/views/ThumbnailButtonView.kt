@@ -21,6 +21,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.thumbnail_button_view.view.*
 import kotlin.math.roundToInt
+import kotlin.random.Random
 
 /**
  * Project AuthenticAndroid
@@ -49,6 +50,9 @@ class ThumbnailButtonView private constructor(context: Context) : RelativeLayout
     }
 
     private fun initialize() {
+        val rand = Random.nextInt(0, 256)
+        view.thumbnail_container.setBackgroundColor(Color.argb(255, rand, rand, rand))
+        view.progress_bar.indeterminateTintList = ColorStateList.valueOf(Color.argb(255, 255 - rand, 255 - rand, 255 - rand))
         if (Utils.checkSdk(23))
             view.foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
         isClickable = true

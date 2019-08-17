@@ -14,8 +14,7 @@ class AuthenticAppearance(data: HashMap<String, Any>) {
     }
 
     class Tabs(data: HashMap<String, Any>) {
-        val fillLeft: Boolean = data["fillLeft"].toString().toBoolean()
-        val fillRight: Boolean = data["fillRight"].toString().toBoolean()
+        val fill = if (data.containsKey("fill")) data["fill"].toString().toBoolean() else true
     }
 
     val events = Events(data["events"] as HashMap<String, Any>)

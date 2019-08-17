@@ -8,12 +8,12 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.view.MenuItem
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -75,7 +75,7 @@ class EventListActivity : AppCompatActivity() {
                             }
                         }
                         val constructed = p0.children.map { Utils.Constructors.constructEvent(it.value!!) }.filter { it != null }.map { it!! }
-                        val tiles = constructed.filter { it is AuthenticEventPlaceholder }.map { it as AuthenticEventPlaceholder }.filter { it.isVisible }.sortedBy { it.index }.map { Tile(it.title, it.hideTitle, it.header, it, createHandler(it)) } + constructed.filter { it !is AuthenticEventPlaceholder }.filter { it.isVisible }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.hideTitle, it.header, it) { e -> EventActivity.start(this@EventListActivity, e) } }
+                        val tiles = constructed.asSequence().filter { it is AuthenticEventPlaceholder }.map { it as AuthenticEventPlaceholder }.filter { it.isVisible }.sortedBy { it.index }.map { Tile(it.title, it.hideTitle, it.header, it, createHandler(it)) }.toList() + constructed.filter { it !is AuthenticEventPlaceholder }.filter { it.isVisible }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.hideTitle, it.header, it) { e -> EventActivity.start(this@EventListActivity, e) } }
                         if (tiles.isEmpty()) {
                             root.addView(AuthenticElement.createText(this@EventListActivity, "There are no upcoming events.", "center", size = 22f))
                         } else {

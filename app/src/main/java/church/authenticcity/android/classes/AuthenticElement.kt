@@ -5,18 +5,16 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.RippleDrawable
-import android.support.v4.content.ContextCompat
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
+import androidx.core.content.ContextCompat
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
+import church.authenticcity.android.views.LoadingIndicatorImageView
 import church.authenticcity.android.views.ThumbnailButtonView
 import church.authenticcity.android.views.ToolbarView
 import church.authenticcity.android.views.recyclerView.Tile
@@ -35,26 +33,50 @@ import kotlin.math.roundToInt
 class AuthenticElement(private val map: HashMap<String, Any>) {
     companion object {
         fun createImage(context: Context, image: ImageResource, enlargable: Boolean): View {
-            val imageView = ImageView(context).apply {
-                val adjustedWidth = context.resources.displayMetrics.widthPixels
-                val ratio = image.width.toFloat() / (if (image.height == 0) 1 else image.height).toFloat()
-                val adjustedHeight = (adjustedWidth / ratio).roundToInt()
-                layoutParams = ViewGroup.LayoutParams(adjustedWidth, adjustedHeight)
-                Utils.loadFirebaseImage(context, image.imageName, this)
+            val view = RelativeLayout(context).apply {
                 val rand = Random().nextInt(256)
+                val adjustedWidth = context.resources.displayMetrics.widthPixels
+                val adjustedHeight = image.calculateHeight(adjustedWidth)
+                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
                 setBackgroundColor(Color.argb(255, rand, rand, rand))
-            }
-            if (enlargable)
-                return LinearLayout(context).apply {
-                    orientation = LinearLayout.VERTICAL
-                    layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                    imageView.setOnClickListener {
-                        image.saveToGallery(context)
+                addView(ProgressBar(context).apply {
+                    val psize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20f, context.resources.displayMetrics).roundToInt()
+                    isIndeterminate = true
+                    indeterminateTintList = ColorStateList.valueOf(Color.argb(255, 255 - rand, 255 - rand, 255 - rand))
+                    layoutParams = RelativeLayout.LayoutParams(psize, psize).apply {
+                        addRule(RelativeLayout.ALIGN_PARENT_TOP)
+                        addRule(RelativeLayout.ALIGN_PARENT_START)
+                        val margin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, context.resources.displayMetrics).roundToInt()
+                        setMargins(margin, margin, 0, 0)
                     }
-                    addView(createText(context, "Tap to download.", "left", color = Color.DKGRAY, size = 14f))
-                    addView(imageView)
+                })
+                val imageView = ImageView(context).apply {
+                    id = R.id.image
+                    //Utils.loadFirebaseImage(context, image.imageName, this)
+                    image.load(context, this)
                 }
-            return imageView
+                if (enlargable) {
+                    addView(LinearLayout(context).apply {
+                        orientation = LinearLayout.VERTICAL
+                        layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                            addRule(RelativeLayout.ALIGN_PARENT_TOP)
+                            addRule(RelativeLayout.ALIGN_PARENT_START)
+                        }
+                        imageView.apply {
+                            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, adjustedHeight)
+                            setOnClickListener {
+                                image.saveToGallery(context)
+                            }
+                        }
+                        addView(createText(context, "Tap to download.", "left", color = Color.DKGRAY, size = 14f))
+                        addView(imageView)
+                    })
+                } else
+                    addView(imageView.apply {
+                        layoutParams = RelativeLayout.LayoutParams(adjustedWidth, adjustedHeight)
+                    })
+            }
+            return view
         }
 
         fun createVideo(context: Context, provider: String, id: String, thumbnail: String, title: String) =
@@ -135,8 +157,9 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
         fun createThumbnailButton(context: Context, info: HashMap<String, Any>, resource: HashMap<String, Any>) = createThumbnailButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String, ImageResource(resource))
 
         private fun createTile(context: Context, title: String, height: Int, action: ButtonAction, resource: ImageResource): View {
-            val h = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height.toFloat(), context.resources.displayMetrics).roundToInt()
-            val viewGroup = LinearLayout(context).apply { layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height) }
+            val usedHeight = if (height == 0) resource.calculateHeight(context, true) else height
+            val h = if (height == 0) usedHeight else TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, usedHeight.toFloat(), context.resources.displayMetrics).roundToInt()
+            val viewGroup = LinearLayout(context).apply { layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, usedHeight) }
             val viewHolder = TileViewHolder(context, false, h, viewGroup, false)
             viewHolder.initialize(Tile(title, false, resource, action) { a -> a.invoke(context) })
             return LinearLayout(context).apply {
@@ -152,15 +175,22 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
         fun createTile(context: Context, title: String, height: Int, action: HashMap<String, Any>, resource: HashMap<String, Any>) = createTile(context, title, height, ButtonAction(action), ImageResource(resource))
 
         fun createFullExperienceController(context: Context, image: ImageResource, action: ButtonAction) =
-                ImageView(context).apply {
-                    scaleType = ImageView.ScaleType.CENTER_CROP
+                LoadingIndicatorImageView.create(context, image, LoadingIndicatorImageView.ANCHOR_CENTER, ImageView.ScaleType.CENTER_CROP).apply {
                     isClickable = true
-                    setBackgroundColor(Color.BLACK)
-                    Utils.loadFirebaseImage(context, image.imageName, this)
                     setOnClickListener { action.invoke(context) }
                     if (Utils.checkSdk(23))
                         foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
                 }
+                /*ImageView(context).apply {
+                    scaleType = ImageView.ScaleType.CENTER_CROP
+                    isClickable = true
+                    setBackgroundColor(Color.BLACK)
+                    //Utils.loadFirebaseImage(context, image.imageName, this)
+                    image.load(context, true, this)
+                    setOnClickListener { action.invoke(context) }
+                    if (Utils.checkSdk(23))
+                        foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
+                }*/
 
         fun createSeparator(context: Context, visible: Boolean) =
                 LinearLayout(context).apply {
@@ -213,7 +243,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     put("height", 1080)
                 }))
                 "toolbar" -> createToolbar(context, getProperty<HashMap<String, Any>>("image", HashMap()), getProperty("leftAction", HashMap()), getProperty("rightAction", HashMap()))
-                "tile" -> createTile(context, getProperty("title", ""), getProperty("height", 200), getProperty("action", HashMap()), getProperty("header", HashMap<String, Any>()))
+                "tile" -> createTile(context, getProperty("title", ""), getProperty("height", 0), getProperty("action", HashMap()), getProperty("header", HashMap<String, Any>()))
                 "fullExpController" -> createFullExperienceController(context, ImageResource(getProperty("image", HashMap())), ButtonAction(getProperty("action", HashMap())))
                 "separator" -> createSeparator(context, getProperty("visible", true))
                 "html" -> createHtmlReader(context, getProperty("html", "<p></p>"))

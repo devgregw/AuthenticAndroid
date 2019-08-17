@@ -8,6 +8,7 @@ import android.widget.RelativeLayout
 import church.authenticcity.android.R
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.helpers.Utils
+import church.authenticcity.android.helpers.isNullOrWhiteSpace
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -59,7 +60,7 @@ class LivestreamView {
                 }
             }, { err ->
                 setText(false)
-                Log.e("Livestream", err.localizedMessage)
+                Log.e("Livestream", if (String.isNullOrWhiteSpace(err.message)) "<no message>" else err.message)
                 err.printStackTrace()
             }).setShouldCache(false))
             return view

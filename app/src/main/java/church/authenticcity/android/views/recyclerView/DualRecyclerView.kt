@@ -1,8 +1,8 @@
 package church.authenticcity.android.views.recyclerView
 
 import android.app.Activity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
@@ -35,8 +35,8 @@ class DualRecyclerView {
             }
             alpha = 0f
             tag = "recyclerViewHost"
-            addView(createRecyclerView(activity, leftTiles, appearance.tabs.fillLeft, height))
-            addView(createRecyclerView(activity, rightTiles, appearance.tabs.fillRight, height))
+            addView(createRecyclerView(activity, leftTiles, appearance.tabs.fill, height))
+            addView(createRecyclerView(activity, rightTiles, appearance.tabs.fill, height))
         }
     }
 }

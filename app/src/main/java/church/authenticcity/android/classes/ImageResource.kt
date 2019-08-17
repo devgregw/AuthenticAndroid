@@ -5,26 +5,36 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.provider.Settings
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
 import android.util.Log
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.IntDef
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import church.authenticcity.android.AuthenticApplication
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.helpers.getAs
+import church.authenticcity.android.helpers.isNullOrWhiteSpace
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.roundToInt
 
 /**
  * Project AuthenticAndroid
@@ -34,6 +44,54 @@ import java.io.FileOutputStream
 class ImageResource(val imageName: String, val width: Int, val height: Int) {
     constructor(map: HashMap<String, Any>) : this(map.getAs("name"), map.getAs("width"), map.getAs("height"))
     constructor() : this("unknown.png", 720, 1080)
+
+    private fun isExternal() = imageName.startsWith("http://", true) or imageName.startsWith("https://", true)
+
+    companion object{
+        @IntDef(ANCHOR_TOP_LEFT, ANCHOR_CENTER)
+        @Retention(AnnotationRetention.SOURCE)
+        annotation class Anchor
+        const val ANCHOR_TOP_LEFT = 0
+        const val ANCHOR_CENTER = 1
+    }
+
+    fun load(context: Context, into: ImageView, callback: ((Drawable) -> Unit)? = null) {
+        var ref = FirebaseStorage.getInstance().reference
+        if (AuthenticApplication.useDevelopmentDatabase)
+            ref = ref.child("dev")
+        val request = if (isExternal())
+            Glide.with(context).load(ref.child(if (String.isNullOrWhiteSpace(imageName)) "unknown.png" else imageName))
+        else
+            Glide.with(context).load(ref.child(if (String.isNullOrWhiteSpace(imageName)) "unknown.png" else imageName))
+        request.transition(DrawableTransitionOptions.withCrossFade())
+                .error(Glide.with(context)
+                        .load(ContextCompat.getDrawable(context, R.drawable.unknown))
+                        .transition(DrawableTransitionOptions.withCrossFade()))
+        if (callback != null)
+            request.listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    callback(ContextCompat.getDrawable(context, R.drawable.unknown)!!)
+                    return true
+                }
+
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    if (resource == null)
+                        callback(ContextCompat.getDrawable(context, R.drawable.unknown)!!)
+                    else
+                        callback(resource)
+                    return true
+                }
+            }).submit()
+        else
+            request.into(into)
+    }
+
+    fun calculateHeight(context: Context, fullWidth: Boolean) = calculateHeight(context.resources.displayMetrics.widthPixels / (if (fullWidth) 1 else 2))
+
+    fun calculateHeight(widthPx: Int): Int {
+        val ratio = width.toFloat() / (if (height == 0) 1 else height).toFloat()
+        return (widthPx / ratio).roundToInt()
+    }
 
     fun saveToGallery(context: Context) {
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
@@ -56,16 +114,16 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
                 ref = ref.child("dev")
             ref.child(imageName).downloadUrl.addOnCompleteListener {
                 Log.i("Save to gallery", "Load image")
-                Glide.with(context).asBitmap().load(it.result.toString()).into(object : SimpleTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap?, transition: Transition<in Bitmap>?) {
-                        Log.i("Save to gallery", "Loaded image")
-                        if (resource == null) {
-                            handler.post {
-                                dialog.dismiss()
-                                Utils.makeToast(context, "Unable to save image.", Toast.LENGTH_SHORT).show()
-                            }
-                            return
+                Glide.with(context).asBitmap().load(it.result.toString()).into(object : CustomTarget<Bitmap>() {
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        handler.post {
+                            dialog.dismiss()
+                            Utils.makeToast(context, "Unable to save image.", Toast.LENGTH_SHORT).show()
                         }
+                    }
+
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        Log.i("Save to gallery", "Loaded image")
                         val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageName.removeRange(imageName.lastIndexOf('.'), imageName.length - 1) + ".png")
                         val stream = FileOutputStream(file)
                         resource.compress(Bitmap.CompressFormat.PNG, 100, stream)
@@ -73,7 +131,7 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
                         MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null) { s, uri ->
                             handler.post {
                                 dialog.dismiss()
-                                Utils.makeToast(context, "Image saved", Toast.LENGTH_SHORT).show()
+                                Utils.makeToast(context, "Image saved.", Toast.LENGTH_SHORT).show()
                             }
                             Log.i("Save to gallery", s)
                             Log.i("Save to gallery", uri.toString())

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="church.authenticcity.android">
 
     <uses-permission android:name="android.permission.READ_CALENDAR" />
@@ -8,18 +9,27 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        tools:ignore="GoogleAppIndexingWarning"
         android:name=".AuthenticApplication"
         android:allowBackup="false"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:hardwareAccelerated="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".WallpaperPreviewActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_wallpaper_preview"
+            android:theme="@style/FullscreenTheme"></activity>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@android:color/black" />
 
         <activity
             android:name=".SplashScreenActivity"
@@ -31,7 +41,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".TabActivity"
             android:configChanges="screenSize"
@@ -44,16 +53,12 @@
             android:name=".EventActivity"
             android:configChanges="screenSize"
             android:screenOrientation="portrait" />
-        <service android:name=".services.FirebaseMessagingService"
+
+        <service
+            android:name=".services.FirebaseMessagingService"
             android:permission="church.authenticcity.android.services.FirebaseMessaging">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <service android:name=".services.FirebaseInstanceIDService"
-            android:permission="church.authenticcity.android.services.FirebaseIID">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 

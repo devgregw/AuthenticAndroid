@@ -6,29 +6,19 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.Typeface
-import android.graphics.drawable.Drawable
 import android.os.Build
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.res.ResourcesCompat
-import android.support.v7.app.ActionBar
-import android.support.v7.app.AlertDialog
 import android.text.Spannable
 import android.text.SpannableString
 import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.*
-import church.authenticcity.android.AuthenticApplication
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.res.ResourcesCompat
 import church.authenticcity.android.BuildConfig
 import church.authenticcity.android.R
 import church.authenticcity.android.classes.*
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.crashlytics.android.Crashlytics
-import com.google.firebase.storage.FirebaseStorage
 import org.threeten.bp.format.DateTimeFormatter
 
 fun String.Companion.isNullOrWhiteSpace(string: String?): Boolean {
@@ -59,7 +49,7 @@ fun AlertDialog.applyColorsAndTypefaces(): AlertDialog {
             typeface = Utils.getTextTypeface(a.context)
         }
         a.findViewById<TextView>(android.R.id.message)?.typeface = Utils.getTextTypeface(a.context)
-        a.findViewById<TextView>(android.support.v7.appcompat.R.id.alertTitle)?.typeface = Utils.getTitleTypeface(a.context)
+        a.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)?.typeface = Utils.getTitleTypeface(a.context)
     }
     return this
 }
@@ -168,7 +158,7 @@ class Utils {
         }
 
         @SuppressLint("ShowToast")
-        fun makeToast(context: Context, text: String, length: Int) = Toast.makeText(context, makeTypefaceSpan(text, Utils.getTextTypeface(context)), length)!!
+        fun makeToast(context: Context, text: String, length: Int) = Toast.makeText(context, makeTypefaceSpan(text, getTextTypeface(context)), length)!!
 
         fun makeTypefaceSpan(text: String, typeface: Typeface): SpannableString {
             val span = SpannableString(text)
@@ -191,30 +181,6 @@ class Utils {
             if (text == null)
                 text = ResourcesCompat.getFont(context, R.font.proxima_nova)
             return text!!
-        }
-
-        fun loadFirebaseImage(context: Context, name: String, view: ImageView, callback: ((Drawable) -> Unit)? = null) {
-            var ref = FirebaseStorage.getInstance().reference
-            if (AuthenticApplication.useDevelopmentDatabase)
-                ref = ref.child("dev")
-            val request = Glide.with(context).load(ref.child(if (String.isNullOrWhiteSpace(name)) "unknown.png" else name)).transition(DrawableTransitionOptions.withCrossFade()).error(Glide.with(context).load(ContextCompat.getDrawable(context, R.drawable.unknown)).transition(DrawableTransitionOptions.withCrossFade()))
-            if (callback != null)
-                request.listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        callback(ContextCompat.getDrawable(context, R.drawable.unknown)!!)
-                        return true
-                    }
-
-                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        if (resource == null)
-                            callback(ContextCompat.getDrawable(context, R.drawable.unknown)!!)
-                        else
-                            callback(resource)
-                        return true
-                    }
-                }).submit()
-            else
-                request.into(view)
         }
 
         fun isUpdateAvailable(latestCode: Int) = BuildConfig.VERSION_CODE < latestCode
