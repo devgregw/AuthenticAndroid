@@ -22,8 +22,7 @@
             android:name=".WallpaperPreviewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_wallpaper_preview"
-            android:theme="@style/FullscreenTheme"></activity>
-
+            android:theme="@style/FullscreenTheme"/>
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
@@ -62,10 +61,7 @@
             </intent-filter>
         </service>
 
-        <activity
-            android:name=".HomeActivity"
-            android:configChanges="screenSize"
-            android:screenOrientation="portrait" />
+        <activity android:name=".NewHomeActivity" android:configChanges="screenSize" android:screenOrientation="portrait"/>
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />

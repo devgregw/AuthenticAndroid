@@ -172,6 +172,14 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
             }
         }
 
+        fun createTile(context: Context, height: Int, tile: Tile<*>): View {
+            val finalHeight = if (height == 0) tile.header.calculateHeight(context.resources.displayMetrics.widthPixels / 2) else height
+            val viewGroup = LinearLayout(context).apply { layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, finalHeight) }
+            val viewHolder = TileViewHolder(context, false, finalHeight, viewGroup, false)
+            viewHolder.initialize(tile)
+            return viewHolder.itemView
+        }
+
         fun createTile(context: Context, title: String, height: Int, action: HashMap<String, Any>, resource: HashMap<String, Any>) = createTile(context, title, height, ButtonAction(action), ImageResource(resource))
 
         fun createFullExperienceController(context: Context, image: ImageResource, action: ButtonAction) =
