@@ -30,10 +30,10 @@ class FirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    override fun onMessageReceived(p0: RemoteMessage?) {
+    override fun onMessageReceived(p0: RemoteMessage) {
     }
 
-    override fun onNewToken(p0: String?) {
+    override fun onNewToken(p0: String) {
         Log.i("ACC Firebase IID", "Firebase token refresh: ${if (String.isNullOrWhiteSpace(p0)) "<null>" else p0}")
         FirebaseMessaging.getInstance().subscribeToTopic("main")
     }

@@ -59,10 +59,7 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
         var ref = FirebaseStorage.getInstance().reference
         if (AuthenticApplication.useDevelopmentDatabase)
             ref = ref.child("dev")
-        val request = if (isExternal())
-            Glide.with(context).load(ref.child(if (String.isNullOrWhiteSpace(imageName)) "unknown.png" else imageName))
-        else
-            Glide.with(context).load(ref.child(if (String.isNullOrWhiteSpace(imageName)) "unknown.png" else imageName))
+        val request = if (isExternal()) Glide.with(context).load(Uri.parse(imageName)) else Glide.with(context).load(ref.child(if (String.isNullOrWhiteSpace(imageName)) "unknown.png" else imageName))
         request.transition(DrawableTransitionOptions.withCrossFade())
                 .error(Glide.with(context)
                         .load(ContextCompat.getDrawable(context, R.drawable.unknown))

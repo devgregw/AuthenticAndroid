@@ -15,6 +15,7 @@ import android.widget.*
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
+import church.authenticcity.android.AuthenticApplication
 import church.authenticcity.android.BuildConfig
 import church.authenticcity.android.R
 import church.authenticcity.android.classes.*
@@ -98,17 +99,22 @@ class Utils {
     class Temp {
         companion object {
             private var objects: HashMap<String, Any> = HashMap()
+            private var devObjects: HashMap<String, Any> = HashMap()
 
-            fun getTab(id: String): AuthenticTab? = if (objects.containsKey(id)) objects[id] as AuthenticTab else null
+            var map
+                get() = if (AuthenticApplication.useDevelopmentDatabase) devObjects else objects
+                set(value) = if (AuthenticApplication.useDevelopmentDatabase) devObjects = value else objects = value
 
-            fun getEvent(id: String): AuthenticEvent? = if (objects.containsKey(id)) objects[id] as AuthenticEvent else null
+            fun getTab(id: String): AuthenticTab? = if (map.containsKey(id)) map[id] as AuthenticTab else null
+
+            fun getEvent(id: String): AuthenticEvent? = if (map.containsKey(id)) map[id] as AuthenticEvent else null
 
             fun putTab(tab: AuthenticTab) {
-                objects[tab.id] = tab
+                map[tab.id] = tab
             }
 
             fun putEvent(event: AuthenticEvent) {
-                objects[event.id] = event
+                map[event.id] = event
             }
         }
     }

@@ -48,7 +48,10 @@ import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.new_tabs_list.*
 import kotlinx.android.synthetic.main.new_tabs_list.swipe_refresh_layout
 import kotlinx.android.synthetic.main.new_tabs_list.view.*
-import java.util.HashMap
+import org.threeten.bp.DayOfWeek
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 import kotlin.math.roundToInt
 
@@ -127,6 +130,7 @@ class NewHomeActivity : AppCompatActivity() {
             if (tabsView?.findViewById<View>(R.id.toolbar) == null) {
                 Crashlytics.log("WARNING: TabsListFragment toolbar is null!  Skipping adapter initialization.")
             } else {
+                Utils.Temp.map = HashMap()
                 val ueTile = Tile(appearance.events.title, false, appearance.events.header, appearance.events) { a -> EventListActivity.start(this@NewHomeActivity, a) }
                 val leftTiles = tabs.filter { t -> t.index % 2 == 0 }.map(toTile)
                 val rightTiles = java.util.ArrayList<Tile<*>>().apply {
@@ -248,28 +252,33 @@ class NewHomeActivity : AppCompatActivity() {
             livestream_watch.animate().setStartDelay(250L).alpha(if (isLive) 1f else 0f).duration = 250L
             livestream_text.animate().setStartDelay(250L).alpha(if (isLive) 0f else 1f).duration = 250L
         }
+        Log.v("Authentic Livestream", "Checking livestream status...")
+        if (!swipe_refresh_layout.isRefreshing) {
+            Log.w("Authentic Livestream", "Skipping livestream check - The home screen is not refreshing")
+            setText(false)
+            return
+        }
+        if (org.threeten.bp.LocalDate.now().dayOfWeek != DayOfWeek.SUNDAY) {
+            setText(false)
+            Log.w("Authentic Livestream", "Skipping livestream check - it's not Sunday")
+            return
+        }
         val queue = Volley.newRequestQueue(this)
-        //authentic: UCxrYck_z50n5It7ifj1LCjA
-        //demo:      UCSJ4gkVC6NrvII8umztf0Ow
-        val channel = "UCxrYck_z50n5It7ifj1LCjA"
-        val url = "https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=$channel&type=video&eventType=live&key=AIzaSyB4w3GIY9AUi6cApXAkB76vlG6K6J4d8XE"
-        queue.add(StringRequest(Request.Method.GET, url, { str ->
+        queue.add(StringRequest(Request.Method.GET, "https://extras.gregwhatley.dev/authentic/youtube.php", { str ->
             val obj = Parser().parse(StringBuilder(str)) as JsonObject
-            val items = obj.array<JsonObject>("items")!!
-            if (items.size == 0) {
-                setText(false)
-            } else {
-                val result = items[0]
-                val videoId = result.obj("id")!!.string("videoId")!!
-                livestream.setOnClickListener {
-                    //VideoActivity.start(context, "YouTube", videoId, "LIVESTREAM")
-                    ButtonAction.openUrl("https://youtube.com/watch?v=$videoId").invoke(this)
+            if (obj.count() > 0) {
+                if (obj.values.map { o -> o?.toString() ?: "" }[0].contains("stream", true)) {
+                    setText(true)
+                    livestream.setOnClickListener {
+                        ButtonAction.openUrl("https://youtube.com/watch?v=${obj.keys.toList()[0]}").invoke(this)
+                    }
+                    return@StringRequest
                 }
-                setText(true)
             }
+            setText(false)
         }, { err ->
             setText(false)
-            Log.e("Livestream", if (String.isNullOrWhiteSpace(err.message)) "<no message>" else err.message)
+            Log.e("Authentic Livestream", if (String.isNullOrWhiteSpace(err.message)) "<no message>" else err.message!!)
             err.printStackTrace()
         }).setShouldCache(false))
     }
