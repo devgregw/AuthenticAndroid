@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.MenuItem
@@ -22,12 +23,14 @@ import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.helpers.applyTypeface
+import church.authenticcity.android.views.HalfThumbnailButtonView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_content_basic.*
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.math.roundToInt
 
 class TabActivity : AppCompatActivity() {
@@ -186,6 +189,54 @@ class TabActivity : AppCompatActivity() {
                     removeViewAt(0)
                     addView(tab.convertedElements[0].toView(this@TabActivity), ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
                 }
+            }
+            "watchPlaylist" -> {
+                val elements = ArrayList(tab.convertedElements)
+                val rootList = LinearLayout(this).apply {
+                    orientation = LinearLayout.VERTICAL
+                }
+                val list = LinearLayout(this).apply {
+                    weightSum = 1f
+                    orientation = LinearLayout.HORIZONTAL
+                }
+                if (elements.count() > 0) {
+                    val info = elements[0].getProperty("videoInfo", HashMap<String, Any>())
+                    rootList.addView(AuthenticElement.createVideo(this, info["provider"] as String, info["id"] as String, info["thumbnail"] as String, info["title"] as String, large = true, hideTitle = true))
+                }
+                elements.removeAt(0)
+                if (elements.count() > 0) {
+                    val leftList = LinearLayout(this).apply {
+                        orientation = LinearLayout.VERTICAL
+                        layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                            weight = 0.5f
+                        }
+                    }
+                    val rightList = LinearLayout(this).apply {
+                        orientation = LinearLayout.VERTICAL
+                        layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                            weight = 0.5f
+                        }
+                    }
+                    elements.filterIndexed { i, _ -> i % 2 == 0}.forEach { e ->
+                        val info = e.getProperty("videoInfo", HashMap<String, Any>())
+                        leftList.addView(HalfThumbnailButtonView(this, info["provider"] as String, info["id"] as String, info["title"] as String, info["thumbnail"] as String, true))
+                    }
+                    elements.filterIndexed { i, _ -> i % 2 != 0}.forEach { e ->
+                        val info = e.getProperty("videoInfo", HashMap<String, Any>())
+                        rightList.addView(HalfThumbnailButtonView(this, info["provider"] as String, info["id"] as String, info["title"] as String, info["thumbnail"] as String, true))
+                    }
+                    list.addView(leftList)
+                    list.addView(rightList)
+                    rootList.addView(list)
+                    setContent(rootList)
+                    leftList.requestLayout()
+                    rightList.requestLayout()
+                    list.requestLayout()
+                    rootList.requestLayout()
+                }
+            }
+            else -> {
+                AlertDialog.Builder(this).setTitle("Content Unavailable").setMessage("Sorry, this content requires an updated version of the Authentic app.").setPositiveButton("Dismiss") { _, _ -> finish()}.setNeutralButton("Open Google Play Store") { _, _ -> this@TabActivity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${this@TabActivity.packageName}")))}.create().applyColorsAndTypefaces().show()
             }
         }
     }

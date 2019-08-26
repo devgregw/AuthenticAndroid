@@ -14,6 +14,7 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
+import church.authenticcity.android.views.LargeThumbnailButtonView
 import church.authenticcity.android.views.LoadingIndicatorImageView
 import church.authenticcity.android.views.ThumbnailButtonView
 import church.authenticcity.android.views.ToolbarView
@@ -79,8 +80,8 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
             return view
         }
 
-        fun createVideo(context: Context, provider: String, id: String, thumbnail: String, title: String) =
-                ThumbnailButtonView(context, provider, id, title, thumbnail)
+        fun createVideo(context: Context, provider: String, id: String, thumbnail: String, title: String, large: Boolean, hideTitle: Boolean) =
+                if (large) LargeThumbnailButtonView(context, provider, id, title, thumbnail, hideTitle) else ThumbnailButtonView(context, provider, id, title, thumbnail)
                 /*WebView(context).apply {
                     this.loadUrl(if (provider == "YouTube") "https://www.youtube.com/embed/$videoId" else "https://player.vimeo.com/video/$videoId")
                     layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 300f, context.resources.displayMetrics).toInt()).apply { setMargins(0, 0, 0, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1f, context.resources.displayMetrics).toInt()) }
@@ -152,9 +153,9 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
 
         fun createButton(context: Context, info: HashMap<String, Any>) = createButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String)
 
-        private fun createThumbnailButton(context: Context, action: ButtonAction, text: String, resource: ImageResource) = ThumbnailButtonView(context, text, resource, action)
+        private fun createThumbnailButton(context: Context, action: ButtonAction, text: String, resource: ImageResource, large: Boolean, hideTitle: Boolean) = if (large) LargeThumbnailButtonView(context, text, resource, action, hideTitle) else ThumbnailButtonView(context, text, resource, action)
 
-        fun createThumbnailButton(context: Context, info: HashMap<String, Any>, resource: HashMap<String, Any>) = createThumbnailButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String, ImageResource(resource))
+        fun createThumbnailButton(context: Context, info: HashMap<String, Any>, resource: HashMap<String, Any>, large: Boolean, hideTitle: Boolean) = createThumbnailButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String, ImageResource(resource), large, hideTitle)
 
         private fun createTile(context: Context, title: String, height: Int, action: ButtonAction, resource: ImageResource): View {
             val usedHeight = if (height == 0) resource.calculateHeight(context, true) else height
@@ -240,7 +241,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                 })), getProperty("enlargeButton", false))
                 "video" -> {
                     val info = getProperty("videoInfo", HashMap<String, Any>())
-                    createVideo(context, info["provider"] as String, info["id"] as String, info["thumbnail"] as String, info["title"] as String)
+                    createVideo(context, info["provider"] as String, info["id"] as String, info["thumbnail"] as String, info["title"] as String, (getProperty("large", "false")).toBoolean(), (getProperty("hideTitle", "false")).toBoolean())
                 }
                 "title" -> createTitle(context, getProperty("title", ""), getProperty("alignment", "center"))
                 "text" -> createText(context, getProperty("text", ""), getProperty("alignment", "left"))
@@ -249,7 +250,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     put("name", "unknown.png")
                     put("width", 720)
                     put("height", 1080)
-                }))
+                }), (getProperty("large", "false")).toBoolean(), (getProperty("hideTitle", "false")).toBoolean())
                 "toolbar" -> createToolbar(context, getProperty<HashMap<String, Any>>("image", HashMap()), getProperty("leftAction", HashMap()), getProperty("rightAction", HashMap()))
                 "tile" -> createTile(context, getProperty("title", ""), getProperty("height", 0), getProperty("action", HashMap()), getProperty("header", HashMap<String, Any>()))
                 "fullExpController" -> createFullExperienceController(context, ImageResource(getProperty("image", HashMap())), ButtonAction(getProperty("action", HashMap())))
