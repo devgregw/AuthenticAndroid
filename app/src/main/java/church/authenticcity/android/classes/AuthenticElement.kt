@@ -20,6 +20,7 @@ import church.authenticcity.android.views.ThumbnailButtonView
 import church.authenticcity.android.views.ToolbarView
 import church.authenticcity.android.views.recyclerView.Tile
 import church.authenticcity.android.views.recyclerView.TileViewHolder
+import java.lang.ClassCastException
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.roundToInt
@@ -232,16 +233,22 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
     @Suppress("UNCHECKED_CAST")
     fun <T> getProperty(key: String, default: T) = if (map.containsKey(key)) map[key] as T else default
 
+    fun getBoolean(key: String, default: Boolean) = try {
+            getProperty(key, default.toString()).toBoolean()
+        } catch (a: ClassCastException) {
+            getProperty(key, default)
+        }
+
     fun toView(context: Context) =
             when (type) {
                 "image" -> createImage(context, ImageResource(getProperty("image", HashMap<String, Any>().apply {
                     put("name", "unknown.png")
                     put("width", 720)
                     put("height", 1080)
-                })), getProperty("enlargeButton", false))
+                })), getBoolean("enlargeButton", false))
                 "video" -> {
                     val info = getProperty("videoInfo", HashMap<String, Any>())
-                    createVideo(context, info["provider"] as String, info["id"] as String, info["thumbnail"] as String, info["title"] as String, (getProperty("large", "false")).toBoolean(), (getProperty("hideTitle", "false")).toBoolean())
+                    createVideo(context, info["provider"] as String, info["id"] as String, info["thumbnail"] as String, info["title"] as String, getBoolean("large", false), getBoolean("hideTitle", false))
                 }
                 "title" -> createTitle(context, getProperty("title", ""), getProperty("alignment", "center"))
                 "text" -> createText(context, getProperty("text", ""), getProperty("alignment", "left"))
@@ -250,11 +257,11 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     put("name", "unknown.png")
                     put("width", 720)
                     put("height", 1080)
-                }), (getProperty("large", "false")).toBoolean(), (getProperty("hideTitle", "false")).toBoolean())
+                }), getBoolean("large", false), getBoolean("hideTitle", false))
                 "toolbar" -> createToolbar(context, getProperty<HashMap<String, Any>>("image", HashMap()), getProperty("leftAction", HashMap()), getProperty("rightAction", HashMap()))
                 "tile" -> createTile(context, getProperty("title", ""), getProperty("height", 0), getProperty("action", HashMap()), getProperty("header", HashMap<String, Any>()))
                 "fullExpController" -> createFullExperienceController(context, ImageResource(getProperty("image", HashMap())), ButtonAction(getProperty("action", HashMap())))
-                "separator" -> createSeparator(context, getProperty("visible", true))
+                "separator" -> createSeparator(context, getBoolean("visible", true))
                 "html" -> createHtmlReader(context, getProperty("html", "<p></p>"))
                 else -> createText(context, String.format("Invalid element type: %s; ID: %s; parent: %s", type, this@AuthenticElement.id, this@AuthenticElement.parent), "left", Color.RED)
             }
