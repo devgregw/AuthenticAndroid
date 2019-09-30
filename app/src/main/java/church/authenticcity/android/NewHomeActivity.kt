@@ -183,7 +183,7 @@ class NewHomeActivity : AppCompatActivity() {
             home_down_arrow.foreground = ripple
             expanded_menu.foreground = ripple
         }
-        home_title.typeface = Utils.getTitleTypeface(this)
+        //home_title.typeface = Utils.getTitleTypeface(this)
         home_down_arrow.setOnClickListener { goHome() }
         expanded_menu.apply {
             val popup = PopupMenu(context, expanded_menu)

@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/logo"
-            android:src="@drawable/banner"
+            android:src="@drawable/full3"
             android:layout_centerInParent="true" />
     </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
