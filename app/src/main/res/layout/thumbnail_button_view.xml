@@ -48,7 +48,7 @@
                 android:layout_toStartOf="@+id/chev"
                 android:maxLines="4"
                 android:textColor="@android:color/black"
-                android:textSize="14sp" />
+                android:textSize="12sp"/>
 
             <ImageView
                 android:id="@+id/chev"

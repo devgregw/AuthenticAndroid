@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
+    android:background="@color/colorBackground"
     android:id="@+id/root"
-    tools:context=".WallpaperPreviewActivity">
+    tools:context=".activities.WallpaperPreviewActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -45,7 +45,7 @@
             android:shadowColor="@android:color/black"
             android:id="@+id/wallpaper_text_view"
             android:layout_marginTop="8dp"
-            android:textSize="18sp"
+            android:textSize="14sp"
             android:shadowDx="6"
             android:shadowDy="6"
             android:shadowRadius="1"
@@ -66,14 +66,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="Save" />
+                android:text="@string/button_save"
+                android:textSize="12sp"/>
 
             <Button
                 android:id="@+id/cancel_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="Cancel" />
+                android:text="@string/button_cancel"
+                android:textSize="12sp"/>
 
         </LinearLayout>
     </FrameLayout>
