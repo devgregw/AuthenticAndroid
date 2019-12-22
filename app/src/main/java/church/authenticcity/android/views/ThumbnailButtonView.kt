@@ -51,6 +51,7 @@ class ThumbnailButtonView private constructor(context: Context) : RelativeLayout
 
     private fun initialize() {
         val rand = Random.nextInt(0, 256)
+        view.title.typeface = Utils.getTextTypeface(context)
         view.thumbnail_container.setBackgroundColor(Color.argb(255, rand, rand, rand))
         view.progress_bar.indeterminateTintList = ColorStateList.valueOf(Color.argb(255, 255 - rand, 255 - rand, 255 - rand))
         if (Utils.checkSdk(23))
