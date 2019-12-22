@@ -12,7 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import church.authenticcity.android.R
-import church.authenticcity.android.VideoActivity
+import church.authenticcity.android.activities.VideoActivity
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.helpers.Utils
