@@ -21,4 +21,10 @@
 
     <string name="title_activity_wallpaper_preview">WallpaperPreviewActivity</string>
     <string name="wallpaper_preview">Wallpaper Preview</string>
+    <string name="title_activity_tabbed_home">AUTHENTIC</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_save">Save</string>
+    <string name="button_cancel">Cancel</string>
 </resources>
