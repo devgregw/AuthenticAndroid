@@ -10,6 +10,7 @@ import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.util.TypedValue
+import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.ActionBar
@@ -34,6 +35,10 @@ fun String.Companion.isNullOrWhiteSpace(string: String?): Boolean {
     return true
 }
 
+fun MenuItem.applyTypeface(context: Context) {
+    title = Utils.makeTypefaceSpan(title.toString(), context, 12)
+}
+
 fun AlertDialog.applyColorsAndTypefaces(): AlertDialog {
     setOnShowListener { p0 ->
         val a = p0 as AlertDialog
@@ -56,7 +61,7 @@ fun AlertDialog.applyColorsAndTypefaces(): AlertDialog {
 }
 
 fun ActionBar.applyTypeface(context: Context, text: String) {
-    this.title = Utils.makeTypefaceSpan(text, Utils.getTitleTypeface(context))
+    this.title = Utils.makeTypefaceSpan(context, text, Utils.getTitleTypeface(context))
 }
 
 @SuppressLint("ClickableViewAccessibility")
@@ -121,25 +126,30 @@ class Utils {
 
     class Constructors {
         companion object {
-            fun constructEvent(value: Any): AuthenticEvent? = try {
-                val map = value as HashMap<String, Any>
-                if (map.containsKey("index"))
-                    AuthenticEventPlaceholder(map.getAs("id"), map.getAs("index"), map.getAs("title"), map.getAs("hideTitle", false), ImageResource(map.getAs("header")), map.getAs("elements", ArrayList()), if (map.containsKey("action")) ButtonAction(map.getAs("action")) else null, if (map.containsKey("visibility")) map.getAs<String, String, Any>("visibility") else null)
-                else
-                    AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), ImageResource(map.getAs("header")), map.getAs("dateTime"), map.getAs("hideEndDate"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
-            } catch (e: Exception) {
-                Crashlytics.logException(e)
-                e.printStackTrace()
-                null
+            fun constructEvent(value: Any?): AuthenticEvent? {
+                try {
+                    val map = value as? HashMap<String, Any> ?: return null
+                    return if (map.containsKey("index"))
+                        AuthenticEventPlaceholder(map.getAs("id"), map.getAs("index"), map.getAs("title"), map.getAs("hideTitle", false), ImageResource(map.getAs("header")), map.getAs("elements", ArrayList()), if (map.containsKey("action")) ButtonAction(map.getAs("action")) else null, if (map.containsKey("visibility")) map.getAs<String, String, Any>("visibility") else null)
+                    else
+                        AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), ImageResource(map.getAs("header")), map.getAs("dateTime"), map.getAs("hideEndDate"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
+                } catch (e: Exception) {
+                    Crashlytics.logException(e)
+                    e.printStackTrace()
+                    return null
+                }
             }
 
-            fun constructTab(value: Any): AuthenticTab? = try {
-                val map = value as HashMap<String, Any>
-                AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("title"), if (map.containsKey("action")) map.getAs<HashMap<String, Any>, String, Any>("action") else null, if (map.containsKey("elements")) map.getAs<List<HashMap<String, Any>>, String, Any>("elements") else null, map.getAs("visibility"), map.getAs<String?, String, Any>("specialType", null))
-            } catch (e: Exception) {
-                Crashlytics.logException(e)
-                e.printStackTrace()
-                null
+
+            fun constructTab(value: Any?): AuthenticTab? {
+                try {
+                    val map = value as? HashMap<String, Any> ?: return null
+                    return AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("title"), if (map.containsKey("action")) map.getAs<HashMap<String, Any>, String, Any>("action") else null, if (map.containsKey("elements")) map.getAs<List<HashMap<String, Any>>, String, Any>("elements") else null, map.getAs("visibility"), map.getAs<String?, String, Any>("specialType", null))
+                } catch (e: Exception) {
+                    Crashlytics.logException(e)
+                    e.printStackTrace()
+                    return null
+                }
             }
         }
     }
@@ -150,9 +160,7 @@ class Utils {
         val timePattern
             get() = DateTimeFormatter.ofPattern("h:mm a")!!
 
-        private var title: Typeface? = null
-        private var titleb: Typeface? = null
-        private var text: Typeface? = null
+        private var alpenglow: Typeface? = null
 
         fun reportAndAlertException(context: Context, ex: Exception, location: String) {
             Crashlytics.logException(ex)
@@ -164,30 +172,23 @@ class Utils {
         }
 
         @SuppressLint("ShowToast")
-        fun makeToast(context: Context, text: String, length: Int) = Toast.makeText(context, makeTypefaceSpan(text, getTextTypeface(context)), length)!!
+        fun makeToast(context: Context, text: String, length: Int) = Toast.makeText(context, makeTypefaceSpan(context, text, getTextTypeface(context)), length)!!
 
-        fun makeTypefaceSpan(text: String, typeface: Typeface): SpannableString {
+        fun makeTypefaceSpan(context: Context, text: String, typeface: Typeface, textSize: Int = 12): SpannableString {
             val span = SpannableString(text)
-            span.setSpan(TypefaceSpan(typeface), 0, span.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            span.setSpan(TypefaceSpan(context, typeface, textSize), 0, span.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             return span
         }
 
-        fun getTitleTypeface(context: Context, bold: Boolean = false): Typeface {
-            if (bold) {
-                if (titleb == null)
-                    titleb = ResourcesCompat.getFont(context, R.font.effra_bold)
-                return titleb!!
-            }
-            if (title == null)
-                title = ResourcesCompat.getFont(context, R.font.effra)
-            return title!!
+        fun makeTypefaceSpan(text: String, context: Context, textSize: Int = 12) = makeTypefaceSpan(context, text, getTitleTypeface(context), textSize)
+
+        fun getTitleTypeface(context: Context): Typeface {
+            if (alpenglow == null)
+                alpenglow = ResourcesCompat.getFont(context, R.font.alpenglow_expanded)
+            return alpenglow!!
         }
 
-        fun getTextTypeface(context: Context): Typeface {
-            if (text == null)
-                text = ResourcesCompat.getFont(context, R.font.proxima_nova)
-            return text!!
-        }
+        fun getTextTypeface(context: Context) = getTitleTypeface(context)
 
         fun isUpdateAvailable(latestCode: Int) = BuildConfig.VERSION_CODE < latestCode
 

@@ -1,10 +1,12 @@
 package church.authenticcity.android.helpers
 
+import android.content.Context
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.TextPaint
 import android.text.style.MetricAffectingSpan
+import android.util.TypedValue
 
 /**
  * NOTICE: this file was modified by Greg Whatley on 2/2/2018 at 1:15 PM.
@@ -39,17 +41,18 @@ class TypefaceSpan
 /**
  * Load the [Typeface] and apply to a [Spannable].
  */
-(private val typeface: Typeface) : MetricAffectingSpan() {
+(private val context: Context, private val typeface: Typeface, private val textSize: Int = 12) : MetricAffectingSpan() {
 
     override fun updateMeasureState(p: TextPaint) {
         p.typeface = typeface
+        p.textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat(), context.resources.displayMetrics)
         // Note: This flag is required for proper typeface rendering
         p.flags = p.flags or Paint.SUBPIXEL_TEXT_FLAG
     }
 
     override fun updateDrawState(tp: TextPaint) {
         tp.typeface = typeface
-
+        tp.textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize.toFloat(), context.resources.displayMetrics)
         // Note: This flag is required for proper typeface rendering
         tp.flags = tp.flags or Paint.SUBPIXEL_TEXT_FLAG
     }
