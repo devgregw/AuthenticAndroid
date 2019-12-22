@@ -1,17 +1,13 @@
 package church.authenticcity.android.classes
 
-import android.app.ProgressDialog
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
-import android.os.Handler
 import android.provider.Settings
-import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.IntDef
@@ -28,12 +24,9 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
-import java.io.FileOutputStream
 import kotlin.math.roundToInt
 
 /**
@@ -90,6 +83,14 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
         return (widthPx / ratio).roundToInt()
     }
 
+    private fun save(context: Context, uri: Uri) {
+        val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val request = DownloadManager.Request(uri)
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE).setAllowedOverRoaming(true).setTitle(imageName).setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED).setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, File.separator + imageName)
+        manager.enqueue(request)
+        Utils.makeToast(context, "Downloading image...", Toast.LENGTH_LONG).show()
+    }
+
     fun saveToGallery(context: Context) {
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             AlertDialog.Builder(context).setTitle("Permission Denied").setMessage("The image could not be saved because you didn't give the Authentic app permission.").setNeutralButton("Settings") { _, _ ->
@@ -99,17 +100,28 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
                 })
             }.setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
         else {
-            val dialog = ProgressDialog(context, R.style.ProgressDialog).apply {
+            /*val dialog = ProgressDialog(context, R.style.ProgressDialog).apply {
                 setMessage(Utils.makeTypefaceSpan("Downloading image...", Utils.getTitleTypeface(context)))
                 isIndeterminate = true
             }
             val handler = Handler(context.mainLooper)
             dialog.show()
-            Log.i("Save to gallery", "Load url")
+            Log.i("Save to gallery", "Load url")*/
+            if (isExternal()) {
+                save(context, Uri.parse(imageName))
+                return
+            }
             var ref = FirebaseStorage.getInstance().reference
             if (AuthenticApplication.useDevelopmentDatabase)
                 ref = ref.child("dev")
             ref.child(imageName).downloadUrl.addOnCompleteListener {
+                if (it.isSuccessful && it.result != null) {
+                    save(context, it.result!!)
+                } else {
+                    Utils.makeToast(context, "Could not save image: ${it.exception?.message ?: "Unknown error"}", Toast.LENGTH_LONG).show()
+                }
+            }
+            /*ref.child(imageName).downloadUrl.addOnCompleteListener {
                 Log.i("Save to gallery", "Load image")
                 Glide.with(context).asBitmap().load(it.result.toString()).into(object : CustomTarget<Bitmap>() {
                     override fun onLoadCleared(placeholder: Drawable?) {
@@ -121,7 +133,7 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
 
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                         Log.i("Save to gallery", "Loaded image")
-                        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageName.removeRange(imageName.lastIndexOf('.'), imageName.length - 1) + ".png")
+                        /*val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), imageName.removeRange(imageName.lastIndexOf('.'), imageName.length - 1) + ".png")
                         val stream = FileOutputStream(file)
                         resource.compress(Bitmap.CompressFormat.PNG, 100, stream)
                         stream.close()
@@ -132,10 +144,11 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
                             }
                             Log.i("Save to gallery", s)
                             Log.i("Save to gallery", uri.toString())
-                        }
+                        }*/
+                        MediaStore.Images.Media.insertImage(context.contentResolver, resource, "", "")
                     }
                 })
-            }
+            }*/
         }
     }
 }
