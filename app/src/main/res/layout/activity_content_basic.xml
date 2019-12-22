@@ -56,7 +56,6 @@
                 android:id="@+id/toolbar_title"
                 android:background="@android:color/transparent"
                 android:ellipsize="end"
-                android:letterSpacing="0.25"
                 android:autoSizeTextType="uniform"
                 android:autoSizeMaxTextSize="24sp"
                 android:textSize="@dimen/actionBarTextSize"

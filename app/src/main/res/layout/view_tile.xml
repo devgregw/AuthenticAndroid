@@ -29,7 +29,6 @@
         android:background="@android:color/transparent"
         android:ellipsize="end"
         android:gravity="center"
-        android:letterSpacing="0.15"
         android:padding="8dp"
         android:textColor="@android:color/white"
         android:textSize="15sp"/>

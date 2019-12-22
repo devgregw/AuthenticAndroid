@@ -56,7 +56,6 @@
                 android:id="@+id/toolbar_title"
                 android:background="@android:color/transparent"
                 android:ellipsize="end"
-                android:letterSpacing="0.25"
                 android:textSize="@dimen/actionBarTextSize"
                 android:textColor="@android:color/white" />
         </androidx.appcompat.widget.Toolbar>
