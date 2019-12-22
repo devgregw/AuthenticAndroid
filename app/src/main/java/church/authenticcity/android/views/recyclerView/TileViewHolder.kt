@@ -59,7 +59,7 @@ class TileViewHolder(private val context: Context, private val fullWidth: Boolea
         itemView.tile_image.imageTintList = if (tile.hideTitle || tile.title == "") ColorStateList.valueOf(Color.TRANSPARENT) else ColorStateList.valueOf(Color.argb(128, 0, 0, 0))
         itemView.tile_title.text = tile.title
         itemView.tile_title.visibility = if (tile.hideTitle) View.INVISIBLE else View.VISIBLE
-        itemView.tile_title.typeface = Utils.getTitleTypeface(context, true)
+        itemView.tile_title.typeface = Utils.getTitleTypeface(context)
         itemView.setOnClickListener {
             tile.handler(tile.argument)
         }
