@@ -12,17 +12,27 @@
         android:name=".AuthenticApplication"
         android:allowBackup="false"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:logo="@mipmap/ic_launcher_round"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".activities.FragmentActivity"
+            android:screenOrientation="portrait"/>
         <activity
-            android:name=".WallpaperPreviewActivity"
+            android:name=".activities.TabbedHomeActivity"
+            android:label="@string/title_activity_tabbed_home"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activities.WallpaperPreviewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_wallpaper_preview"
-            android:theme="@style/FullscreenTheme"/>
+            android:theme="@style/FullscreenTheme"
+            android:screenOrientation="portrait"/>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_notification" />
@@ -31,7 +41,7 @@
             android:resource="@android:color/black" />
 
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".activities.SplashScreenActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashScreen">
             <intent-filter>
@@ -40,19 +50,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".TabActivity"
-            android:configChanges="screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".EventListActivity"
-            android:configChanges="screenSize"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".EventActivity"
-            android:configChanges="screenSize"
-            android:screenOrientation="portrait" />
-
         <service
             android:name=".services.FirebaseMessagingService"
             android:permission="church.authenticcity.android.services.FirebaseMessaging">
@@ -60,8 +57,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <activity android:name=".NewHomeActivity" android:configChanges="screenSize" android:screenOrientation="portrait"/>
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
@@ -69,7 +64,7 @@
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:theme="@style/Theme.AppCompat.Light.DarkActionBar" />
         <activity
-            android:name=".VideoActivity"
+            android:name=".activities.VideoActivity"
             android:configChanges="screenSize|orientation" />
     </application>
 
