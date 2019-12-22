@@ -20,7 +20,6 @@ import church.authenticcity.android.views.ThumbnailButtonView
 import church.authenticcity.android.views.ToolbarView
 import church.authenticcity.android.views.recyclerView.Tile
 import church.authenticcity.android.views.recyclerView.TileViewHolder
-import java.lang.ClassCastException
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.roundToInt
@@ -104,7 +103,6 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
             setBackgroundResource(R.drawable.title_border_black)
             this.typeface = Utils.getTitleTypeface(context)
             this.text = text
-            letterSpacing = 0.15f
             layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
                 gravity = when (alignment) {
                     "center" -> Gravity.CENTER_HORIZONTAL
@@ -219,7 +217,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
         fun createHtmlReader(context: Context, htmlString: String): WebView {
             val webView = WebView(context)
             webView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            val html = "<!DOCTYPE html><html><head><style type=\"text/css\">@font-face {\nfont-family: Proxima;\nsrc: url(\"file:///android_asset/fonts/proxima_nova.ttf\");\n}\nbody {\nfont-family: Proxima; \n}</style></head><body>$htmlString</body></html>"
+            val html = "<!DOCTYPE html><html><head><style type=\"text/css\">@font-face {\nfont-family: Alpenglow;\nsrc: url(\"file:///android_asset/fonts/alpenglow_expanded.ttf\");\n}\nbody {\nfont-family: Alpenglow; \n}</style></head><body>$htmlString</body></html>"
             webView.loadDataWithBaseURL("", html, "text/html", "utf-8", null)
             webView.settings.defaultFontSize = 20
             return webView
@@ -233,7 +231,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
     @Suppress("UNCHECKED_CAST")
     fun <T> getProperty(key: String, default: T) = if (map.containsKey(key)) map[key] as T else default
 
-    fun getBoolean(key: String, default: Boolean) = try {
+    private fun getBoolean(key: String, default: Boolean) = try {
             getProperty(key, default.toString()).toBoolean()
         } catch (a: ClassCastException) {
             getProperty(key, default)
