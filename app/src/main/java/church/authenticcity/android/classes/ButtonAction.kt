@@ -5,11 +5,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.provider.CalendarContract
-import androidx.appcompat.app.AlertDialog
 import android.util.Log
-import church.authenticcity.android.EventActivity
-import church.authenticcity.android.EventListActivity
-import church.authenticcity.android.TabActivity
+import androidx.appcompat.app.AlertDialog
+import church.authenticcity.android.activities.FragmentActivity
 import church.authenticcity.android.helpers.RecurrenceRule
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyColorsAndTypefaces
@@ -18,7 +16,6 @@ import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
-import kotlin.collections.HashMap
 
 class ButtonAction(private val map: HashMap<String, Any>) {
     companion object {
@@ -39,16 +36,16 @@ class ButtonAction(private val map: HashMap<String, Any>) {
     private fun <T> tryGet(name: String): T? = if (properties.containsKey(name)) get(name) else null
 
     private fun showAlert(context: Context, title: String, message: String) {
-        AlertDialog.Builder(context).setTitle(Utils.makeTypefaceSpan(title, Utils.getTitleTypeface(context))).setCancelable(true).setMessage(Utils.makeTypefaceSpan(message, Utils.getTextTypeface(context))).setPositiveButton(Utils.makeTypefaceSpan("Dismiss", Utils.getTextTypeface(context)), null).create().applyColorsAndTypefaces().show()
+        AlertDialog.Builder(context).setTitle(Utils.makeTypefaceSpan(context, title, Utils.getTitleTypeface(context))).setCancelable(true).setMessage(Utils.makeTypefaceSpan(context, message, Utils.getTextTypeface(context))).setPositiveButton(Utils.makeTypefaceSpan(context,"Dismiss", Utils.getTextTypeface(context)), null).create().applyColorsAndTypefaces().show()
     }
 
     fun invoke(context: Context) {
         try {
             Log.v("ButtonAction", String.format("Invoking %s", map))
             when (type) {
-                "OpenEventsPageAction" -> EventListActivity.start(context, "UPCOMING EVENTS")
-                "OpenTabAction" -> TabActivity.start(context, get<String>("tabId"))
-                "OpenEventAction" -> EventActivity.start(context, get<String>("eventId"))
+                "OpenEventsPageAction" -> FragmentActivity.startEventList(context)
+                "OpenTabAction" -> FragmentActivity.startTab(context, get("tabId"))
+                "OpenEventAction" -> FragmentActivity.startEvent(context, get("eventId"))
                 "OpenURLAction" -> {
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(get<String>("url")))
                     when (context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).count()) {
