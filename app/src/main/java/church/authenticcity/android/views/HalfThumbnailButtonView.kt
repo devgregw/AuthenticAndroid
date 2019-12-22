@@ -12,7 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import church.authenticcity.android.R
-import church.authenticcity.android.VideoActivity
+import church.authenticcity.android.activities.VideoActivity
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.helpers.Utils
@@ -25,7 +25,7 @@ import kotlin.random.Random
 class HalfThumbnailButtonView private constructor(context: Context) : RelativeLayout(context) {
     private val view: View = LayoutInflater.from(context).inflate(R.layout.thumbnail_button_half_view, this, true)
 
-    /*constructor(context: Context, title: String, resource: ImageResource, action: ButtonAction, hideTitle: Boolean) : this(context) {
+    constructor(context: Context, title: String, resource: ImageResource, action: ButtonAction, hideTitle: Boolean) : this(context) {
         initialize(resource)
         view.title.text = title
         if (hideTitle)
@@ -34,7 +34,7 @@ class HalfThumbnailButtonView private constructor(context: Context) : RelativeLa
         setOnClickListener {
             action.invoke(context)
         }
-    }*/
+    }
 
     constructor(context: Context, provider: String, videoId: String, title: String, thumbnail: String, hideTitle: Boolean) : this(context) {
         val resource = ImageResource("", 1920, 1080)
