@@ -24,7 +24,7 @@ class DatabaseHelper {
         }
 
         private fun setKeepSynced(value: Boolean, reference: DatabaseReference): DatabaseReference {
-            reference.keepSynced(value)
+            reference.keepSynced(false)
             return reference
         }
 
