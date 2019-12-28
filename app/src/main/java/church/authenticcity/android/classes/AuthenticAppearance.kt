@@ -17,11 +17,7 @@ class AuthenticAppearance(data: HashMap<String, Any>) {
     class Events(data: HashMap<String, Any>) {
         val title: String = data["title"] as? String ?: "UPCOMING EVENTS"
         val header: ImageResource = if (data.containsKey("header")) ImageResource(data["header"] as HashMap<String, Any>) else ImageResource("unknown.png", 1920, 1080)
-        val index: Int = data["index"] as? Int ?: -999
-    }
-
-    class Tabs(data: HashMap<String, Any>) {
-        val fill = if (data.containsKey("fill")) data["fill"].toString().toBoolean() else true
+        val index: Int = (data["index"] ?: "-999").toString().toInt()
     }
 
     class Livestream(data: HashMap<String, Any>) {
@@ -29,6 +25,5 @@ class AuthenticAppearance(data: HashMap<String, Any>) {
     }
 
     val events = Events(data["events"] as HashMap<String, Any>)
-    val tabs = Tabs(data["tabs"] as HashMap<String, Any>)
     val livestream = Livestream(data["livestream"] as HashMap<String, Any>)
 }
