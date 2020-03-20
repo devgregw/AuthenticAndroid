@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import church.authenticcity.android.AuthenticApplication
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
@@ -53,6 +54,10 @@ class SplashScreenActivity : AppCompatActivity() {
     }
 
     private fun checkForUpdates() {
+        if (AuthenticApplication.useDevelopmentDatabase) {
+            loadApp()
+            return
+        }
         FirebaseDatabase.getInstance().reference.child("versions").child("android").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
                 AlertDialog.Builder(this@SplashScreenActivity).setTitle("Unexpected Error").setCancelable(false).setMessage("An unexpected error occurred while checking for updates. You may be able to continue using the app.\n\nCode: ${p0.code}\nMessage: ${p0.message}\nDetails: ${p0.details}").setPositiveButton("Dismiss") { _, _ -> loadApp() }.create().applyColorsAndTypefaces().show()
