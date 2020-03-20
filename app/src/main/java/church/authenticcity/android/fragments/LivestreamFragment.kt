@@ -3,8 +3,11 @@ package church.authenticcity.android.fragments
 import android.graphics.Color
 import android.util.Log
 import android.view.View
+import church.authenticcity.android.BuildConfig
 import church.authenticcity.android.R
 import church.authenticcity.android.classes.ButtonAction
+import church.authenticcity.android.classes.ImageResource
+import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
@@ -12,12 +15,22 @@ import com.android.volley.toolbox.Volley
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.fragment_livestream.view.*
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
 class LivestreamFragment : AuthenticFragment("LIVE", R.layout.fragment_livestream, null) {
     override fun onCreateView(view: View) {
+        view.livestream_image.setOnClickListener {
+            this@LivestreamFragment.checkLivestreamStatus()
+        }
+        DatabaseHelper.loadAppearance { authenticAppearance ->
+            if (authenticAppearance.livestream.image != null) {
+                view.setBackgroundColor(authenticAppearance.livestream.color)
+                ImageResource(authenticAppearance.livestream.image, 1080, 1920).load(view.context, view.livestream_image)
+            }
+        }
     }
 
     override fun onRefreshView(view: View) {
@@ -35,7 +48,7 @@ class LivestreamFragment : AuthenticFragment("LIVE", R.layout.fragment_livestrea
             return
         }
         val date = LocalDateTime.now(ZoneId.systemDefault())
-        if (date.dayOfWeek == DayOfWeek.SUNDAY) {
+        if (date.dayOfWeek == DayOfWeek.SUNDAY || BuildConfig.DEBUG) {
             checkingSnackbar = Snackbar.make(view!!, Utils.makeTypefaceSpan("LOADING...", view!!.context, 10), Snackbar.LENGTH_INDEFINITE)
             checkingSnackbar?.show()
             val queue = Volley.newRequestQueue(view!!.context)

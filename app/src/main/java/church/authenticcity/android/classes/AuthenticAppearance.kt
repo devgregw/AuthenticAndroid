@@ -1,5 +1,7 @@
 package church.authenticcity.android.classes
 
+import android.graphics.Color
+
 /**
  * Project AuthenticAndroid
  * Created by Greg Whatley on 4/8/2018 at 3:24 PM.
@@ -22,6 +24,8 @@ class AuthenticAppearance(data: HashMap<String, Any>) {
 
     class Livestream(data: HashMap<String, Any>) {
         val enable = (data["enable"] ?: "true").toString().toBoolean()
+        val image = data["image"]?.toString()
+        val color = Color.parseColor(data["color"]?.toString()?.substring(0, 7) ?: "#ffffff")
     }
 
     val events = Events(data["events"] as HashMap<String, Any>)
