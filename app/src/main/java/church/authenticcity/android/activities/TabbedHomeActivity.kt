@@ -58,9 +58,7 @@ class TabbedHomeActivity : AppCompatActivity() {
     }
 
     private fun getStringArray(name: String, savedInstanceState: Bundle?): Array<String> {
-        if (savedInstanceState != null)
-            return savedInstanceState.getStringArray(name)!!
-        return intent.getStringArrayExtra(name)!!
+        return savedInstanceState?.getStringArray(name) ?: intent.getStringArrayExtra(name) ?: ArrayList<String>().toTypedArray()
     }
 
     private fun initialize(index: Int, savedInstanceState: Bundle?) {

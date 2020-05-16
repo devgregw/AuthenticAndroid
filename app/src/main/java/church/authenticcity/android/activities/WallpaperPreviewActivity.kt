@@ -15,6 +15,7 @@ import church.authenticcity.android.R
 import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.helpers.Utils
 import kotlinx.android.synthetic.main.activity_wallpaper_preview.*
+import java.lang.Exception
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -58,7 +59,11 @@ class WallpaperPreviewActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        unregisterReceiver(downloadReceiver)
+        try {
+            unregisterReceiver(downloadReceiver)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
