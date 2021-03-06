@@ -72,7 +72,7 @@ class VideosFragment(private val watchTabId: String) : AuthenticFragment("VIDEOS
                 put("tabId", authenticTab.id)
                 put("type", "OpenTabAction")
             }), true)
-            if (index % 2 == 0)
+            if (index % 2 != 0)
                 view.videos_list_right.addView(btn)
             else view.videos_list_left.addView(btn)
         }

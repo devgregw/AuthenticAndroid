@@ -152,7 +152,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
 
         fun createButton(context: Context, info: HashMap<String, Any>) = createButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String)
 
-        private fun createThumbnailButton(context: Context, action: ButtonAction, text: String, resource: ImageResource, large: Boolean, hideTitle: Boolean) = if (large) LargeThumbnailButtonView(context, text, resource, action, hideTitle) else ThumbnailButtonView(context, text, resource, action)
+        fun createThumbnailButton(context: Context, action: ButtonAction, text: String, resource: ImageResource, large: Boolean, hideTitle: Boolean) = if (large) LargeThumbnailButtonView(context, text, resource, action, hideTitle) else ThumbnailButtonView(context, text, resource, action)
 
         fun createThumbnailButton(context: Context, info: HashMap<String, Any>, resource: HashMap<String, Any>, large: Boolean, hideTitle: Boolean) = createThumbnailButton(context, ButtonAction(info["action"] as HashMap<String, Any>), info["label"] as String, ImageResource(resource), large, hideTitle)
 

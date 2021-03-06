@@ -24,6 +24,11 @@ class ButtonAction(private val map: HashMap<String, Any>) {
             put("group", -1)
             put("url", url)
         })
+
+        val empty = ButtonAction(HashMap<String, Any>().apply {
+            put("group", -1)
+            put("type", "none")
+        })
     }
 
     private val group = map["group"].toString().toInt()
@@ -141,6 +146,7 @@ class ButtonAction(private val map: HashMap<String, Any>) {
                         }.setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
                     }*/
                 }
+                "none" -> {}
                 else -> showAlert(context, "Error", "We were unable to run this action because the type \"$type\" is undefined.")
             }
         } catch (ex: Exception) {

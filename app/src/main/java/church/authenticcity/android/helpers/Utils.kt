@@ -20,7 +20,7 @@ import church.authenticcity.android.AuthenticApplication
 import church.authenticcity.android.BuildConfig
 import church.authenticcity.android.R
 import church.authenticcity.android.classes.*
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.threeten.bp.format.DateTimeFormatter
 
 fun String.Companion.isNullOrWhiteSpace(string: String?): Boolean {
@@ -134,7 +134,7 @@ class Utils {
                     else
                         AuthenticEvent(map.getAs("id"), map.getAs("title"), map.getAs("hideTitle"), map.getAs("description"), ImageResource(map.getAs("header")), map.getAs("dateTime"), map.getAs("hideEndDate"), map.getAs("recurrence"), map.getAs("location"), map.getAs("address"), map.getAs("registration"))
                 } catch (e: Exception) {
-                    Crashlytics.logException(e)
+                    FirebaseCrashlytics.getInstance().recordException(e)
                     e.printStackTrace()
                     return null
                 }
@@ -146,7 +146,7 @@ class Utils {
                     val map = value as? HashMap<String, Any> ?: return null
                     return AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("title"), if (map.containsKey("action")) map.getAs<HashMap<String, Any>, String, Any>("action") else null, if (map.containsKey("elements")) map.getAs<List<HashMap<String, Any>>, String, Any>("elements") else null, map.getAs("visibility"), map.getAs<String?, String, Any>("specialType", null))
                 } catch (e: Exception) {
-                    Crashlytics.logException(e)
+                    FirebaseCrashlytics.getInstance().recordException(e)
                     e.printStackTrace()
                     return null
                 }
@@ -163,7 +163,7 @@ class Utils {
         private var alpenglow: Typeface? = null
 
         fun reportAndAlertException(context: Context, ex: Exception, location: String) {
-            Crashlytics.logException(ex)
+            FirebaseCrashlytics.getInstance().recordException(ex)
             var msg = "Unfortunately, an unexpected error occurred and has been reported.  We apologize for the inconvenience.  If you need them, here are the details:\n"
             msg += "\nLocation: $location"
             msg += "\nType: ${ex.javaClass.canonicalName ?: "<null>"}"

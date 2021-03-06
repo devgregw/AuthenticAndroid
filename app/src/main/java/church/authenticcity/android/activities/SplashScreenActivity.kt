@@ -1,6 +1,7 @@
 package church.authenticcity.android.activities
 
 import android.Manifest
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -65,7 +66,13 @@ class SplashScreenActivity : AppCompatActivity() {
 
             override fun onDataChange(p0: DataSnapshot) {
                 if (Utils.isUpdateAvailable(p0.value!!.toString().toInt()))
-                    AlertDialog.Builder(this@SplashScreenActivity).setTitle("Update Available").setCancelable(false).setMessage("An update is available for the Authentic City Church app.  We highly recommend that you update to avoid missing out on new features.").setPositiveButton("Update") { _, _ -> this@SplashScreenActivity.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${this@SplashScreenActivity.packageName}"))) }.setNegativeButton("Not Now") { _, _ -> loadApp() }.create().applyColorsAndTypefaces().show()
+                    AlertDialog.Builder(this@SplashScreenActivity).setTitle("Update Available").setCancelable(false).setMessage("An update is available for the Authentic City Church app.  We highly recommend that you update to avoid missing out on new features.").setPositiveButton("Update") { _, _ ->
+                        try {
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+                        } catch (_: ActivityNotFoundException) {
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+                        }
+                    }.setNegativeButton("Not Now") { _, _ -> loadApp() }.create().applyColorsAndTypefaces().show()
                 else loadApp()
             }
         })

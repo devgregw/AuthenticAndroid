@@ -18,6 +18,7 @@ import church.authenticcity.android.activities.FragmentActivity
 import church.authenticcity.android.activities.WallpaperPreviewActivity
 import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.AuthenticTab
+import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
@@ -179,10 +180,12 @@ class TabFragment(private val tabId: String, title: String, listener: OnFragment
                     orientation = LinearLayout.HORIZONTAL
                 }
                 if (elements.count() > 0) {
-                    val info = elements[0].getProperty("videoInfo", HashMap<String, Any>())
-                    rootList.addView(AuthenticElement.createVideo(view.context, info["provider"] as String, info["id"] as String, info["thumbnail"] as String, info["title"] as String, large = true, hideTitle = true))
+                    rootList.addView(AuthenticElement.createThumbnailButton(view.context, ButtonAction.empty, "", tab.header, large = true, hideTitle = true))
+
+                //val info = elements[0].getProperty("videoInfo", HashMap<String, Any>())
+                    //rootList.addView(AuthenticElement.createVideo(view.context, info["provider"] as String, info["id"] as String, info["thumbnail"] as String, info["title"] as String, large = true, hideTitle = true))
                 }
-                elements.removeAt(0)
+                //elements.removeAt(0)
                 if (elements.count() > 0) {
                     val leftList = LinearLayout(view.context).apply {
                         orientation = LinearLayout.VERTICAL
