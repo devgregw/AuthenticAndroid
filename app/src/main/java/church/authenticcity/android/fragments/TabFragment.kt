@@ -137,22 +137,69 @@ class TabFragment(private val tabId: String, title: String, listener: OnFragment
         })
     }
 
+    private fun passwordLoop(view: View, tab: AuthenticTab) {
+        val field = EditText(requireContext()).apply {
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            hint = "Password"
+        }
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle("Enter Password")
+            .setMessage("This page is protected.")
+            .setView(field)
+            .setPositiveButton("Done") { _, _ ->
+                val pwd = field.text.toString()
+                if (tab.verifyPassword(pwd))
+                    finishLoading(view, tab)
+                else passwordLoop(view, tab)
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                activity?.finish()
+            }
+            .create()
+            dialog.setOnShowListener {
+                val a = it as AlertDialog
+                a.getButton(AlertDialog.BUTTON_POSITIVE).apply {
+                    setTextColor(Color.WHITE)
+                    typeface = Utils.getTextTypeface(a.context)
+                }
+                a.getButton(AlertDialog.BUTTON_NEGATIVE).apply {
+                    setTextColor(Color.WHITE)
+                    typeface = Utils.getTextTypeface(a.context)
+                }
+                a.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)?.typeface = Utils.getTitleTypeface(a.context)
+                if (field.requestFocus())
+                    (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(field, InputMethodManager.SHOW_FORCED)
+            }
+            dialog.show()
+    }
+
+    private fun finishLoading(view: View, tab: AuthenticTab) {
+        if (tab != null)
+            title = tab.title
+        when {
+            tab == null -> {
+                setErrorMessage(view, "Error 404: The page $tabId could not be found.")
+            }
+            tab.action != null -> {
+                tab.action.invoke(view.context)
+                if (this@TabFragment.activity is FragmentActivity) {
+                    this@TabFragment.activity?.finish()
+                }
+            }
+            tab.specialType != null -> populate(view, tab, tab.specialType)
+            else -> setContent(view, tab.convertedElements.map { it.toView(view.context) }.toTypedArray())
+        }
+    }
+
     private fun populate(view: View, tab: AuthenticTab?) {
         Handler(Looper.getMainLooper()).post {
-            if (tab != null)
+            if (tab == null)
+                setErrorMessage(view, "Error 404: The page $tabId could not be found.")
+            else {
                 title = tab.title
-            when {
-                tab == null -> {
-                    setErrorMessage(view, "Error 404: The page $tabId could not be found.")
-                }
-                tab.action != null -> {
-                    tab.action.invoke(view.context)
-                    if (this@TabFragment.activity is FragmentActivity) {
-                        this@TabFragment.activity?.finish()
-                    }
-                }
-                tab.specialType != null -> populate(view, tab, tab.specialType)
-                else -> setContent(view, tab.convertedElements.map { it.toView(view.context) }.toTypedArray())
+                if (tab.hasPassword)
+                    passwordLoop(view, tab)
+                else finishLoading(view, tab)
             }
         }
     }
