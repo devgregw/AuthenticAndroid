@@ -5,13 +5,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
-import church.authenticcity.android.R
 import church.authenticcity.android.activities.TabbedHomeActivity
+import church.authenticcity.android.databinding.FragmentWatchBinding
 import church.authenticcity.android.helpers.Utils
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.fragment_watch.view.*
 
-class WatchFragment(private val id: String, title: String, listener: OnFragmentTitleChangeListener?) : AuthenticFragment(title, R.layout.fragment_watch, listener) {
+class WatchFragment(private val id: String, title: String, listener: OnFragmentTitleChangeListener?) : AuthenticFragment<FragmentWatchBinding>(title, {i, c, a -> FragmentWatchBinding.inflate(i, c, a)}, listener) {
+    override val root: View
+        get() = binding.root
+    
     private var adapter: FragmentAdapter? = null
 
     class FragmentAdapter(private val watchTabId: String, manager: FragmentManager) : FragmentStatePagerAdapter(manager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -34,15 +36,15 @@ class WatchFragment(private val id: String, title: String, listener: OnFragmentT
 
     override fun onRefreshView(view: View) {
         adapter = FragmentAdapter(id, childFragmentManager)
-        view.watch_tab_layout.getTabAt(0)?.select()
-        view.watch_view_pager.adapter = adapter
+        binding.watchTabLayout.getTabAt(0)?.select()
+        binding.watchViewPager.adapter = adapter
     }
 
     private fun initialize(view: View) {
-        view.watch_tab_layout.removeAllTabs()
-        view.watch_tab_layout.addOnTabSelectedListener(object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
+        binding.watchTabLayout.removeAllTabs()
+        binding.watchTabLayout.addOnTabSelectedListener(object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
             override fun onTabSelected(p0: TabLayout.Tab?) {
-                view.watch_view_pager.setCurrentItem(p0?.position ?: 0, true)
+                binding.watchViewPager.setCurrentItem(p0?.position ?: 0, true)
             }
 
             override fun onTabReselected(p0: TabLayout.Tab?) {
@@ -51,11 +53,11 @@ class WatchFragment(private val id: String, title: String, listener: OnFragmentT
             override fun onTabUnselected(p0: TabLayout.Tab?) {
             }
         })
-        view.watch_tab_layout.addTab(view.watch_tab_layout.newTab().setText(Utils.makeTypefaceSpan("VIDEOS", view.context)), true)
-        view.watch_tab_layout.addTab(view.watch_tab_layout.newTab().setText(Utils.makeTypefaceSpan("LIVE", view.context)))
+        binding.watchTabLayout.addTab(binding.watchTabLayout.newTab().setText(Utils.makeTypefaceSpan("VIDEOS", view.context)), true)
+        binding.watchTabLayout.addTab(binding.watchTabLayout.newTab().setText(Utils.makeTypefaceSpan("LIVE", view.context)))
         view.isNestedScrollingEnabled = true
-        view.watch_view_pager.isNestedScrollingEnabled = true
-        view.watch_view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        binding.watchViewPager.isNestedScrollingEnabled = true
+        binding.watchViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
 
@@ -63,14 +65,14 @@ class WatchFragment(private val id: String, title: String, listener: OnFragmentT
             }
 
             override fun onPageSelected(position: Int) {
-                view.watch_tab_layout.getTabAt(position)?.select()
+                binding.watchTabLayout.getTabAt(position)?.select()
                 if (position == 1)
                     adapter?.livestreamFragment?.checkLivestreamStatus()
                 else adapter?.livestreamFragment?.cancel()
             }
         })
         if (!TabbedHomeActivity.appearance.livestream.enable)
-            view.watch_tab_layout.visibility = View.GONE
+            binding.watchTabLayout.visibility = View.GONE
     }
 
     private var stopped = false

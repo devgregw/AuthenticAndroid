@@ -17,25 +17,28 @@ import church.authenticcity.android.R
 import church.authenticcity.android.activities.FragmentActivity
 import church.authenticcity.android.classes.AuthenticEvent
 import church.authenticcity.android.classes.AuthenticEventPlaceholder
+import church.authenticcity.android.databinding.FragmentContentBasicBinding
 import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.views.recyclerView.Tile
 import church.authenticcity.android.views.recyclerView.TileAdapter
-import kotlinx.android.synthetic.main.fragment_content_basic.view.*
 
 /**
  * A simple [Fragment] subclass.
  */
-class EventListFragment : AuthenticFragment("UPCOMING EVENTS") {
+class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>("UPCOMING EVENTS", {i, c, a -> FragmentContentBasicBinding.inflate(i, c, a)}) {
+    override val root: View
+        get() = binding.root
+
     private fun setContent(view: View, content: View) {
-        view.content_list.removeAllViews()
-        view.content_list.addView(content)
-        view.nested_scroll_view.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.contentList.removeAllViews()
+        binding.contentList.addView(content)
+        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
             }
 
             override fun onAnimationEnd(p0: Animator?) {
-                view.swipe_refresh_layout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onAnimationCancel(p0: Animator?) {
@@ -47,14 +50,14 @@ class EventListFragment : AuthenticFragment("UPCOMING EVENTS") {
     }
 
     private fun replaceContent(view: View, content: View) {
-        view.nested_scroll_view.removeAllViews()
-        view.nested_scroll_view.addView(content)
-        view.nested_scroll_view.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.nestedScrollView.removeAllViews()
+        binding.nestedScrollView.addView(content)
+        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
             }
 
             override fun onAnimationEnd(p0: Animator?) {
-                view.swipe_refresh_layout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onAnimationCancel(p0: Animator?) {
@@ -83,7 +86,7 @@ class EventListFragment : AuthenticFragment("UPCOMING EVENTS") {
         }
         val tiles = events.filterIsInstance<AuthenticEventPlaceholder>().filter { it.isVisible }.sortedBy { it.index }.map { Tile(it.title, it.hideTitle, it.header, it, createHandler(it)) }.toList() + events.filter { it !is AuthenticEventPlaceholder }.filter { it.isVisible }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.hideTitle, it.header, it) { e -> FragmentActivity.startEvent(view.context, e.id, e.title) } }
         Handler(Looper.getMainLooper()).post {
-            view.nested_scroll_view.removeAllViews()
+            binding.nestedScrollView.removeAllViews()
             val recyclerView = RecyclerView(view.context)
             recyclerView.adapter = TileAdapter(this@EventListFragment.requireActivity(), tiles, true, false, 0)
             recyclerView.layoutManager = LinearLayoutManager(view.context)
@@ -97,8 +100,8 @@ class EventListFragment : AuthenticFragment("UPCOMING EVENTS") {
     }
 
     override fun onRefreshView(view: View) {
-        view.swipe_refresh_layout.isRefreshing = true
-        view.nested_scroll_view.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.swipeRefreshLayout.isRefreshing = true
+        binding.nestedScrollView.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationEnd(p0: Animator?) {
                 DatabaseHelper.loadAllEvents(false) {er, ev ->
                     if (er != null)
@@ -119,7 +122,7 @@ class EventListFragment : AuthenticFragment("UPCOMING EVENTS") {
     }
 
     override fun onCreateView(view: View) {
-        view.swipe_refresh_layout.setOnRefreshListener { onRefresh() }
+        binding.swipeRefreshLayout.setOnRefreshListener { onRefresh() }
         view.setBackgroundResource(R.color.colorBackground)
     }
 }

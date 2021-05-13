@@ -11,10 +11,9 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import church.authenticcity.android.R
 import church.authenticcity.android.classes.ImageResource
+import church.authenticcity.android.databinding.ActivityWallpaperPreviewBinding
 import church.authenticcity.android.helpers.Utils
-import kotlinx.android.synthetic.main.activity_wallpaper_preview.*
 import java.lang.Exception
 
 /**
@@ -23,16 +22,15 @@ import java.lang.Exception
  */
 class WallpaperPreviewActivity : AppCompatActivity() {
     private val mHideHandler = Handler()
-
     private var mVisible: Boolean = false
     private val mHideRunnable = Runnable { hide() }
-
     private lateinit var downloadReceiver: BroadcastReceiver
+    private lateinit var binding: ActivityWallpaperPreviewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_wallpaper_preview)
+        binding = ActivityWallpaperPreviewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         downloadReceiver = object : BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
@@ -42,16 +40,16 @@ class WallpaperPreviewActivity : AppCompatActivity() {
         registerReceiver(downloadReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
         mVisible = true
 
-        image.scaleType = ImageView.ScaleType.CENTER_CROP
-        ImageResource(intent.getStringExtra("imageName")!!, intent.getIntExtra("width", 1), intent.getIntExtra("height", 1)).load(this, image)
+        binding.image.scaleType = ImageView.ScaleType.CENTER_CROP
+        ImageResource(intent.getStringExtra("imageName")!!, intent.getIntExtra("width", 1), intent.getIntExtra("height", 1)).load(this, binding.image)
 
         // Set up the user interaction to manually show or hide the system UI.
-        image.setOnClickListener { toggle() }
-        cancel_button.typeface = Utils.getTextTypeface(this)
-        save_button.typeface = Utils.getTextTypeface(this)
-        wallpaper_text_view.typeface = Utils.getTextTypeface(this)
-        cancel_button.setOnClickListener { finish() }
-        save_button.setOnClickListener {
+        binding.image.setOnClickListener { toggle() }
+        binding.cancelButton.typeface = Utils.getTextTypeface(this)
+        binding.saveButton.typeface = Utils.getTextTypeface(this)
+        binding.wallpaperTextView.typeface = Utils.getTextTypeface(this)
+        binding.cancelButton.setOnClickListener { finish() }
+        binding.saveButton.setOnClickListener {
             ImageResource(intent.getStringExtra("imageName")!!, intent.getIntExtra("width", 1), intent.getIntExtra("height", 1)).saveToGallery(this)
         }
 
@@ -85,14 +83,14 @@ class WallpaperPreviewActivity : AppCompatActivity() {
 
     private fun hide() {
         // Hide UI first
-        root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
 
         mVisible = false
     }
 
     private fun show() {
         // Show the system bar
-        root.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
         mVisible = true
     }
 

@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -21,21 +22,21 @@ import church.authenticcity.android.BuildConfig
 import church.authenticcity.android.R
 import church.authenticcity.android.classes.AuthenticAppearance
 import church.authenticcity.android.classes.ButtonAction
+import church.authenticcity.android.databinding.ActivityTabbedHomeBinding
 import church.authenticcity.android.fragments.MoreFragment
 import church.authenticcity.android.helpers.FragmentHelper
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.applyTypeface
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.tabs.TabLayout
-import com.google.firebase.iid.FirebaseInstanceId
-import kotlinx.android.synthetic.main.activity_tabbed_home.*
-import kotlinx.android.synthetic.main.toolbar_view.*
+import com.google.firebase.messaging.FirebaseMessaging
 
 class TabbedHomeActivity : AppCompatActivity() {
     companion object {
         var appearance: AuthenticAppearance = AuthenticAppearance.default
     }
 
+    private lateinit var binding: ActivityTabbedHomeBinding
     private lateinit var adapter: FragmentAdapter
     private lateinit var ids: Array<String>
     private lateinit var titles: Array<String>
@@ -52,7 +53,7 @@ class TabbedHomeActivity : AppCompatActivity() {
     }
 
     private fun newTab(title: String): TabLayout.Tab {
-        val tab = tab_layout.newTab()
+        val tab = binding.tabLayout.newTab()
         tab.text = Utils.makeTypefaceSpan(this, title, ResourcesCompat.getFont(this, R.font.alpenglow_expanded)!!)
         return tab
     }
@@ -62,9 +63,9 @@ class TabbedHomeActivity : AppCompatActivity() {
     }
 
     private fun initialize(index: Int, savedInstanceState: Bundle?) {
-        tab_layout.addOnTabSelectedListener(object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
             override fun onTabSelected(p0: TabLayout.Tab?) {
-                view_pager.setCurrentItem(p0?.position ?: 0, true)
+                binding.viewPager.setCurrentItem(p0?.position ?: 0, true)
             }
 
             override fun onTabReselected(p0: TabLayout.Tab?) {
@@ -77,10 +78,10 @@ class TabbedHomeActivity : AppCompatActivity() {
         titles = getStringArray("titles", savedInstanceState)
         specialTypes = getStringArray("specialTypes", savedInstanceState)
         adapter = FragmentAdapter(ids, titles, specialTypes, supportFragmentManager)
-        view_pager.adapter = adapter
-        view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        binding.viewPager.adapter = adapter
+        binding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageSelected(position: Int) {
-                tab_layout.getTabAt(position)?.select()
+                binding.tabLayout.getTabAt(position)?.select()
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -92,15 +93,16 @@ class TabbedHomeActivity : AppCompatActivity() {
         val titles = intent.getStringArrayExtra("titles")!!
         if (titles.count() >= 5) {
             titles.take(4).forEach {
-                tab_layout.addTab(newTab(it))
+                binding.tabLayout.addTab(newTab(it))
             }
-            tab_layout.addTab(newTab("MORE"))
+            binding.tabLayout.addTab(newTab("MORE"))
         } else titles.forEach {
-            tab_layout.addTab(newTab(it))
+            binding.tabLayout.addTab(newTab(it))
         }
-        view_pager.setCurrentItem(index, false)
-        expanded_menu.apply {
-            val popup = PopupMenu(context, expanded_menu)
+        binding.viewPager.setCurrentItem(index, false)
+        val expandedMenu = binding.root.findViewById<ImageButton>(R.id.expanded_menu)
+        expandedMenu.apply {
+            val popup = PopupMenu(context, expandedMenu)
             popup.menuInflater.inflate(R.menu.menu_info, popup.menu)
             if (!BuildConfig.DEBUG)
                 popup.menu.removeItem(R.id.menu_advanced)
@@ -130,14 +132,14 @@ class TabbedHomeActivity : AppCompatActivity() {
                         true
                     }
                     R.id.menu_copy_fcm -> {
-                        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+                        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                             if (!task.isSuccessful) {
                                 Log.w("CopyIID", "Unable to copy IID", task.exception)
                                 Utils.makeToast(context, "Unable to copy registration token.", Toast.LENGTH_SHORT).show()
                                 return@addOnCompleteListener
                             }
                             val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            clipboard.setPrimaryClip(ClipData.newPlainText("fcm", task.result?.token ?: "<unavailable>"))
+                            clipboard.setPrimaryClip(ClipData.newPlainText("fcm", task.result ?: "<unavailable>"))
                             Utils.makeToast(context, "Your registration token was copied.", Toast.LENGTH_SHORT).show()
                         }
 
@@ -160,25 +162,8 @@ class TabbedHomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tabbed_home)
+        binding = ActivityTabbedHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initialize(0, savedInstanceState)
     }
-
-    /*override fun onSaveInstanceState(outState: Bundle) {
-        outState.putStringArray("ids", ids)
-        outState.putStringArray("titles", titles)
-        outState.putStringArray("specialTypes", specialTypes)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onPause() {
-        index = view_pager.currentItem
-        super.onPause()
-
-    }
-
-    override fun onRestart() {
-        initialize(index, null)
-        super.onRestart()
-    }*/
 }

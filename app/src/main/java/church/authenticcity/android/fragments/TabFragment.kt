@@ -5,12 +5,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.inputmethodservice.InputMethodService
 import android.os.Handler
 import android.os.Looper
+import android.text.InputType
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import church.authenticcity.android.R
@@ -20,15 +25,19 @@ import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.AuthenticTab
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.classes.ImageResource
+import church.authenticcity.android.databinding.FragmentContentBasicBinding
 import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
+import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.views.HalfThumbnailButtonView
-import kotlinx.android.synthetic.main.fragment_content_basic.view.*
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.roundToInt
 
-class TabFragment(private val tabId: String, title: String, listener: OnFragmentTitleChangeListener?) : AuthenticFragment(title, listener = listener) {
+class TabFragment(private val tabId: String, title: String, listener: OnFragmentTitleChangeListener?) : AuthenticFragment<FragmentContentBasicBinding>(title, {i, c, a -> FragmentContentBasicBinding.inflate(i, c, a)}, listener) {
+    override val root: View
+        get() = binding.root
+    
     constructor() : this("error500", "Error 500", null)
 
     private class WallpaperViewHolder(private val context: Context) : RecyclerView.ViewHolder(RelativeLayout(context).apply {
@@ -64,14 +73,14 @@ class TabFragment(private val tabId: String, title: String, listener: OnFragment
     }
 
     private fun replaceContent(view: View, content: View) {
-        view.nested_scroll_view.removeAllViews()
-        view.nested_scroll_view.addView(content)
-        view.nested_scroll_view.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.nestedScrollView.removeAllViews()
+        binding.nestedScrollView.addView(content)
+        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
             }
 
             override fun onAnimationEnd(p0: Animator?) {
-                view.swipe_refresh_layout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onAnimationCancel(p0: Animator?) {
@@ -83,14 +92,14 @@ class TabFragment(private val tabId: String, title: String, listener: OnFragment
     }
 
     private fun setContent(view: View, content: View) {
-        view.content_list.removeAllViews()
-        view.content_list.addView(content)
-        view.nested_scroll_view.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.contentList.removeAllViews()
+        binding.contentList.addView(content)
+        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
             }
 
             override fun onAnimationEnd(p0: Animator?) {
-                view.swipe_refresh_layout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onAnimationCancel(p0: Animator?) {
@@ -102,14 +111,14 @@ class TabFragment(private val tabId: String, title: String, listener: OnFragment
     }
 
     private fun setContent(view: View, views: Array<View>) {
-        view.content_list.removeAllViews()
-        views.forEach { view.content_list.addView(it) }
-        view.nested_scroll_view.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.contentList.removeAllViews()
+        views.forEach { binding.contentList.addView(it) }
+        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
             }
 
             override fun onAnimationEnd(p0: Animator?) {
-                view.swipe_refresh_layout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onAnimationCancel(p0: Animator?) {
@@ -224,8 +233,8 @@ class TabFragment(private val tabId: String, title: String, listener: OnFragment
     }
 
     override fun onRefreshView(view: View) {
-        view.swipe_refresh_layout.isRefreshing = true
-        view.nested_scroll_view.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.swipeRefreshLayout.isRefreshing = true
+        binding.nestedScrollView.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationEnd(p0: Animator?) {
                 DatabaseHelper.loadTab(tabId, false) {er, t ->
                     if (er != null)
@@ -246,6 +255,6 @@ class TabFragment(private val tabId: String, title: String, listener: OnFragment
     }
 
     override fun onCreateView(view: View) {
-        view.swipe_refresh_layout.setOnRefreshListener { onRefresh() }
+        binding.swipeRefreshLayout.setOnRefreshListener { onRefresh() }
     }
 }

@@ -9,21 +9,24 @@ import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.AuthenticEvent
 import church.authenticcity.android.classes.AuthenticEventPlaceholder
 import church.authenticcity.android.classes.ButtonAction
+import church.authenticcity.android.databinding.FragmentContentBasicBinding
 import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.isNullOrWhiteSpace
-import kotlinx.android.synthetic.main.fragment_content_basic.view.*
 
-class EventFragment(private val eventId: String, title: String, listener: OnFragmentTitleChangeListener?) : AuthenticFragment(title, listener = listener) {
+class EventFragment(private val eventId: String, title: String, listener: OnFragmentTitleChangeListener?) : AuthenticFragment<FragmentContentBasicBinding>(title, {i, c, a -> FragmentContentBasicBinding.inflate(i, c, a)}, listener) {
+    override val root: View
+        get() = binding.root
+
     private fun setContent(view: View, content: View) {
-        view.content_list.removeAllViews()
-        view.content_list.addView(content)
-        view.nested_scroll_view.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.contentList.removeAllViews()
+        binding.contentList.addView(content)
+        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
             }
 
             override fun onAnimationEnd(p0: Animator?) {
-                view.swipe_refresh_layout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onAnimationCancel(p0: Animator?) {
@@ -35,14 +38,14 @@ class EventFragment(private val eventId: String, title: String, listener: OnFrag
     }
 
     private fun setContent(view: View, views: Array<View>) {
-        view.content_list.removeAllViews()
-        views.forEach { view.content_list.addView(it) }
-        view.nested_scroll_view.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.contentList.removeAllViews()
+        views.forEach { binding.contentList.addView(it) }
+        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
             }
 
             override fun onAnimationEnd(p0: Animator?) {
-                view.swipe_refresh_layout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onAnimationCancel(p0: Animator?) {
@@ -69,7 +72,7 @@ class EventFragment(private val eventId: String, title: String, listener: OnFrag
             if (event is AuthenticEventPlaceholder)
                 setContent(view, event.convertedElements.map { it.toView(view.context) }.toTypedArray())
             else
-                view.content_list.apply {
+                binding.contentList.apply {
                     addView(AuthenticElement.createImage(view.context, event.header, false))
                     addView(AuthenticElement.createTitle(view.context, event.title, "center", size = 32f))
                     addView(AuthenticElement.createText(view.context, event.description, "left", size = 20f))
@@ -121,8 +124,8 @@ class EventFragment(private val eventId: String, title: String, listener: OnFrag
     }
 
     override fun onRefreshView(view: View) {
-        view.swipe_refresh_layout.isRefreshing = true
-        view.nested_scroll_view.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.swipeRefreshLayout.isRefreshing = true
+        binding.nestedScrollView.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationEnd(p0: Animator?) {
                 DatabaseHelper.loadEvent(eventId, false) {er, ev ->
                     if (er != null)
@@ -144,6 +147,6 @@ class EventFragment(private val eventId: String, title: String, listener: OnFrag
     }
 
     override fun onCreateView(view: View) {
-        view.swipe_refresh_layout.setOnRefreshListener { onRefresh() }
+        binding.swipeRefreshLayout.setOnRefreshListener { onRefresh() }
     }
 }

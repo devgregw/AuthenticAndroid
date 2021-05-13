@@ -144,7 +144,7 @@ class Utils {
             fun constructTab(value: Any?): AuthenticTab? {
                 try {
                     val map = value as? HashMap<String, Any> ?: return null
-                    return AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("title"), if (map.containsKey("action")) map.getAs<HashMap<String, Any>, String, Any>("action") else null, if (map.containsKey("elements")) map.getAs<List<HashMap<String, Any>>, String, Any>("elements") else null, map.getAs("visibility"), map.getAs<String?, String, Any>("specialType", null))
+                    return AuthenticTab(ImageResource(map.getAs("header")), map.getAs("id"), map.getAs("index"), map.getAs("title"), if (map.containsKey("action")) map.getAs<HashMap<String, Any>, String, Any>("action") else null, if (map.containsKey("elements")) map.getAs<List<HashMap<String, Any>>, String, Any>("elements") else null, map.getAs("visibility"), map.getAs<String?, String, Any>("specialType", null), map.getAs<String?, String, Any>("password", null))
                 } catch (e: Exception) {
                     FirebaseCrashlytics.getInstance().recordException(e)
                     e.printStackTrace()

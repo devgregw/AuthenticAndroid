@@ -11,9 +11,8 @@ import android.view.Gravity
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Toast
-import church.authenticcity.android.R
+import church.authenticcity.android.databinding.ActivityVideoBinding
 import church.authenticcity.android.helpers.Utils
-import kotlinx.android.synthetic.main.activity_video.*
 
 class VideoActivity : AppCompatActivity() {
     companion object {
@@ -26,18 +25,21 @@ class VideoActivity : AppCompatActivity() {
         }
     }
 
+    private lateinit var binding: ActivityVideoBinding
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityVideoBinding.inflate(layoutInflater)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        setContentView(R.layout.activity_video)
+        setContentView(binding.root)
         Utils.makeToast(this, "Swipe down from the top of the screen and press the back button to exit.", Toast.LENGTH_LONG).apply {
             setGravity(Gravity.CENTER, 0, 0)
             show()
         }
         Handler().postDelayed({
-            video_webview.apply {
+            binding.videoWebview.apply {
                 settings.mediaPlaybackRequiresUserGesture = false
                 settings.javaScriptEnabled = true
                 setBackgroundColor(Color.BLACK)

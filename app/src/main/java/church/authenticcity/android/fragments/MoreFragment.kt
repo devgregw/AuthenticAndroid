@@ -10,10 +10,13 @@ import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import church.authenticcity.android.R
 import church.authenticcity.android.activities.FragmentActivity
+import church.authenticcity.android.databinding.FragmentMoreBinding
 import church.authenticcity.android.helpers.Utils
-import kotlinx.android.synthetic.main.fragment_more.view.*
 
-class MoreFragment(private val ids: Array<String>, private val titles: Array<String>, private val specialTypes: Array<String>) : AuthenticFragment("MORE", R.layout.fragment_more, null) {
+class MoreFragment(private val ids: Array<String>, private val titles: Array<String>, private val specialTypes: Array<String>) : AuthenticFragment<FragmentMoreBinding>("MORE", {i, c, a -> FragmentMoreBinding.inflate(i, c, a)}, null) {
+    override val root: View
+        get() = binding.root
+
     class DataModel(val title: String, val id: String, val specialType: String)
 
     class ListViewAdapter(context: Context, private val items: Array<DataModel>) : ArrayAdapter<DataModel>(context, android.R.layout.simple_list_item_1, items), View.OnClickListener {
@@ -49,7 +52,7 @@ class MoreFragment(private val ids: Array<String>, private val titles: Array<Str
 
     override fun onCreateView(view: View) {
         view.setBackgroundColor(ResourcesCompat.getColor(view.context.resources, R.color.colorBackground, null))
-        view.list_view.adapter = ListViewAdapter(view.context, ids.mapIndexed { index, s -> DataModel(titles[index], s, specialTypes[index])}.toTypedArray())
+        binding.listView.adapter = ListViewAdapter(view.context, ids.mapIndexed { index, s -> DataModel(titles[index], s, specialTypes[index])}.toTypedArray())
     }
 
     override fun onRefreshView(view: View) {

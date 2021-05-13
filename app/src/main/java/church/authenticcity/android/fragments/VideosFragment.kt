@@ -5,38 +5,40 @@ import android.graphics.Color
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
-import church.authenticcity.android.R
 import church.authenticcity.android.classes.AuthenticTab
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.classes.ImageResource
+import church.authenticcity.android.databinding.FragmentVideosBinding
 import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.views.HalfThumbnailButtonView
 import church.authenticcity.android.views.LargeThumbnailButtonView
-import kotlinx.android.synthetic.main.fragment_videos.view.*
 
-class VideosFragment(private val watchTabId: String) : AuthenticFragment("VIDEOS", R.layout.fragment_videos,null) {
+class VideosFragment(private val watchTabId: String) : AuthenticFragment<FragmentVideosBinding>("VIDEOS", {i, c, a -> FragmentVideosBinding.inflate(i, c, a)}, null) {
+    override val root: View
+        get() = binding.root
+    
     constructor() : this("OPQ26R4SRP")
 
     private fun replaceContent(view: View, content: View) {
-        view.nested_scroll_view.removeAllViews()
-        view.nested_scroll_view.addView(content)
+        binding.nestedScrollView.removeAllViews()
+        binding.nestedScrollView.addView(content)
         showContent(view)
     }
 
     private fun setContent(view: View, content: View) {
-        view.content_list.removeAllViews()
-        view.content_list.addView(content)
+        binding.contentList.removeAllViews()
+        binding.contentList.addView(content)
         showContent(view)
     }
 
     private fun showContent(view: View) {
-        view.nested_scroll_view.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
             }
 
             override fun onAnimationEnd(p0: Animator?) {
-                view.swipe_refresh_layout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onAnimationCancel(p0: Animator?) {
@@ -56,16 +58,16 @@ class VideosFragment(private val watchTabId: String) : AuthenticFragment("VIDEOS
     }
 
     override fun onCreateView(view: View) {
-        view.swipe_refresh_layout.setOnRefreshListener { onRefresh() }
+        binding.swipeRefreshLayout.setOnRefreshListener { onRefresh() }
     }
 
     private fun populate(view: View, playlistTabs: List<AuthenticTab>, latestVideoImage: String, latestVideoProvider: String, latestVideoId: String) {
-        view.swipe_refresh_layout.isRefreshing = false
-        if (view.content_list.childCount == 2)
-            view.content_list.removeViewAt(0)
-        view.videos_list_left.removeAllViews()
-        view.videos_list_right.removeAllViews()
-        view.content_list.addView(LargeThumbnailButtonView(view.context, latestVideoProvider, latestVideoId, "", latestVideoImage, true),0)
+        binding.swipeRefreshLayout.isRefreshing = false
+        if (binding.contentList.childCount == 2)
+            binding.contentList.removeViewAt(0)
+        binding.videosListLeft.removeAllViews()
+        binding.videosListRight.removeAllViews()
+        binding.contentList.addView(LargeThumbnailButtonView(view.context, latestVideoProvider, latestVideoId, "", latestVideoImage, true),0)
         playlistTabs.forEachIndexed { index, authenticTab ->
             val btn = HalfThumbnailButtonView(view.context, "", ImageResource(authenticTab.header.imageName, 1920, 1080), ButtonAction(HashMap<String, Any>().apply {
                 put("group", 0)
@@ -73,14 +75,14 @@ class VideosFragment(private val watchTabId: String) : AuthenticFragment("VIDEOS
                 put("type", "OpenTabAction")
             }), true)
             if (index % 2 != 0)
-                view.videos_list_right.addView(btn)
-            else view.videos_list_left.addView(btn)
+                binding.videosListRight.addView(btn)
+            else binding.videosListLeft.addView(btn)
         }
         showContent(view)
     }
 
     override fun onRefreshView(view: View) {
-        view.nested_scroll_view.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding.nestedScrollView.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationEnd(p0: Animator?) {
                 DatabaseHelper.loadAllTabs(false) {er, tabs ->
                     when {
