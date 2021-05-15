@@ -143,8 +143,8 @@ class TabFragment(private val tabId: String, title: String, listener: OnFragment
             hint = "Password"
         }
         val dialog = AlertDialog.Builder(requireContext())
-            .setTitle("Enter Password")
-            .setMessage("This page is protected.")
+            .setTitle(tab.title)
+            .setMessage("Enter password to access.")
             .setView(field)
             .setPositiveButton("Done") { _, _ ->
                 val pwd = field.text.toString()
