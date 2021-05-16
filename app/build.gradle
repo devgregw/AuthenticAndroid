@@ -16,8 +16,8 @@ android {
         applicationId "church.authenticcity.android"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 23
-        versionName "1.1.7"
+        versionCode 24
+        versionName "1.1.8"
     }
     buildFeatures {
         viewBinding true
