@@ -36,20 +36,32 @@ import kotlin.math.roundToInt
 class AuthenticElement(private val map: HashMap<String, Any>) {
     companion object {
         fun createImage(context: Context, image: ImageResource, enlargable: Boolean): View {
-            val view = RelativeLayout(context).apply {
+            return RelativeLayout(context).apply {
                 val rand = Random().nextInt(256)
                 val adjustedWidth = context.resources.displayMetrics.widthPixels
                 val adjustedHeight = image.calculateHeight(adjustedWidth)
-                layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
                 setBackgroundColor(Color.argb(255, rand, rand, rand))
                 addView(ProgressBar(context).apply {
-                    val psize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20f, context.resources.displayMetrics).roundToInt()
+                    val psize = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        20f,
+                        context.resources.displayMetrics
+                    ).roundToInt()
                     isIndeterminate = true
-                    indeterminateTintList = ColorStateList.valueOf(Color.argb(255, 255 - rand, 255 - rand, 255 - rand))
+                    indeterminateTintList =
+                        ColorStateList.valueOf(Color.argb(255, 255 - rand, 255 - rand, 255 - rand))
                     layoutParams = RelativeLayout.LayoutParams(psize, psize).apply {
                         addRule(RelativeLayout.ALIGN_PARENT_TOP)
                         addRule(RelativeLayout.ALIGN_PARENT_START)
-                        val margin = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4f, context.resources.displayMetrics).roundToInt()
+                        val margin = TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            4f,
+                            context.resources.displayMetrics
+                        ).roundToInt()
                         setMargins(margin, margin, 0, 0)
                     }
                 })
@@ -61,17 +73,31 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                 if (enlargable) {
                     addView(LinearLayout(context).apply {
                         orientation = LinearLayout.VERTICAL
-                        layoutParams = RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
+                        layoutParams = RelativeLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        ).apply {
                             addRule(RelativeLayout.ALIGN_PARENT_TOP)
                             addRule(RelativeLayout.ALIGN_PARENT_START)
                         }
                         imageView.apply {
-                            layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, adjustedHeight)
+                            layoutParams = LinearLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                adjustedHeight
+                            )
                             setOnClickListener {
                                 image.saveToGallery(context)
                             }
                         }
-                        addView(createText(context, "Tap to download.", "left", color = Color.DKGRAY, size = 14f))
+                        addView(
+                            createText(
+                                context,
+                                "Tap to download.",
+                                "left",
+                                color = Color.DKGRAY,
+                                size = 14f
+                            )
+                        )
                         addView(imageView)
                     })
                 } else
@@ -79,7 +105,6 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                         layoutParams = RelativeLayout.LayoutParams(adjustedWidth, adjustedHeight)
                     })
             }
-            return view
         }
 
         fun createVideo(context: Context, provider: String, id: String, thumbnail: String, title: String, large: Boolean, hideTitle: Boolean) =
@@ -260,8 +285,8 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     put("width", 720)
                     put("height", 1080)
                 }), getBoolean("large", false), getBoolean("hideTitle", false))
-                "toolbar" -> createToolbar(context, getProperty<HashMap<String, Any>>("image", HashMap()), getProperty("leftAction", HashMap()), getProperty("rightAction", HashMap()))
-                "tile" -> createTile(context, getProperty("title", ""), getProperty("height", 0), getProperty("action", HashMap()), getProperty("header", HashMap<String, Any>()))
+                "toolbar" -> createToolbar(context, getProperty("image", HashMap()), getProperty("leftAction", HashMap()), getProperty("rightAction", HashMap()))
+                "tile" -> createTile(context, getProperty("title", ""), getProperty("height", 0), getProperty("action", HashMap()), getProperty("header", HashMap()))
                 "fullExpController" -> createFullExperienceController(context, ImageResource(getProperty("image", HashMap())), ButtonAction(getProperty("action", HashMap())))
                 "separator" -> createSeparator(context, getBoolean("visible", true))
                 "html" -> createHtmlReader(context, getProperty("html", "<p></p>"))

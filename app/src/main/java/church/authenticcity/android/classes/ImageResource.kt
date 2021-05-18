@@ -42,9 +42,6 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
     private fun isExternal() = imageName.startsWith("http://", true) or imageName.startsWith("https://", true)
 
     companion object{
-        @IntDef(ANCHOR_TOP_LEFT, ANCHOR_CENTER)
-        @Retention(AnnotationRetention.SOURCE)
-        annotation class Anchor
         const val ANCHOR_TOP_LEFT = 0
         const val ANCHOR_CENTER = 1
     }

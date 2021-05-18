@@ -19,13 +19,13 @@ class MoreFragment : AuthenticFragment<FragmentMoreBinding>() {
         get() = binding.root
 
     private val ids: Array<String>
-        get() = arguments?.getStringArray("ids") ?: Array(0) { _ -> "" }
+        get() = arguments?.getStringArray("ids") ?: Array(0) { "" }
 
     private val titles: Array<String>
-        get() = arguments?.getStringArray("titles") ?: Array(0) { _ -> "" }
+        get() = arguments?.getStringArray("titles") ?: Array(0) { "" }
 
     private val specialTypes: Array<String>
-        get() = arguments?.getStringArray("specialTypes") ?: Array(0) { _ -> "" }
+        get() = arguments?.getStringArray("specialTypes") ?: Array(0) { "" }
 
     companion object {
         fun getInstance(ids: Array<String>, titles: Array<String>, specialTypes: Array<String>) = MoreFragment().apply {

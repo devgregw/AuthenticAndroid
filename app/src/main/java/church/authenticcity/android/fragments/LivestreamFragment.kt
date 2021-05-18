@@ -14,6 +14,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
+import com.beust.klaxon.Parser.Companion.default
 import com.google.android.material.snackbar.Snackbar
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDateTime
@@ -62,7 +63,8 @@ class LivestreamFragment : AuthenticFragment<FragmentLivestreamBinding>() {
             val queue = Volley.newRequestQueue(view!!.context)
             request = StringRequest(Request.Method.GET, "https://us-central1-authentic-city-church.cloudfunctions.net/videos", {
                 checkingSnackbar!!.dismiss()
-                val obj = Parser().parse(StringBuilder(it)) as JsonObject
+                emptyList()
+                val obj = this.default(pathMatchers, passedLexer, streaming)().parse(StringBuilder(it)) as JsonObject
                 if (obj.count() > 0) {
                     if (obj.containsKey("livestream")) {
                         actionSnackbar = Snackbar.make(view!!, Utils.makeTypefaceSpan("WE'RE LIVE", view!!.context, 12), Snackbar.LENGTH_INDEFINITE)

@@ -29,7 +29,7 @@ class RecurrenceRule(private val frequency: String, private val interval: Int, p
     private val infinite: Boolean = count == null && endDate == null
 
     fun getRRule(): String {
-        val main = "FREQ=${frequency.toUpperCase()};INTERVAL=$interval"
+        val main = "FREQ=${frequency.uppercase(Locale.getDefault())};INTERVAL=$interval"
         if (endDate != null)
             return main + ";UNTIL=${endDate.format(DateTimeFormatter.ISO_DATE_TIME)}"
         else if (count != null)

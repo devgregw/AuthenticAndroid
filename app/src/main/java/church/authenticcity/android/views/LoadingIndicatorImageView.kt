@@ -28,9 +28,11 @@ class LoadingIndicatorImageView {
         const val MATCH_PARENT = ViewGroup.LayoutParams.MATCH_PARENT
         const val WRAP_CONTENT = ViewGroup.LayoutParams.WRAP_CONTENT
 
-        fun create(context: Context, resource: ImageResource, @Anchor anchor: Int, scaleType: ImageView.ScaleType, randomColor: Boolean = true, @AutoSize width: Int = -1, @AutoSize height: Int = -1): RelativeLayout {
+        fun create(context: Context, resource: ImageResource, @Anchor anchor: Int, scaleType: ImageView.ScaleType, randomColor: Boolean = true, @AutoSize width: Int? = null, @AutoSize height: Int? = null): RelativeLayout {
             return RelativeLayout(context).apply {
-                layoutParams = ViewGroup.LayoutParams(if (width == -1) resource.width else width, if (height == -1) resource.height else height)
+                layoutParams = ViewGroup.LayoutParams(width ?: resource.width,
+                    height ?: resource.height
+                )
                 val rand = if (randomColor) Random.nextInt(0, 256) else 0
                 setBackgroundColor(Color.argb(if (randomColor) 255 else 0, rand, rand, rand))
                 addView(ProgressBar(context).apply {
@@ -58,6 +60,6 @@ class LoadingIndicatorImageView {
             }
         }
 
-        fun create(context: Context, url: String, size: Size, @Anchor anchor: Int, scaleType: ImageView.ScaleType, randomColor: Boolean = true, @AutoSize width: Int = -1, @AutoSize height: Int = -1) = create(context, ImageResource(url, size.width, size.height), anchor, scaleType, randomColor, width, height)
+        fun create(context: Context, url: String, size: Size, @Anchor anchor: Int, scaleType: ImageView.ScaleType, randomColor: Boolean = true, @AutoSize width: Int? = null, @AutoSize height: Int? = null) = create(context, ImageResource(url, size.width, size.height), anchor, scaleType, randomColor, width, height)
     }
 }

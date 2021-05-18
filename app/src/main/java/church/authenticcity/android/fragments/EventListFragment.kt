@@ -27,13 +27,9 @@ import java.lang.Exception
 /**
  * A simple [Fragment] subclass.
  */
-class EventListFragment : AuthenticFragment<FragmentContentBasicBinding> {
+class EventListFragment() : AuthenticFragment<FragmentContentBasicBinding>() {
     companion object {
         fun getInstance() = EventListFragment()
-    }
-
-    constructor() : super() {
-        setup("UPCOMING EVENTS", {i, c, a -> FragmentContentBasicBinding.inflate(i, c, a)})
     }
 
     override val root: View
@@ -155,5 +151,9 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding> {
             }
         }
         super.onResume()
+    }
+
+    init {
+        setup("UPCOMING EVENTS", { i, c, a -> FragmentContentBasicBinding.inflate(i, c, a)})
     }
 }

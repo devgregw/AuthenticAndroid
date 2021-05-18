@@ -77,7 +77,7 @@ inline fun <reified T, V, K> HashMap<V, K>.getAs(key: V) = (if (T::class.simpleN
 
 @Suppress("IMPLICIT_CAST_TO_ANY")
 inline fun <reified T, V, K> HashMap<V, K>.getAs(key: V, default: T) = try {
-    this.getAs<T, V, K>(key)
+    this.getAs(key)
 } catch (e: Exception) {
     default
 }

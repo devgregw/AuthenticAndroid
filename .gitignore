@@ -9,6 +9,4 @@
 .externalNativeBuild
 google-services.json
 *.aab
-*.aab
-.idea/caches/build_file_checksums.ser
 .idea/caches/build_file_checksums.ser

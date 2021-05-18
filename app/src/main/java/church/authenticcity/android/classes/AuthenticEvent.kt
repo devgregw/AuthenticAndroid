@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package church.authenticcity.android.classes
 
 import church.authenticcity.android.helpers.RecurrenceRule

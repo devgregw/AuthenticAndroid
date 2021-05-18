@@ -4,15 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import church.authenticcity.android.R
-import church.authenticcity.android.databinding.FragmentContentBasicBinding
-import church.authenticcity.android.databinding.ViewToolbarBinding
 
 typealias OnFragmentTitleChangeListener = (String) -> Unit
 
-abstract class AuthenticFragment<TBinding>() : Fragment() {
+abstract class AuthenticFragment<TBinding> : Fragment() {
     private var listener: OnFragmentTitleChangeListener? = null
     private var binder: ((LayoutInflater, ViewGroup?, Boolean) -> TBinding)? = null
     private var _binding: TBinding? = null
