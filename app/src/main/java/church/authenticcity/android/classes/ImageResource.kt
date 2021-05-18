@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Environment
 import android.provider.Settings
+import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.IntDef
@@ -48,32 +49,35 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
         const val ANCHOR_CENTER = 1
     }
 
-    fun load(context: Context, into: ImageView, callback: ((Drawable) -> Unit)? = null) {
+    fun load(context: Context, into: ImageView) {
         var ref = FirebaseStorage.getInstance().reference
         if (AuthenticApplication.useDevelopmentDatabase)
             ref = ref.child("dev")
         val request = if (isExternal()) Glide.with(context).load(Uri.parse(imageName)) else Glide.with(context).load(ref.child(if (String.isNullOrWhiteSpace(imageName)) "unknown.png" else imageName))
         request.transition(DrawableTransitionOptions.withCrossFade())
-                .error(Glide.with(context)
-                        .load(ContextCompat.getDrawable(context, R.drawable.unknown))
-                        .transition(DrawableTransitionOptions.withCrossFade()))
-        if (callback != null)
-            request.listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                    callback(ContextCompat.getDrawable(context, R.drawable.unknown)!!)
-                    return true
+            .error(R.drawable.unknown)
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    Log.d("Authentic", "Load failed for $imageName", e)
+                    return false
                 }
 
-                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                    if (resource == null)
-                        callback(ContextCompat.getDrawable(context, R.drawable.unknown)!!)
-                    else
-                        callback(resource)
-                    return true
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    return false
                 }
-            }).submit()
-        else
-            request.into(into)
+            })
+            .into(into)
     }
 
     fun calculateHeight(context: Context, fullWidth: Boolean) = calculateHeight(context.resources.displayMetrics.widthPixels / (if (fullWidth) 1 else 2))
