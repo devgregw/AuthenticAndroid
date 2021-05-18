@@ -2,6 +2,7 @@ package church.authenticcity.android.fragments
 
 import android.animation.Animator
 import android.graphics.Color
+import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -14,7 +15,19 @@ import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.helpers.isNullOrWhiteSpace
 
-class EventFragment(private val eventId: String, title: String, listener: OnFragmentTitleChangeListener?) : AuthenticFragment<FragmentContentBasicBinding>(title, {i, c, a -> FragmentContentBasicBinding.inflate(i, c, a)}, listener) {
+class EventFragment : AuthenticFragment<FragmentContentBasicBinding>() {
+    companion object {
+        fun getInstance(eventId: String, title: String, listener: OnFragmentTitleChangeListener?) = EventFragment().apply {
+            arguments = Bundle().apply {
+                putString("eventId", eventId)
+            }
+            setup(title, {i, c, a -> FragmentContentBasicBinding.inflate(i, c, a)}, listener)
+        }
+    }
+
+    private val eventId: String
+        get() = arguments?.getString("eventId", "") ?: ""
+
     override val root: View
         get() = binding.root
 

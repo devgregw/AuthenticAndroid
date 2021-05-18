@@ -2,6 +2,7 @@ package church.authenticcity.android.fragments
 
 import android.animation.Animator
 import android.graphics.Color
+import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
@@ -14,11 +15,21 @@ import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.views.HalfThumbnailButtonView
 import church.authenticcity.android.views.LargeThumbnailButtonView
 
-class VideosFragment(private val watchTabId: String) : AuthenticFragment<FragmentVideosBinding>("VIDEOS", {i, c, a -> FragmentVideosBinding.inflate(i, c, a)}, null) {
+class VideosFragment : AuthenticFragment<FragmentVideosBinding>() {
+    companion object {
+        fun getInstance(watchTabId: String) = VideosFragment().apply {
+            arguments = Bundle().apply {
+                putString("watchTabId", watchTabId)
+            }
+            setup("VIDEOS", {i, c, a -> FragmentVideosBinding.inflate(i, c, a)})
+        }
+    }
+
+    private val watchTabId: String
+        get() = arguments?.getString("watchTabId", "OPQ26R4SRP") ?: "OPQ26R4SRP"
+
     override val root: View
         get() = binding.root
-    
-    constructor() : this("OPQ26R4SRP")
 
     private fun replaceContent(view: View, content: View) {
         binding.nestedScrollView.removeAllViews()

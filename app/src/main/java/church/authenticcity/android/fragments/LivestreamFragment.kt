@@ -19,7 +19,13 @@ import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 
-class LivestreamFragment : AuthenticFragment<FragmentLivestreamBinding>("LIVE", {i, c, a -> FragmentLivestreamBinding.inflate(i, c, a)}, null) {
+class LivestreamFragment : AuthenticFragment<FragmentLivestreamBinding>() {
+    companion object {
+        fun getInstance() = LivestreamFragment().apply {
+            setup("LIVE", {i, c, a -> FragmentLivestreamBinding.inflate(i, c, a)})
+        }
+    }
+
     override val root: View
         get() = binding.root
     

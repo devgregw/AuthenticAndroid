@@ -64,7 +64,7 @@ class FragmentActivity : AppCompatActivity() {
         val fragment = when (intent.getStringExtra("type")) {
             "tab" -> FragmentHelper.getTabFragment(intent.getStringExtra("id") ?: "/ERROR/", intent.getStringExtra("title") ?: "Error 400", intent.getStringExtra("specialType") ?: "", listener)
             "event" -> FragmentHelper.getEventFragment(intent.getStringExtra("id") ?: "/ERROR/", intent.getStringExtra("title") ?: "Error 400", listener)
-            "eventList" -> EventListFragment()
+            "eventList" -> EventListFragment.getInstance()
             else -> FragmentHelper.getTabFragment("/ERROR/", "Error 400", "", listener)
         }
         setupToolbar(fragment.title)

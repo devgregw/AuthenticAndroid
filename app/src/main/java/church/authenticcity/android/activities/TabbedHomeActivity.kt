@@ -46,7 +46,7 @@ class TabbedHomeActivity : AppCompatActivity() {
         override fun getItem(position: Int): Fragment {
             if (position in 0 until if (ids.count() >= 5) 4 else ids.count())
                 return FragmentHelper.getTabFragment(ids[position], titles[position], specialTypes[position], null)
-            return MoreFragment(ids.drop(4).toTypedArray(), titles.drop(4).toTypedArray(), specialTypes.drop(4).toTypedArray())
+            return MoreFragment.getInstance(ids.drop(4).toTypedArray(), titles.drop(4).toTypedArray(), specialTypes.drop(4).toTypedArray())
         }
 
         override fun getCount(): Int = if (ids.count() >= 5) 5 else ids.count()

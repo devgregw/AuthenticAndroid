@@ -1,6 +1,7 @@
 package church.authenticcity.android.fragments
 
 import android.content.Context
+import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +14,29 @@ import church.authenticcity.android.activities.FragmentActivity
 import church.authenticcity.android.databinding.FragmentMoreBinding
 import church.authenticcity.android.helpers.Utils
 
-class MoreFragment(private val ids: Array<String>, private val titles: Array<String>, private val specialTypes: Array<String>) : AuthenticFragment<FragmentMoreBinding>("MORE", {i, c, a -> FragmentMoreBinding.inflate(i, c, a)}, null) {
+class MoreFragment : AuthenticFragment<FragmentMoreBinding>() {
     override val root: View
         get() = binding.root
+
+    private val ids: Array<String>
+        get() = arguments?.getStringArray("ids") ?: Array(0) { _ -> "" }
+
+    private val titles: Array<String>
+        get() = arguments?.getStringArray("titles") ?: Array(0) { _ -> "" }
+
+    private val specialTypes: Array<String>
+        get() = arguments?.getStringArray("specialTypes") ?: Array(0) { _ -> "" }
+
+    companion object {
+        fun getInstance(ids: Array<String>, titles: Array<String>, specialTypes: Array<String>) = MoreFragment().apply {
+            arguments = Bundle().apply {
+                putStringArray("ids", ids)
+                putStringArray("titles", titles)
+                putStringArray("specialTypes", specialTypes)
+            }
+            setup("MORE", {i, c, a -> FragmentMoreBinding.inflate(i, c, a)})
+        }
+    }
 
     class DataModel(val title: String, val id: String, val specialType: String)
 

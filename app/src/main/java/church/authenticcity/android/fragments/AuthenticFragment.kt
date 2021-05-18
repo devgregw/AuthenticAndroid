@@ -12,16 +12,26 @@ import church.authenticcity.android.databinding.ViewToolbarBinding
 
 typealias OnFragmentTitleChangeListener = (String) -> Unit
 
-abstract class AuthenticFragment<TBinding>(private var _title: String, private val binder: (LayoutInflater, ViewGroup?, Boolean) -> TBinding /*@LayoutRes private val layoutRes: Int = R.layout.fragment_content_basic*/, private val listener: OnFragmentTitleChangeListener? = null) : Fragment() {
-    var title: String
-        get() = _title
-        set(new) {
-            _title = new
-            listener?.invoke(new)
-        }
-
+abstract class AuthenticFragment<TBinding>() : Fragment() {
+    private var listener: OnFragmentTitleChangeListener? = null
+    private var binder: ((LayoutInflater, ViewGroup?, Boolean) -> TBinding)? = null
     private var _binding: TBinding? = null
     protected val binding get() = _binding!!
+
+    private var _title: String = ""
+
+    protected fun setup(title: String, binder: (LayoutInflater, ViewGroup?, Boolean) -> TBinding, listener: OnFragmentTitleChangeListener? = null) {
+        _title = title
+        this.binder = binder
+        this.listener = listener
+    }
+
+    var title: String
+        get() = _title
+        set(value) {
+            _title = value
+            listener?.invoke(value)
+        }
 
     protected abstract fun onCreateView(view: View)
 
@@ -36,8 +46,9 @@ abstract class AuthenticFragment<TBinding>(private var _title: String, private v
     protected abstract val root: View
 
     final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        _binding = binder(inflater, container, false)
-        //val inflatedView = inflater.inflate(layoutRes, container, false)
+        if (this.binder == null)
+            return null
+        _binding = binder!!.invoke(inflater, container, false)
         retainInstance = true
         onCreateView(root)
         onRefreshView(root)

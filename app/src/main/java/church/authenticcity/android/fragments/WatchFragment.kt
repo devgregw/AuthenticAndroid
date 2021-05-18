@@ -1,5 +1,6 @@
 package church.authenticcity.android.fragments
 
+import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -9,8 +10,21 @@ import church.authenticcity.android.activities.TabbedHomeActivity
 import church.authenticcity.android.databinding.FragmentWatchBinding
 import church.authenticcity.android.helpers.Utils
 import com.google.android.material.tabs.TabLayout
+import java.lang.Exception
 
-class WatchFragment(private val id: String, title: String, listener: OnFragmentTitleChangeListener?) : AuthenticFragment<FragmentWatchBinding>(title, {i, c, a -> FragmentWatchBinding.inflate(i, c, a)}, listener) {
+class WatchFragment : AuthenticFragment<FragmentWatchBinding>() {
+    companion object {
+        fun getInstance(watchTabId: String, title: String, listener: OnFragmentTitleChangeListener?) = WatchFragment().apply {
+            arguments = Bundle().apply {
+                putString("watchTabId", watchTabId)
+            }
+            setup(title, {i, c, a -> FragmentWatchBinding.inflate(i, c, a)}, listener)
+        }
+    }
+
+    private val watchTabId: String
+        get() = arguments?.getString("watchTabId", "OPQ26R4SRP") ?: "OPQ26R4SRP"
+
     override val root: View
         get() = binding.root
     
@@ -27,7 +41,7 @@ class WatchFragment(private val id: String, title: String, listener: OnFragmentT
                     livestreamFragment = LivestreamFragment()
                     livestreamFragment!!
                 }
-                else -> VideosFragment(watchTabId)
+                else -> VideosFragment.getInstance(watchTabId)
             }
         }
 
@@ -35,14 +49,14 @@ class WatchFragment(private val id: String, title: String, listener: OnFragmentT
     }
 
     override fun onRefreshView(view: View) {
-        adapter = FragmentAdapter(id, childFragmentManager)
+        adapter = FragmentAdapter(watchTabId, childFragmentManager)
         binding.watchTabLayout.getTabAt(0)?.select()
         binding.watchViewPager.adapter = adapter
     }
 
     private fun initialize(view: View) {
         binding.watchTabLayout.removeAllTabs()
-        binding.watchTabLayout.addOnTabSelectedListener(object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
+        binding.watchTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(p0: TabLayout.Tab?) {
                 binding.watchViewPager.setCurrentItem(p0?.position ?: 0, true)
             }
@@ -87,6 +101,13 @@ class WatchFragment(private val id: String, title: String, listener: OnFragmentT
         if (stopped) {
             stopped = false
             onRefresh()
+        } else {
+            try {
+                initialize(binding.root)
+                onRefresh()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
         super.onResume()
     }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.inputmethodservice.InputMethodService
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.InputType
@@ -34,11 +35,21 @@ import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.roundToInt
 
-class TabFragment(private val tabId: String, title: String, listener: OnFragmentTitleChangeListener?) : AuthenticFragment<FragmentContentBasicBinding>(title, {i, c, a -> FragmentContentBasicBinding.inflate(i, c, a)}, listener) {
+class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
+    companion object {
+        fun getInstance(tabId: String, title: String, listener: OnFragmentTitleChangeListener?) = TabFragment().apply {
+            arguments = Bundle().apply {
+                putString("tabId", tabId)
+            }
+            setup(title, {i, c, a -> FragmentContentBasicBinding.inflate(i, c, a)}, listener)
+        }
+    }
+
+    private val tabId: String
+        get() = arguments?.getString("tabId", "") ?: ""
+
     override val root: View
         get() = binding.root
-    
-    constructor() : this("error500", "Error 500", null)
 
     private class WallpaperViewHolder(private val context: Context) : RecyclerView.ViewHolder(RelativeLayout(context).apply {
         val rand = Random().nextInt(256)

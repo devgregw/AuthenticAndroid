@@ -22,11 +22,20 @@ import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.views.recyclerView.Tile
 import church.authenticcity.android.views.recyclerView.TileAdapter
+import java.lang.Exception
 
 /**
  * A simple [Fragment] subclass.
  */
-class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>("UPCOMING EVENTS", {i, c, a -> FragmentContentBasicBinding.inflate(i, c, a)}) {
+class EventListFragment : AuthenticFragment<FragmentContentBasicBinding> {
+    companion object {
+        fun getInstance() = EventListFragment()
+    }
+
+    constructor() : super() {
+        setup("UPCOMING EVENTS", {i, c, a -> FragmentContentBasicBinding.inflate(i, c, a)})
+    }
+
     override val root: View
         get() = binding.root
 
@@ -124,5 +133,27 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>("UPCOMI
     override fun onCreateView(view: View) {
         binding.swipeRefreshLayout.setOnRefreshListener { onRefresh() }
         view.setBackgroundResource(R.color.colorBackground)
+        //onRefreshView(view)
+    }
+
+    private var stopped = false
+
+    override fun onStop() {
+        stopped = true
+        super.onStop()
+    }
+
+    override fun onResume() {
+        if (stopped) {
+            stopped = false
+            onRefreshView(binding.root)
+        } else {
+            try {
+                onCreateView(binding.root)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        super.onResume()
     }
 }
