@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import church.authenticcity.android.R
 import church.authenticcity.android.activities.VideoActivity
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.classes.ImageResource
@@ -41,7 +42,7 @@ class HalfThumbnailButtonView private constructor(context: Context) : RelativeLa
         binding.title.text = title
         if (hideTitle)
             binding.labelBackground.visibility = View.GONE
-        Glide.with(context).load(Uri.parse(thumbnail)).transition(DrawableTransitionOptions.withCrossFade()).into(binding.thumbnail)
+        Glide.with(context).load(Uri.parse(thumbnail)).error(R.drawable.unknown).transition(DrawableTransitionOptions.withCrossFade()).into(binding.thumbnail)
         setOnClickListener {
             VideoActivity.start(context, provider, videoId, title)
         }
