@@ -4,7 +4,7 @@ import android.app.Activity
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
-import church.authenticcity.android.databinding.ViewTileBinding
+import church.authenticcity.android.R
 import kotlin.math.roundToInt
 
 /**
@@ -15,12 +15,11 @@ import kotlin.math.roundToInt
 class TileAdapter(private val activity: Activity, private val tiles: List<Tile<*>>, private val fullWidth: Boolean, private val fillColumn: Boolean, private val height: Int) : RecyclerView.Adapter<TileViewHolder>() {
     private fun getHeight() = if (itemCount > 4) null else (height.toDouble() / itemCount).roundToInt()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TileViewHolder(activity, fullWidth, if (fillColumn) getHeight() else null, parent, binding = ViewTileBinding.inflate(
-        LayoutInflater.from(activity), parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TileViewHolder.getInstance(activity, fullWidth, if (fillColumn) getHeight() else null, parent)
 
     override fun getItemCount() = tiles.size
 
     override fun onBindViewHolder(holder: TileViewHolder, position: Int) {
-        holder.initialize(tiles[position])
+        holder.bind(tiles[position])
     }
 }

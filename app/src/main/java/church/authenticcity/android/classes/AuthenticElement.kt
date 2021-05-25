@@ -7,14 +7,12 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.RippleDrawable
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.*
 import androidx.core.content.ContextCompat
 import church.authenticcity.android.R
-import church.authenticcity.android.databinding.ViewTileBinding
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.views.LargeThumbnailButtonView
 import church.authenticcity.android.views.LoadingIndicatorImageView
@@ -187,9 +185,8 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
             val usedHeight = if (height == 0) resource.calculateHeight(context, true) else height
             val h = if (height == 0) usedHeight else TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, usedHeight.toFloat(), context.resources.displayMetrics).roundToInt()
             val viewGroup = LinearLayout(context).apply { layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, usedHeight) }
-            val viewHolder = TileViewHolder(context, false, h, viewGroup, false, binding = ViewTileBinding.inflate(
-                LayoutInflater.from(context), viewGroup, false))
-            viewHolder.initialize(Tile(title, false, resource, action) { a -> a.invoke(context) })
+            val viewHolder = TileViewHolder.getInstance(context, false, h, viewGroup, false)
+            viewHolder.bind(Tile(title, false, resource, action) { a -> a.invoke(context) })
             return LinearLayout(context).apply {
                 orientation = LinearLayout.VERTICAL
                 addView(viewHolder.itemView)
@@ -203,9 +200,8 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
         fun createTile(context: Context, height: Int, tile: Tile<*>): View {
             val finalHeight = if (height == 0) tile.header.calculateHeight(context.resources.displayMetrics.widthPixels / 2) else height
             val viewGroup = LinearLayout(context).apply { layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, finalHeight) }
-            val viewHolder = TileViewHolder(context, false, finalHeight, viewGroup, false, binding = ViewTileBinding.inflate(
-                LayoutInflater.from(context), viewGroup, false))
-            viewHolder.initialize(tile)
+            val viewHolder = TileViewHolder.getInstance(context, false, finalHeight, viewGroup, false)
+            viewHolder.bind(tile)
             return viewHolder.itemView
         }
 
@@ -285,8 +281,8 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
                     put("width", 720)
                     put("height", 1080)
                 }), getBoolean("large", false), getBoolean("hideTitle", false))
-                "toolbar" -> createToolbar(context, getProperty("image", HashMap()), getProperty("leftAction", HashMap()), getProperty("rightAction", HashMap()))
-                "tile" -> createTile(context, getProperty("title", ""), getProperty("height", 0), getProperty("action", HashMap()), getProperty("header", HashMap()))
+                "toolbar" -> createToolbar(context, getProperty<HashMap<String, Any>>("image", HashMap()), getProperty("leftAction", HashMap()), getProperty("rightAction", HashMap()))
+                "tile" -> createTile(context, getProperty("title", ""), getProperty("height", 0), getProperty("action", HashMap()), getProperty("header", HashMap<String, Any>()))
                 "fullExpController" -> createFullExperienceController(context, ImageResource(getProperty("image", HashMap())), ButtonAction(getProperty("action", HashMap())))
                 "separator" -> createSeparator(context, getBoolean("visible", true))
                 "html" -> createHtmlReader(context, getProperty("html", "<p></p>"))

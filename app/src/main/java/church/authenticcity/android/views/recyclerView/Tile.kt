@@ -8,6 +8,10 @@ import church.authenticcity.android.classes.ImageResource
  * Licensed under the MIT License.
  */
 
-class Tile<T>(val title: String, val hideTitle: Boolean, val header: ImageResource, val argument: T, val handler: (T) -> Unit) {
+class Tile<T>(val title: String, val hideTitle: Boolean, val header: ImageResource, private val argument: T, private val handler: (T) -> Unit) {
     var heightOverride: Int? = null
+
+    fun handle() {
+        handler(argument)
+    }
 }
