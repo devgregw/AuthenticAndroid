@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Authentic</string>
     <string name="header_image_content_description">Header image</string>
-    <string name="no_content">No content</string>
-    <string name="open_tabs_button_content_description">Open tabs button</string>
     <string name="authentic_city_church_logo_content_description">Authentic City Church logo</string>
     <string name="settings">Settings</string>
     <string name="licenses">Licenses</string>
@@ -12,19 +10,14 @@
     <string name="db_prod">Switch to Production Database</string>
     <string name="advanced">Advanced</string>
     <string name="info">Info</string>
-    <string name="authentic">AUTHENTIC</string>
     <string name="back">Back</string>
     <string name="thumbnail">Thumbnail</string>
-    <string name="watch_live_on_youtube">WATCH LIVE ON YOUTUBE</string>
-    <string name="sunday_night">SUNDAY NIGHT</string>
-    <string name="the_5_the_7">THE 5 | THE 7</string>
 
     <string name="title_activity_wallpaper_preview">WallpaperPreviewActivity</string>
     <string name="wallpaper_preview">Wallpaper Preview</string>
     <string name="title_activity_tabbed_home">AUTHENTIC</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="button_save">Save</string>
     <string name="button_cancel">Cancel</string>
 </resources>
