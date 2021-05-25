@@ -22,7 +22,6 @@ import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.views.recyclerView.Tile
 import church.authenticcity.android.views.recyclerView.TileAdapter
-import java.lang.Exception
 
 /**
  * A simple [Fragment] subclass.

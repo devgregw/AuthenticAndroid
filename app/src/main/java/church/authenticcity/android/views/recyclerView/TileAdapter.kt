@@ -1,10 +1,8 @@
 package church.authenticcity.android.views.recyclerView
 
 import android.app.Activity
-import android.view.LayoutInflater
-import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
-import church.authenticcity.android.R
+import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.roundToInt
 
 /**

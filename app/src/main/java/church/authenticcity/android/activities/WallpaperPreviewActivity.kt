@@ -14,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.databinding.ActivityWallpaperPreviewBinding
 import church.authenticcity.android.helpers.Utils
-import java.lang.Exception
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

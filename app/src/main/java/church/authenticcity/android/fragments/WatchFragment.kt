@@ -10,7 +10,6 @@ import church.authenticcity.android.activities.TabbedHomeActivity
 import church.authenticcity.android.databinding.FragmentWatchBinding
 import church.authenticcity.android.helpers.Utils
 import com.google.android.material.tabs.TabLayout
-import java.lang.Exception
 
 class WatchFragment : AuthenticFragment<FragmentWatchBinding>() {
     companion object {

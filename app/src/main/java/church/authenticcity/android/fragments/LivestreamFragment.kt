@@ -14,7 +14,6 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.beust.klaxon.Parser.Companion.default
 import com.google.android.material.snackbar.Snackbar
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDateTime

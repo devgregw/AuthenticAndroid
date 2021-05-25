@@ -17,7 +17,6 @@ import church.authenticcity.android.databinding.ThumbnailButtonViewBinding
 import church.authenticcity.android.helpers.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.google.firebase.storage.FirebaseStorage
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
