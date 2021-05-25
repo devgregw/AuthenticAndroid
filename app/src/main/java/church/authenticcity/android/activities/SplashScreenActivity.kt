@@ -24,7 +24,7 @@ class SplashScreenActivity : AppCompatActivity() {
     private fun loadApp() {
         val data: MutableList<HashMap<String, Any>> = mutableListOf()
         DatabaseHelper.loadAppearance { app ->
-            DatabaseHelper.loadAllTabs(false) {er, tabs ->
+            DatabaseHelper.loadAllTabs(false) { _, tabs ->
                 data.add(HashMap<String, Any>().apply {
                     put("id", "upcoming_events")
                     put("index", app.events.index)

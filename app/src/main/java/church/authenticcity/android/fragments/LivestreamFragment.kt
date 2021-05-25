@@ -57,33 +57,32 @@ class LivestreamFragment : AuthenticFragment<FragmentLivestreamBinding>() {
         }
         val date = LocalDateTime.now(ZoneId.systemDefault())
         if (date.dayOfWeek == DayOfWeek.SUNDAY || BuildConfig.DEBUG) {
-            checkingSnackbar = Snackbar.make(view!!, Utils.makeTypefaceSpan("LOADING...", view!!.context, 10), Snackbar.LENGTH_INDEFINITE)
+            checkingSnackbar = Snackbar.make(requireView(), Utils.makeTypefaceSpan("LOADING...", requireView().context, 10), Snackbar.LENGTH_INDEFINITE)
             checkingSnackbar?.show()
-            val queue = Volley.newRequestQueue(view!!.context)
+            val queue = Volley.newRequestQueue(requireView().context)
             request = StringRequest(Request.Method.GET, "https://us-central1-authentic-city-church.cloudfunctions.net/videos", {
                 checkingSnackbar!!.dismiss()
-                emptyList()
-                val obj = this.default(pathMatchers, passedLexer, streaming)().parse(StringBuilder(it)) as JsonObject
+                val obj = Parser.default().parse(StringBuilder(it)) as JsonObject
                 if (obj.count() > 0) {
                     if (obj.containsKey("livestream")) {
-                        actionSnackbar = Snackbar.make(view!!, Utils.makeTypefaceSpan("WE'RE LIVE", view!!.context, 12), Snackbar.LENGTH_INDEFINITE)
-                        actionSnackbar?.setAction(Utils.makeTypefaceSpan("TAP TO WATCH NOW", view!!.context, 12)) {
-                            ButtonAction.openUrl("https://youtube.com/watch?v=${obj["livestream"].toString()}").invoke(view!!.context)
+                        actionSnackbar = Snackbar.make(requireView(), Utils.makeTypefaceSpan("WE'RE LIVE", requireView().context, 12), Snackbar.LENGTH_INDEFINITE)
+                        actionSnackbar?.setAction(Utils.makeTypefaceSpan("TAP TO WATCH NOW", requireView().context, 12)) {
+                            ButtonAction.openUrl("https://youtube.com/watch?v=${obj["livestream"].toString()}").invoke(requireView().context)
                         }
                         actionSnackbar?.setActionTextColor(Color.WHITE)
                         actionSnackbar?.show()
                     } else {
                         if (view != null)
-                            Snackbar.make(view!!, Utils.makeTypefaceSpan("WE'RE NOT LIVE", view!!.context, 10), Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(requireView(), Utils.makeTypefaceSpan("WE'RE NOT LIVE", requireView().context, 10), Snackbar.LENGTH_SHORT).show()
                     }
                 } else {
                     if (view != null)
-                        Snackbar.make(view!!, Utils.makeTypefaceSpan("WE'RE NOT LIVE", view!!.context, 10), Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(requireView(), Utils.makeTypefaceSpan("WE'RE NOT LIVE", requireView().context, 10), Snackbar.LENGTH_SHORT).show()
                 }
             }, {
                 checkingSnackbar?.dismiss()
                 if (view != null)
-                    Snackbar.make(view!!, Utils.makeTypefaceSpan("ERROR WHILE CHECKING FOR LIVESTREAM", view!!.context, 10), Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(requireView(), Utils.makeTypefaceSpan("ERROR WHILE CHECKING FOR LIVESTREAM", requireView().context, 10), Snackbar.LENGTH_SHORT).show()
                 if (it is NetworkError) {
                     Log.e("Livestream", "NetworkError: " + (it.localizedMessage ?: "<null>"))
                 } else if (it is TimeoutError || it is NoConnectionError) {

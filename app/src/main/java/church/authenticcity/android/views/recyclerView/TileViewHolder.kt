@@ -23,36 +23,17 @@ import kotlin.math.roundToInt
  * Created by Greg Whatley on 6/8/2018 at 8:27 PM.
  * Licensed under the MIT License.
  */
-class TileViewHolder : RecyclerView.ViewHolder {
+class TileViewHolder private constructor(
+    private val context: Context,
+    private val fullWidth: Boolean,
+    private val height: Int?,
+    setBackgroundColor: Boolean,
+    private val binding: ViewTileBinding
+) : RecyclerView.ViewHolder(binding.root) {
     companion object {
         fun getInstance(context: Context, fullWidth: Boolean, height: Int?, viewGroup: ViewGroup, setBackgroundColor: Boolean = true) = TileViewHolder(context, fullWidth, height, setBackgroundColor, ViewTileBinding.inflate(
             LayoutInflater.from(context), viewGroup, false))
     }
-
-    private constructor(context: Context, fullWidth: Boolean, height: Int?, setBackgroundColor: Boolean, binding: ViewTileBinding) : super(binding.root) {
-        this.context = context
-        this.fullWidth = fullWidth
-        this.height = height
-        this.binding = binding
-
-        if (setBackgroundColor) {
-            val rand = Random().nextInt(256)
-            itemView.setBackgroundColor(Color.argb(255, rand, rand, rand))
-        }
-        tileTitle.typeface = Utils.getTitleTypeface(context)
-        if (Utils.checkSdk(23))
-            itemView.foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
-        itemView.setOnClickListener {
-            currentTile?.let {
-                it.handle()
-            }
-        }
-    }
-
-    private val context: Context
-    private val fullWidth: Boolean
-    private val height: Int?
-    private val binding: ViewTileBinding
 
     private val tileImage
         get() = binding.tileImage
@@ -92,5 +73,18 @@ class TileViewHolder : RecyclerView.ViewHolder {
         tileImage.imageTintList = if (tile.hideTitle || tile.title == "") ColorStateList.valueOf(Color.TRANSPARENT) else ColorStateList.valueOf(Color.argb(128, 0, 0, 0))
         tileTitle.text = tile.title
         tileTitle.visibility = if (tile.hideTitle) View.INVISIBLE else View.VISIBLE
+    }
+
+    init {
+        if (setBackgroundColor) {
+            val rand = Random().nextInt(256)
+            itemView.setBackgroundColor(Color.argb(255, rand, rand, rand))
+        }
+        tileTitle.typeface = Utils.getTitleTypeface(context)
+        if (Utils.checkSdk(23))
+            itemView.foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
+        itemView.setOnClickListener {
+            currentTile?.handle()
+        }
     }
 }

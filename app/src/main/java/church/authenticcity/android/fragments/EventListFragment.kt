@@ -26,7 +26,7 @@ import church.authenticcity.android.views.recyclerView.TileAdapter
 /**
  * A simple [Fragment] subclass.
  */
-class EventListFragment() : AuthenticFragment<FragmentContentBasicBinding>() {
+class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     companion object {
         fun getInstance() = EventListFragment()
     }
@@ -92,7 +92,7 @@ class EventListFragment() : AuthenticFragment<FragmentContentBasicBinding>() {
         Handler(Looper.getMainLooper()).post {
             binding.nestedScrollView.removeAllViews()
             val recyclerView = RecyclerView(view.context)
-            recyclerView.adapter = TileAdapter(this@EventListFragment.requireActivity(), tiles, true, false, 0)
+            recyclerView.adapter = TileAdapter(this@EventListFragment.requireActivity(), tiles, fullWidth = true, fillColumn = false, 0)
             recyclerView.layoutManager = LinearLayoutManager(view.context)
             recyclerView.addItemDecoration(DividerItemDecoration(view.context, (recyclerView.layoutManager as LinearLayoutManager).orientation))
             replaceContent(view, LinearLayout(view.context).apply {

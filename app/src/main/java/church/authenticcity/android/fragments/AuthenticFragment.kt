@@ -35,7 +35,7 @@ abstract class AuthenticFragment<TBinding> : Fragment() {
 
     protected fun onRefresh() {
         if (view != null)
-            onRefreshView(view!!)
+            onRefreshView(requireView())
         return
     }
 

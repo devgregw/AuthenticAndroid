@@ -20,18 +20,21 @@
         android:logo="@mipmap/ic_launcher_round"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activities.FragmentActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.TabbedHomeActivity"
             android:label="@string/title_activity_tabbed_home"
             android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activities.WallpaperPreviewActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_wallpaper_preview"
             android:theme="@style/FullscreenTheme"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -43,7 +46,8 @@
         <activity
             android:name=".activities.SplashScreenActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashScreen">
+            android:theme="@style/SplashScreen"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
