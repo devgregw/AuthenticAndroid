@@ -32,7 +32,7 @@ class ThumbnailButtonView private constructor(context: Context) : RelativeLayout
     constructor(context: Context, title: String, resource: ImageResource, action: ButtonAction) : this(context) {
         initialize()
         binding.title.text = title
-        Glide.with(context).load(FirebaseStorage.getInstance().reference.child(resource.imageName)).transition(DrawableTransitionOptions.withCrossFade()).into(binding.thumbnail)
+        resource.load(context, binding.thumbnail)
         setOnClickListener {
             action.invoke(context)
         }
