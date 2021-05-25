@@ -48,9 +48,13 @@ class WatchFragment : AuthenticFragment<FragmentWatchBinding>() {
     }
 
     override fun onRefreshView(view: View) {
-        adapter = FragmentAdapter(watchTabId, childFragmentManager)
-        binding.watchTabLayout.getTabAt(0)?.select()
-        binding.watchViewPager.adapter = adapter
+        try {
+            adapter = FragmentAdapter(watchTabId, childFragmentManager)
+            binding.watchTabLayout.getTabAt(0)?.select()
+            binding.watchViewPager.adapter = adapter
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun initialize(view: View) {
