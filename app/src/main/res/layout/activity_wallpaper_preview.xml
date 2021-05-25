@@ -41,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:textAlignment="center"
+            android:gravity="center_horizontal"
             android:text="@string/wallpaper_preview"
             android:shadowColor="@android:color/black"
             android:id="@+id/wallpaper_text_view"
@@ -66,16 +67,18 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="@string/button_save"
-                android:textSize="12sp"/>
+                android:text="@string/button_cancel"
+                android:textSize="12sp"
+                style="?android:attr/buttonBarButtonStyle"/>
 
             <Button
                 android:id="@+id/cancel_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:text="@string/button_cancel"
-                android:textSize="12sp"/>
+                android:text="@string/button_save"
+                android:textSize="12sp"
+                style="?android:attr/buttonBarButtonStyle" />
 
         </LinearLayout>
     </FrameLayout>
