@@ -37,7 +37,7 @@ class WatchFragment : AuthenticFragment<FragmentWatchBinding>() {
         override fun getItem(position: Int): Fragment {
             return when (position) {
                 1 -> {
-                    livestreamFragment = LivestreamFragment()
+                    livestreamFragment = LivestreamFragment.getInstance()
                     livestreamFragment!!
                 }
                 else -> VideosFragment.getInstance(watchTabId)
