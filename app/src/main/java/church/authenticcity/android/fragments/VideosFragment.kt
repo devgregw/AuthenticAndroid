@@ -34,16 +34,16 @@ class VideosFragment : AuthenticFragment<FragmentVideosBinding>() {
     private fun replaceContent(view: View, content: View) {
         binding.nestedScrollView.removeAllViews()
         binding.nestedScrollView.addView(content)
-        showContent(view)
+        showContent()
     }
 
     private fun setContent(view: View, content: View) {
         binding.contentList.removeAllViews()
         binding.contentList.addView(content)
-        showContent(view)
+        showContent()
     }
 
-    private fun showContent(view: View) {
+    private fun showContent() {
         binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
             }
@@ -89,7 +89,7 @@ class VideosFragment : AuthenticFragment<FragmentVideosBinding>() {
                 binding.videosListRight.addView(btn)
             else binding.videosListLeft.addView(btn)
         }
-        showContent(view)
+        showContent()
     }
 
     override fun onRefreshView(view: View) {

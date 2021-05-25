@@ -31,7 +31,7 @@ class EventFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     override val root: View
         get() = binding.root
 
-    private fun setContent(view: View, content: View) {
+    private fun setContent(content: View) {
         binding.contentList.removeAllViews()
         binding.contentList.addView(content)
         binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
@@ -50,7 +50,7 @@ class EventFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         }).start()
     }
 
-    private fun setContent(view: View, views: Array<View>) {
+    private fun setContent(views: Array<View>) {
         binding.contentList.removeAllViews()
         views.forEach { binding.contentList.addView(it) }
         binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
@@ -70,7 +70,7 @@ class EventFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     }
 
     private fun setErrorMessage(view: View, message: String) {
-        setContent(view, TextView(view.context).apply {
+        setContent(TextView(view.context).apply {
             text = Utils.makeTypefaceSpan(message, view.context)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             setTextColor(Color.BLACK)
@@ -83,7 +83,7 @@ class EventFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         else {
             title = event.title
             if (event is AuthenticEventPlaceholder)
-                setContent(view, event.convertedElements.map { it.toView(view.context) }.toTypedArray())
+                setContent(event.convertedElements.map { it.toView(view.context) }.toTypedArray())
             else
                 binding.contentList.apply {
                     addView(AuthenticElement.createImage(view.context, event.header, false))

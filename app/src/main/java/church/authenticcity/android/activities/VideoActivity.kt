@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.Window
 import android.view.WindowManager
@@ -38,7 +39,7 @@ class VideoActivity : AppCompatActivity() {
             setGravity(Gravity.CENTER, 0, 0)
             show()
         }
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             binding.videoWebview.apply {
                 settings.mediaPlaybackRequiresUserGesture = false
                 settings.javaScriptEnabled = true

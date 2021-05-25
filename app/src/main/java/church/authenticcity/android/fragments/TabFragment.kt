@@ -80,7 +80,7 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         }
     }
 
-    private fun replaceContent(view: View, content: View) {
+    private fun replaceContent(content: View) {
         binding.nestedScrollView.removeAllViews()
         binding.nestedScrollView.addView(content)
         binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
@@ -99,7 +99,7 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         }).start()
     }
 
-    private fun setContent(view: View, content: View) {
+    private fun setContent(content: View) {
         binding.contentList.removeAllViews()
         binding.contentList.addView(content)
         binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
@@ -118,7 +118,7 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         }).start()
     }
 
-    private fun setContent(view: View, views: Array<View>) {
+    private fun setContent(views: Array<View>) {
         binding.contentList.removeAllViews()
         views.forEach { binding.contentList.addView(it) }
         binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
@@ -137,9 +137,9 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         }).start()
     }
 
-    private fun setErrorMessage(view: View, message: String) {
-        setContent(view, TextView(view.context).apply {
-            text = Utils.makeTypefaceSpan(message, view.context)
+    private fun setErrorMessage(message: String) {
+        setContent(TextView(requireContext()).apply {
+            text = Utils.makeTypefaceSpan(message, requireContext())
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             setTextColor(Color.BLACK)
         })
@@ -181,12 +181,12 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
             dialog.show()
     }
 
-    private fun finishLoading(view: View, tab: AuthenticTab) {
+    private fun finishLoading(view: View, tab: AuthenticTab?) {
         if (tab != null)
             title = tab.title
         when {
             tab == null -> {
-                setErrorMessage(view, "Error 404: The page $tabId could not be found.")
+                setErrorMessage("Error 404: The page $tabId could not be found.")
             }
             tab.action != null -> {
                 tab.action.invoke(view.context)
@@ -195,14 +195,14 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
                 }
             }
             tab.specialType != null -> populate(view, tab, tab.specialType)
-            else -> setContent(view, tab.convertedElements.map { it.toView(view.context) }.toTypedArray())
+            else -> setContent(tab.convertedElements.map { it.toView(view.context) }.toTypedArray())
         }
     }
 
     private fun populate(view: View, tab: AuthenticTab?) {
         Handler(Looper.getMainLooper()).post {
             if (tab == null)
-                setErrorMessage(view, "Error 404: The page $tabId could not be found.")
+                setErrorMessage("Error 404: The page $tabId could not be found.")
             else {
                 title = tab.title
                 if (tab.hasPassword)
@@ -232,7 +232,7 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
                         })))
                     }
                 }
-                replaceContent(view, recyclerView)
+                replaceContent(recyclerView)
             }
             "watchPlaylist" -> {
                 val elements = ArrayList(tab.convertedElements)
@@ -274,7 +274,7 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
                     list.addView(leftList)
                     list.addView(rightList)
                     rootList.addView(list)
-                    replaceContent(view, rootList)
+                    replaceContent(rootList)
                     leftList.requestLayout()
                     rightList.requestLayout()
                     list.requestLayout()
@@ -282,7 +282,7 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
                 }
             }
             else -> {
-                setErrorMessage(view, "Error 426: The page $tabId could not be loaded because it requires an updated version of the Authentic app.  Please check for updates in the Google Play Store.")
+                setErrorMessage("Error 426: The page $tabId could not be loaded because it requires an updated version of the Authentic app.  Please check for updates in the Google Play Store.")
             }
         }
     }
@@ -293,7 +293,7 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
             override fun onAnimationEnd(p0: Animator?) {
                 DatabaseHelper.loadTab(tabId, false) {er, t ->
                     if (er != null)
-                        setErrorMessage(view, "Error 400: Bad request.  FB#${er.code}: ${er.message}")
+                        setErrorMessage("Error 400: Bad request.  FB#${er.code}: ${er.message}")
                     else populate(view, t)
                 }
             }

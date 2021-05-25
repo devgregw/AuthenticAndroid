@@ -34,7 +34,7 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     override val root: View
         get() = binding.root
 
-    private fun setContent(view: View, content: View) {
+    private fun setContent(content: View) {
         binding.contentList.removeAllViews()
         binding.contentList.addView(content)
         binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
@@ -53,7 +53,7 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         }).start()
     }
 
-    private fun replaceContent(view: View, content: View) {
+    private fun replaceContent(content: View) {
         binding.nestedScrollView.removeAllViews()
         binding.nestedScrollView.addView(content)
         binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
@@ -73,7 +73,7 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     }
 
     private fun setErrorMessage(view: View, message: String) {
-        setContent(view, TextView(view.context).apply {
+        setContent(TextView(view.context).apply {
             text = Utils.makeTypefaceSpan(message, view.context)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
             setTextColor(Color.BLACK)
@@ -95,7 +95,7 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
             recyclerView.adapter = TileAdapter(this@EventListFragment.requireActivity(), tiles, fullWidth = true, fillColumn = false, 0)
             recyclerView.layoutManager = LinearLayoutManager(view.context)
             recyclerView.addItemDecoration(DividerItemDecoration(view.context, (recyclerView.layoutManager as LinearLayoutManager).orientation))
-            replaceContent(view, LinearLayout(view.context).apply {
+            replaceContent(LinearLayout(view.context).apply {
                 addView(recyclerView)
                 tag = "recyclerViewHost"
                 orientation = LinearLayout.VERTICAL

@@ -63,7 +63,7 @@ class TabbedHomeActivity : AppCompatActivity() {
     }
 
     private fun initialize(index: Int, savedInstanceState: Bundle?) {
-        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(p0: TabLayout.Tab?) {
                 binding.viewPager.setCurrentItem(p0?.position ?: 0, true)
             }

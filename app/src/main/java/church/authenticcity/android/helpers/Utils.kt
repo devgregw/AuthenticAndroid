@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.os.Build
 import android.text.Spannable
@@ -67,7 +68,7 @@ fun ActionBar.applyTypeface(context: Context, text: String) {
 @SuppressLint("ClickableViewAccessibility")
 fun ScrollView.setScrollingEnabled(enabled: Boolean) {
     when (enabled) {
-        false -> this.setOnTouchListener { v, event -> true }
+        false -> this.setOnTouchListener { _, _ -> true }
         true -> this.setOnTouchListener(null)
     }
 }
@@ -207,7 +208,7 @@ class Utils {
                         addRule(RelativeLayout.ALIGN_PARENT_LEFT)
                         addRule(RelativeLayout.CENTER_VERTICAL)
                     }
-                    indeterminateDrawable.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
+                    indeterminateDrawable.colorFilter = PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN)
                 })
                 addView(TextView(context).apply {
                     text = message
