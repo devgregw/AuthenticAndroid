@@ -60,6 +60,7 @@
                 android:scaleType="center"
                 android:src="@drawable/baseline_chevron_right_black_18"
                 tools:ignore="ContentDescription"
+                android:tintMode="src_over"
                 app:tint="#A9A9A9" />
         </RelativeLayout>
     </RelativeLayout>

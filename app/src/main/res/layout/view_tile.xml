@@ -16,9 +16,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:contentDescription="@string/header_image_content_description"
         android:background="@android:color/transparent"
+        android:contentDescription="@string/header_image_content_description"
         android:scaleType="centerCrop"
+        android:tintMode="src_over"
         app:tint="#80000000" />
 
     <TextView
