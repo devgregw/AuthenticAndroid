@@ -59,7 +59,11 @@ class TileViewHolder private constructor(
 
     fun <T> bind(tile: Tile<T>) {
         currentTile = tile
-        Glide.with(context).clear(tileImage)
+        try {
+            Glide.with(context).clear(tileImage)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         setHeight(tile.header, tile.heightOverride)
         if (tile.hideTitle || String.isNullOrWhiteSpace(tile.title)) {
             val rand = kotlin.random.Random.nextInt(0, 256)
