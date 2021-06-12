@@ -3,9 +3,10 @@ package church.authenticcity.android.activities
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageButton
+import androidx.appcompat.widget.AppCompatImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import church.authenticcity.android.R
 import church.authenticcity.android.databinding.ActivityFragmentBinding
 import church.authenticcity.android.fragments.EventListFragment
@@ -50,7 +51,7 @@ class FragmentActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFragmentBinding
 
     private fun setupToolbar(title: String) {
-        binding.root.findViewById<ImageButton>(R.id.toolbar_back).setOnClickListener {
+        binding.root.findViewById<AppCompatImageButton>(R.id.toolbar_back).setOnClickListener {
             finish()
         }
         binding.root.findViewById<TextView>(R.id.toolbar_title).text = Utils.makeTypefaceSpan(title, this)
@@ -68,6 +69,11 @@ class FragmentActivity : AppCompatActivity() {
             else -> FragmentHelper.getTabFragment("/ERROR/", "Error 400", "", listener)
         }
         setupToolbar(fragment.title)
-        supportFragmentManager.beginTransaction().add(R.id.frame_layout, fragment).commit()
+        if (savedInstanceState == null) {
+            supportFragmentManager.commit {
+                setReorderingAllowed(true)
+                add(R.id.fragment_container, fragment)
+            }
+        }
     }
 }

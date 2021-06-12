@@ -1,6 +1,7 @@
 package church.authenticcity.android.classes
 
 import android.graphics.Color
+import church.authenticcity.android.R
 
 /**
  * Project AuthenticAndroid
@@ -14,6 +15,10 @@ class AuthenticAppearance(data: HashMap<String, Any>) {
             put("events", HashMap<String, Any>())
             put("livestream", HashMap<String, Any>())
         })
+
+        fun x() {
+            R.drawable.action_bar_item_background_material
+        }
     }
 
     class Events(data: HashMap<String, Any>) {

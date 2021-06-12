@@ -19,7 +19,7 @@
             android:layout_centerInParent="true"
             android:indeterminate="true" />
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/thumbnail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -52,13 +52,13 @@
                 android:textColor="@android:color/black"
                 android:textSize="12sp"/>
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/chev"
                 android:layout_width="25dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:scaleType="center"
-                android:src="@drawable/baseline_chevron_right_black_18"
+                app:srcCompat="@drawable/baseline_chevron_right_black_18"
                 tools:ignore="ContentDescription"
                 android:tintMode="src_over"
                 app:tint="#A9A9A9" />

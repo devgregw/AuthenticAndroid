@@ -8,7 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import android.widget.ImageButton
+import androidx.appcompat.widget.AppCompatImageButton
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -100,7 +100,7 @@ class TabbedHomeActivity : AppCompatActivity() {
             binding.tabLayout.addTab(newTab(it))
         }
         binding.viewPager.setCurrentItem(index, false)
-        val expandedMenu = binding.root.findViewById<ImageButton>(R.id.expanded_menu)
+        val expandedMenu = binding.root.findViewById<AppCompatImageButton>(R.id.expanded_menu)
         expandedMenu.apply {
             val popup = PopupMenu(context, expandedMenu)
             popup.menuInflater.inflate(R.menu.menu_info, popup.menu)
