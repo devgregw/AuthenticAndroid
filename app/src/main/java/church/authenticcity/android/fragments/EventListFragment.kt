@@ -81,14 +81,14 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     }
 
     private fun populate(view: View, events: Array<AuthenticEvent>) {
-        val createHandler: (AuthenticEventPlaceholder) -> ((e: AuthenticEventPlaceholder) -> Unit) = {
+        val createHandler: (AuthenticCustomEvent) -> ((e: AuthenticCustomEvent) -> Unit) = {
             when {
                 it.action != null -> { e -> e.action!!.invoke(requireActivity()) }
                 it.canOpen -> { e -> FragmentActivity.startEvent(requireActivity(), e.id, e.title) }
                 else -> { _ -> }
             }
         }
-        val tiles = events.filterIsInstance<AuthenticEventPlaceholder>().filter { it.isVisible }.sortedBy { it.index }.map { Tile(it.title, it.hideTitle, it.header, it, createHandler(it)) }.toList() + events.filter { it !is AuthenticEventPlaceholder }.filter { it.isVisible }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.hideTitle, it.header, it) { e -> FragmentActivity.startEvent(view.context, e.id, e.title) } }
+        val tiles = events.filterIsInstance<AuthenticCustomEvent>().filter { it.isVisible }.sortedBy { it.index }.map { Tile(it.title, it.hideTitle, it.header, it, createHandler(it)) }.toList() + events.filter { it !is AuthenticCustomEvent }.filter { it.isVisible }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.hideTitle, it.header, it) { e -> FragmentActivity.startEvent(view.context, e.id, e.title) } }
         Handler(Looper.getMainLooper()).post {
             binding.nestedScrollView.removeAllViews()
             val recyclerView = RecyclerView(view.context)

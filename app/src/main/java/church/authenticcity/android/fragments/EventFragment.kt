@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.TextView
 import church.authenticcity.android.classes.AuthenticElement
 import church.authenticcity.android.classes.AuthenticEvent
-import church.authenticcity.android.classes.AuthenticEventPlaceholder
+import church.authenticcity.android.classes.AuthenticCustomEvent
 import church.authenticcity.android.classes.ButtonAction
 import church.authenticcity.android.databinding.FragmentContentBasicBinding
 import church.authenticcity.android.helpers.DatabaseHelper
@@ -82,7 +82,7 @@ class EventFragment : AuthenticFragment<FragmentContentBasicBinding>() {
             setErrorMessage(view, "Error 404: The page $eventId could not be found.")
         else {
             title = event.title
-            if (event is AuthenticEventPlaceholder)
+            if (event is AuthenticCustomEvent)
                 setContent(event.convertedElements.map { it.toView(view.context) }.toTypedArray())
             else
                 binding.contentList.apply {

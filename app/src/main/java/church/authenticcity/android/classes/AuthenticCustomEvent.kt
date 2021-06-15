@@ -11,7 +11,7 @@ import java.util.*
  * Created by Greg Whatley on 8/28/2018 at 9:55 AM.
  * Licensed under the MIT License.
  */
-class AuthenticEventPlaceholder(id: String, val index: Int, title: String, hideTitle: Boolean, header: ImageResource, private val elements: List<HashMap<String, Any>>?, val action: ButtonAction?, visibilityString: String?) : AuthenticEvent(id, title, hideTitle, "", header, HashMap<String, Any>().apply {
+class AuthenticCustomEvent(id: String, val index: Int, title: String, hideTitle: Boolean, header: ImageResource, private val elements: List<HashMap<String, Any>>?, val action: ButtonAction?, visibilityString: String?) : AuthenticEvent(id, title, hideTitle, "", header, HashMap<String, Any>().apply {
     put("start", ZonedDateTime.now(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_DATE_TIME))
     put("end", ZonedDateTime.now(ZoneId.systemDefault()).plusDays(1L).format(DateTimeFormatter.ISO_DATE_TIME))
 }, false, null, "", "", null) {
