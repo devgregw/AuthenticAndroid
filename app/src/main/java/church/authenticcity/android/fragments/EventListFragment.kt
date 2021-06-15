@@ -5,6 +5,7 @@ import android.animation.Animator
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.LinearLayout
@@ -16,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import church.authenticcity.android.R
 import church.authenticcity.android.activities.FragmentActivity
 import church.authenticcity.android.classes.AuthenticEvent
-import church.authenticcity.android.classes.AuthenticEventPlaceholder
+import church.authenticcity.android.classes.AuthenticCustomEvent
 import church.authenticcity.android.databinding.FragmentContentBasicBinding
 import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
@@ -31,45 +32,49 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         fun getInstance() = EventListFragment()
     }
 
-    override val root: View
-        get() = binding.root
+    override val root
+        get() = binding?.root
 
     private fun setContent(content: View) {
-        binding.contentList.removeAllViews()
-        binding.contentList.addView(content)
-        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(p0: Animator?) {
-            }
+        binding?.apply {
+            contentList.removeAllViews()
+            contentList.addView(content)
+            nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(p0: Animator?) {
+                }
 
-            override fun onAnimationEnd(p0: Animator?) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
+                override fun onAnimationEnd(p0: Animator?) {
+                    binding?.swipeRefreshLayout?.isRefreshing = false
+                }
 
-            override fun onAnimationCancel(p0: Animator?) {
-            }
+                override fun onAnimationCancel(p0: Animator?) {
+                }
 
-            override fun onAnimationStart(p0: Animator?) {
-            }
-        }).start()
+                override fun onAnimationStart(p0: Animator?) {
+                }
+            }).start()
+        }
     }
 
     private fun replaceContent(content: View) {
-        binding.nestedScrollView.removeAllViews()
-        binding.nestedScrollView.addView(content)
-        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(p0: Animator?) {
-            }
+        binding?.apply {
+            nestedScrollView.removeAllViews()
+            nestedScrollView.addView(content)
+            nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(p0: Animator?) {
+                }
 
-            override fun onAnimationEnd(p0: Animator?) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
+                override fun onAnimationEnd(p0: Animator?) {
+                    binding?.swipeRefreshLayout?.isRefreshing = false
+                }
 
-            override fun onAnimationCancel(p0: Animator?) {
-            }
+                override fun onAnimationCancel(p0: Animator?) {
+                }
 
-            override fun onAnimationStart(p0: Animator?) {
-            }
-        }).start()
+                override fun onAnimationStart(p0: Animator?) {
+                }
+            }).start()
+        }
     }
 
     private fun setErrorMessage(view: View, message: String) {
@@ -90,7 +95,7 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         }
         val tiles = events.filterIsInstance<AuthenticCustomEvent>().filter { it.isVisible }.sortedBy { it.index }.map { Tile(it.title, it.hideTitle, it.header, it, createHandler(it)) }.toList() + events.filter { it !is AuthenticCustomEvent }.filter { it.isVisible }.sortedBy { it.getNextOccurrence().startDate.toEpochSecond() }.map { Tile(it.title, it.hideTitle, it.header, it) { e -> FragmentActivity.startEvent(view.context, e.id, e.title) } }
         Handler(Looper.getMainLooper()).post {
-            binding.nestedScrollView.removeAllViews()
+            binding?.nestedScrollView?.removeAllViews()
             val recyclerView = RecyclerView(view.context)
             recyclerView.adapter = TileAdapter(this@EventListFragment.requireActivity(), tiles, fullWidth = true, fillColumn = false, 0)
             recyclerView.layoutManager = LinearLayoutManager(view.context)
@@ -104,31 +109,32 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     }
 
     override fun onRefreshView(view: View) {
-        binding.swipeRefreshLayout.isRefreshing = true
-        binding.nestedScrollView.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-            override fun onAnimationEnd(p0: Animator?) {
-                DatabaseHelper.loadAllEvents(false) {er, ev ->
-                    if (er != null)
-                        setErrorMessage(view, "Error 400: Bad request.  FB#${er.code}: ${er.message}")
-                    else populate(view, ev?.toTypedArray() ?: ArrayList<AuthenticEvent>().toTypedArray())
+        binding?.apply {
+            swipeRefreshLayout.isRefreshing = true
+            nestedScrollView.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+                override fun onAnimationEnd(p0: Animator?) {
+                    DatabaseHelper.loadAllEvents(false) {er, ev ->
+                        if (er != null)
+                            setErrorMessage(view, "Error 400: Bad request.  FB#${er.code}: ${er.message}")
+                        else populate(view, ev?.toTypedArray() ?: ArrayList<AuthenticEvent>().toTypedArray())
+                    }
                 }
-            }
 
-            override fun onAnimationRepeat(p0: Animator?) {
-            }
+                override fun onAnimationRepeat(p0: Animator?) {
+                }
 
-            override fun onAnimationCancel(p0: Animator?) {
-            }
+                override fun onAnimationCancel(p0: Animator?) {
+                }
 
-            override fun onAnimationStart(p0: Animator?) {
-            }
-        }).start()
+                override fun onAnimationStart(p0: Animator?) {
+                }
+            }).start()
+        }
     }
 
     override fun onCreateView(view: View) {
-        binding.swipeRefreshLayout.setOnRefreshListener { onRefresh() }
+        binding?.swipeRefreshLayout?.setOnRefreshListener { onRefresh() }
         view.setBackgroundResource(R.color.colorBackground)
-        //onRefreshView(view)
     }
 
     private var stopped = false
@@ -139,12 +145,16 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     }
 
     override fun onResume() {
+        if (root == null) {
+            Log.w("EventListFragment", "Unable to resume: root view is null")
+            return
+        }
         if (stopped) {
             stopped = false
-            onRefreshView(binding.root)
+            onRefreshView(root!!)
         } else {
             try {
-                onCreateView(binding.root)
+                onCreateView(root!!)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

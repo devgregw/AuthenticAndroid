@@ -1,6 +1,7 @@
 package church.authenticcity.android.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -24,8 +25,8 @@ class WatchFragment : AuthenticFragment<FragmentWatchBinding>() {
     private val watchTabId: String
         get() = arguments?.getString("watchTabId", "OPQ26R4SRP") ?: "OPQ26R4SRP"
 
-    override val root: View
-        get() = binding.root
+    override val root
+        get() = binding?.root
     
     private var adapter: FragmentAdapter? = null
 
@@ -50,46 +51,48 @@ class WatchFragment : AuthenticFragment<FragmentWatchBinding>() {
     override fun onRefreshView(view: View) {
         try {
             adapter = FragmentAdapter(watchTabId, childFragmentManager)
-            binding.watchTabLayout.getTabAt(0)?.select()
-            binding.watchViewPager.adapter = adapter
+            binding?.watchTabLayout?.getTabAt(0)?.select()
+            binding?.watchViewPager?.adapter = adapter
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
     }
 
     private fun initialize(view: View) {
-        binding.watchTabLayout.removeAllTabs()
-        binding.watchTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(p0: TabLayout.Tab?) {
-                binding.watchViewPager.setCurrentItem(p0?.position ?: 0, true)
-            }
+        binding?.apply {
+            watchTabLayout.removeAllTabs()
+            watchTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(p0: TabLayout.Tab?) {
+                    binding?.watchViewPager?.setCurrentItem(p0?.position ?: 0, true)
+                }
 
-            override fun onTabReselected(p0: TabLayout.Tab?) {
-            }
+                override fun onTabReselected(p0: TabLayout.Tab?) {
+                }
 
-            override fun onTabUnselected(p0: TabLayout.Tab?) {
-            }
-        })
-        binding.watchTabLayout.addTab(binding.watchTabLayout.newTab().setText(Utils.makeTypefaceSpan("VIDEOS", view.context)), true)
-        binding.watchTabLayout.addTab(binding.watchTabLayout.newTab().setText(Utils.makeTypefaceSpan("LIVE", view.context)))
-        view.isNestedScrollingEnabled = true
-        binding.watchViewPager.isNestedScrollingEnabled = true
-        binding.watchViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {
-            }
+                override fun onTabUnselected(p0: TabLayout.Tab?) {
+                }
+            })
+            watchTabLayout.addTab(watchTabLayout.newTab().setText(Utils.makeTypefaceSpan("VIDEOS", view.context)), true)
+            watchTabLayout.addTab(watchTabLayout.newTab().setText(Utils.makeTypefaceSpan("LIVE", view.context)))
+            view.isNestedScrollingEnabled = true
+            watchViewPager.isNestedScrollingEnabled = true
+            watchViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {
+                }
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-            }
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                }
 
-            override fun onPageSelected(position: Int) {
-                binding.watchTabLayout.getTabAt(position)?.select()
-                if (position == 1)
-                    adapter?.livestreamFragment?.checkLivestreamStatus()
-                else adapter?.livestreamFragment?.cancel()
-            }
-        })
-        if (!TabbedHomeActivity.appearance.livestream.enable)
-            binding.watchTabLayout.visibility = View.GONE
+                override fun onPageSelected(position: Int) {
+                    binding?.watchTabLayout?.getTabAt(position)?.select()
+                    if (position == 1)
+                        adapter?.livestreamFragment?.checkLivestreamStatus()
+                    else adapter?.livestreamFragment?.cancel()
+                }
+            })
+            if (!TabbedHomeActivity.appearance.livestream.enable)
+                watchTabLayout.visibility = View.GONE
+        }
     }
 
     private var stopped = false
@@ -101,12 +104,16 @@ class WatchFragment : AuthenticFragment<FragmentWatchBinding>() {
     }
 
     override fun onResume() {
+        if (root == null) {
+            Log.w("WatchFragment", "Unable to resume: root view is null")
+            return
+        }
         if (stopped) {
             stopped = false
             onRefresh()
         } else {
             try {
-                initialize(binding.root)
+                initialize(root!!)
                 onRefresh()
             } catch (e: Exception) {
                 e.printStackTrace()

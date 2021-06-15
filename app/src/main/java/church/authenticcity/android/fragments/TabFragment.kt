@@ -45,8 +45,8 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     private val tabId: String
         get() = arguments?.getString("tabId", "") ?: ""
 
-    override val root: View
-        get() = binding.root
+    override val root
+        get() = binding?.root
 
     private class WallpaperViewHolder(private val context: Context) : RecyclerView.ViewHolder(RelativeLayout(context).apply {
         val rand = Random().nextInt(256)
@@ -81,52 +81,56 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     }
 
     private fun replaceContent(content: View) {
-        binding.nestedScrollView.removeAllViews()
-        binding.nestedScrollView.addView(content)
-        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(p0: Animator?) {
-            }
+        binding?.apply {
+            nestedScrollView.removeAllViews()
+            nestedScrollView.addView(content)
+            nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(p0: Animator?) {
+                }
 
-            override fun onAnimationEnd(p0: Animator?) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
+                override fun onAnimationEnd(p0: Animator?) {
+                    binding?.swipeRefreshLayout?.isRefreshing = false
+                }
 
-            override fun onAnimationCancel(p0: Animator?) {
-            }
+                override fun onAnimationCancel(p0: Animator?) {
+                }
 
-            override fun onAnimationStart(p0: Animator?) {
-            }
-        }).start()
+                override fun onAnimationStart(p0: Animator?) {
+                }
+            }).start()
+        }
     }
 
     private fun setContent(content: View) {
-        binding.contentList.removeAllViews()
-        binding.contentList.addView(content)
-        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(p0: Animator?) {
-            }
+        binding?.apply {
+            contentList.removeAllViews()
+            contentList.addView(content)
+            nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+                override fun onAnimationRepeat(p0: Animator?) {
+                }
 
-            override fun onAnimationEnd(p0: Animator?) {
-                binding.swipeRefreshLayout.isRefreshing = false
-            }
+                override fun onAnimationEnd(p0: Animator?) {
+                    binding?.swipeRefreshLayout?.isRefreshing = false
+                }
 
-            override fun onAnimationCancel(p0: Animator?) {
-            }
+                override fun onAnimationCancel(p0: Animator?) {
+                }
 
-            override fun onAnimationStart(p0: Animator?) {
-            }
-        }).start()
+                override fun onAnimationStart(p0: Animator?) {
+                }
+            }).start()
+        }
     }
 
     private fun setContent(views: Array<View>) {
-        binding.contentList.removeAllViews()
-        views.forEach { binding.contentList.addView(it) }
-        binding.nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+        binding?.contentList?.removeAllViews()
+        views.forEach { binding?.contentList?.addView(it) }
+        binding?.nestedScrollView?.animate()?.alpha(1f)?.setDuration(125L)?.setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
             }
 
             override fun onAnimationEnd(p0: Animator?) {
-                binding.swipeRefreshLayout.isRefreshing = false
+                binding?.swipeRefreshLayout?.isRefreshing = false
             }
 
             override fun onAnimationCancel(p0: Animator?) {
@@ -134,7 +138,7 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
 
             override fun onAnimationStart(p0: Animator?) {
             }
-        }).start()
+        })?.start()
     }
 
     private fun setErrorMessage(message: String) {
@@ -174,7 +178,7 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
                     setTextColor(Color.WHITE)
                     typeface = Utils.getTextTypeface(a.context)
                 }
-                a.findViewById<TextView>(androidx.appcompat.R.id.alertTitle)?.typeface = Utils.getTitleTypeface(a.context)
+                a.findViewById<TextView>(R.id.alertTitle)?.typeface = Utils.getTitleTypeface(a.context)
                 if (field.requestFocus())
                     (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(field, InputMethodManager.SHOW_FORCED)
             }
@@ -288,28 +292,30 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     }
 
     override fun onRefreshView(view: View) {
-        binding.swipeRefreshLayout.isRefreshing = true
-        binding.nestedScrollView.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-            override fun onAnimationEnd(p0: Animator?) {
-                DatabaseHelper.loadTab(tabId, false) {er, t ->
-                    if (er != null)
-                        setErrorMessage("Error 400: Bad request.  FB#${er.code}: ${er.message}")
-                    else populate(view, t)
+        binding?.apply {
+            swipeRefreshLayout.isRefreshing = true
+            nestedScrollView.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
+                override fun onAnimationEnd(p0: Animator?) {
+                    DatabaseHelper.loadTab(tabId, false) {er, t ->
+                        if (er != null)
+                            setErrorMessage("Error 400: Bad request.  FB#${er.code}: ${er.message}")
+                        else populate(view, t)
+                    }
                 }
-            }
 
-            override fun onAnimationRepeat(p0: Animator?) {
-            }
+                override fun onAnimationRepeat(p0: Animator?) {
+                }
 
-            override fun onAnimationCancel(p0: Animator?) {
-            }
+                override fun onAnimationCancel(p0: Animator?) {
+                }
 
-            override fun onAnimationStart(p0: Animator?) {
-            }
-        }).start()
+                override fun onAnimationStart(p0: Animator?) {
+                }
+            }).start()
+        }
     }
 
     override fun onCreateView(view: View) {
-        binding.swipeRefreshLayout.setOnRefreshListener { onRefresh() }
+        binding?.swipeRefreshLayout?.setOnRefreshListener { onRefresh() }
     }
 }

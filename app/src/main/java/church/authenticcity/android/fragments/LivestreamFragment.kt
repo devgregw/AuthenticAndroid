@@ -26,17 +26,17 @@ class LivestreamFragment : AuthenticFragment<FragmentLivestreamBinding>() {
         }
     }
 
-    override val root: View
-        get() = binding.root
+    override val root
+        get() = binding?.root
     
     override fun onCreateView(view: View) {
-        binding.livestreamImage.setOnClickListener {
+        binding?.livestreamImage?.setOnClickListener {
             this@LivestreamFragment.checkLivestreamStatus()
         }
         DatabaseHelper.loadAppearance { authenticAppearance ->
-            if (authenticAppearance.livestream.image != null) {
+            if (authenticAppearance.livestream.image != null && binding != null) {
                 view.setBackgroundColor(authenticAppearance.livestream.color)
-                ImageResource(authenticAppearance.livestream.image, 1080, 1920).load(view.context, binding.livestreamImage)
+                ImageResource(authenticAppearance.livestream.image, 1080, 1920).load(view.context, binding!!.livestreamImage)
             }
         }
     }

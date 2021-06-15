@@ -12,7 +12,7 @@ abstract class AuthenticFragment<TBinding> : Fragment() {
     private var listener: OnFragmentTitleChangeListener? = null
     private var binder: ((LayoutInflater, ViewGroup?, Boolean) -> TBinding)? = null
     private var _binding: TBinding? = null
-    protected val binding get() = _binding!!
+    protected val binding get() = _binding
 
     private var _title: String = ""
 
@@ -39,15 +39,15 @@ abstract class AuthenticFragment<TBinding> : Fragment() {
         return
     }
 
-    protected abstract val root: View
+    protected abstract val root: View?
 
     final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (this.binder == null)
             return null
         _binding = binder!!.invoke(inflater, container, false)
         retainInstance = true
-        onCreateView(root)
-        onRefreshView(root)
+        onCreateView(root!!)
+        onRefreshView(root!!)
         return root
     }
 

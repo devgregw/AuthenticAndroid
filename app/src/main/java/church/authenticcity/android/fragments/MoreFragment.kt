@@ -15,8 +15,8 @@ import church.authenticcity.android.databinding.FragmentMoreBinding
 import church.authenticcity.android.helpers.Utils
 
 class MoreFragment : AuthenticFragment<FragmentMoreBinding>() {
-    override val root: View
-        get() = binding.root
+    override val root
+        get() = binding?.root
 
     private val ids: Array<String>
         get() = arguments?.getStringArray("ids") ?: Array(0) { "" }
@@ -73,7 +73,7 @@ class MoreFragment : AuthenticFragment<FragmentMoreBinding>() {
 
     override fun onCreateView(view: View) {
         view.setBackgroundColor(ResourcesCompat.getColor(view.context.resources, R.color.colorBackground, null))
-        binding.listView.adapter = ListViewAdapter(view.context, ids.mapIndexed { index, s -> DataModel(titles[index], s, specialTypes[index])}.toTypedArray())
+        binding?.listView?.adapter = ListViewAdapter(view.context, ids.mapIndexed { index, s -> DataModel(titles[index], s, specialTypes[index])}.toTypedArray())
     }
 
     override fun onRefreshView(view: View) {
