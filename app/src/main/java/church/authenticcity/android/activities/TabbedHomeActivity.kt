@@ -8,10 +8,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
-import androidx.appcompat.widget.AppCompatImageButton
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -124,7 +124,7 @@ class TabbedHomeActivity : AppCompatActivity() {
                         true
                     }
                     R.id.menu_privacy -> {
-                        ButtonAction.openUrl("https://authenticdocs.gregwhatley.dev/privacy-policy").invoke(context)
+                        ButtonAction.openUrl("https://github.com/devgregw/AuthenticAndroid/blob/master/privacy.md").invoke(context)
                         true
                     }
                     R.id.menu_licenses -> {
@@ -138,7 +138,7 @@ class TabbedHomeActivity : AppCompatActivity() {
                                 Utils.makeToast(context, "Unable to copy registration token.", Toast.LENGTH_SHORT).show()
                                 return@addOnCompleteListener
                             }
-                            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                             clipboard.setPrimaryClip(ClipData.newPlainText("fcm", task.result ?: "<unavailable>"))
                             Utils.makeToast(context, "Your registration token was copied.", Toast.LENGTH_SHORT).show()
                         }

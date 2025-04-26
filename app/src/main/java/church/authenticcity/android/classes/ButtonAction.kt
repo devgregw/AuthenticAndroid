@@ -32,7 +32,7 @@ class ButtonAction(private val map: HashMap<String, Any>) {
     }
 
     private val group = map["group"].toString().toInt()
-    val type = map["type"] as String
+    private val type = map["type"] as String
     private var properties = HashMap<String, Any>(map.filter { it.key != "group" && it.key != "type" })
 
     @Suppress("UNCHECKED_CAST")

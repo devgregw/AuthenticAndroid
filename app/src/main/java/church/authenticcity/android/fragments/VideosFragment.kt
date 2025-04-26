@@ -42,17 +42,17 @@ class VideosFragment : AuthenticFragment<FragmentVideosBinding>() {
 
     private fun showContent() {
         binding?.nestedScrollView?.animate()?.alpha(1f)?.setDuration(125L)?.setListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 binding?.swipeRefreshLayout?.isRefreshing = false
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
             }
         })?.start()
     }
@@ -94,7 +94,7 @@ class VideosFragment : AuthenticFragment<FragmentVideosBinding>() {
 
     override fun onRefreshView(view: View) {
         binding?.nestedScrollView?.animate()?.alpha(0f)?.setDuration(125L)?.setListener(object : Animator.AnimatorListener {
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 DatabaseHelper.loadAllTabs(false) {er, tabs ->
                     when {
                         er != null -> setErrorMessage(view.context, "Error 400: Bad request.  FB#${er.code}: ${er.message}")
@@ -117,13 +117,13 @@ class VideosFragment : AuthenticFragment<FragmentVideosBinding>() {
                 }
             }
 
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
             }
         })?.start()
     }

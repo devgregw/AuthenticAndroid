@@ -6,8 +6,6 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.security.MessageDigest
-import java.util.*
-import kotlin.collections.HashMap
 
 class AuthenticTab(val header: ImageResource, val id: String, val index: Int, val title: String, actionMap: HashMap<String, Any>?, private val elements: List<HashMap<String, Any>?>?, val visibility: HashMap<String, Any>, val specialType: String?, private val password: String?) {
     constructor() : this(ImageResource("unknown.png", 720, 1080), "INVALID", Int.MAX_VALUE, "INVALID", null, null, HashMap<String, Any>().apply { put("override", false) }, null, null)
@@ -20,7 +18,7 @@ class AuthenticTab(val header: ImageResource, val id: String, val index: Int, va
         get() {
             if (elements == null)
                 _elements = ArrayList()
-            else if (_elements.count() == 0)
+            else if (_elements.isEmpty())
                 _elements = elements.asSequence().filterNotNull().map { AuthenticElement(it) }.toList()
             return _elements
         }
@@ -35,7 +33,11 @@ class AuthenticTab(val header: ImageResource, val id: String, val index: Int, va
 
     fun verifyPassword(input: String): Boolean {
         if (!hasPassword) return false
-        val hashed = MessageDigest.getInstance("SHA-256").digest(input.toByteArray()).fold("", {str, it -> str + "%02x".format(it) })
+        val hashed = MessageDigest.getInstance("SHA-256").digest(input.toByteArray()).fold("") { str, it ->
+            str + "%02x".format(
+                it
+            )
+        }
         return password == hashed
     }
 

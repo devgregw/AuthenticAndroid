@@ -29,7 +29,7 @@ class LargeThumbnailButtonView private constructor(context: Context) : RelativeL
         initialize(resource)
         binding.title.text = title
         if (hideTitle)
-            binding.labelBackground.visibility = View.GONE
+            binding.labelBackground.visibility = GONE
         resource.load(context, binding.thumbnail)
         setOnClickListener {
             action.invoke(context)
@@ -40,7 +40,7 @@ class LargeThumbnailButtonView private constructor(context: Context) : RelativeL
         initialize(ImageResource("", 1920, 1080))
         binding.title.text = title
         if (hideTitle)
-            binding.labelBackground.visibility = View.GONE
+            binding.labelBackground.visibility = GONE
         Glide.with(context).load(Uri.parse(thumbnail)).error(R.drawable.unknown).transition(DrawableTransitionOptions.withCrossFade()).into(binding.thumbnail)
         setOnClickListener {
             VideoActivity.start(context, provider, videoId, title)
@@ -56,6 +56,6 @@ class LargeThumbnailButtonView private constructor(context: Context) : RelativeL
             binding.card.foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
         isClickable = true
         val widthMargin = 2 * TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8f, resources.displayMetrics).roundToInt()
-        binding.thumbnail.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, resource.calculateHeight(resources.displayMetrics.widthPixels - widthMargin))
+        binding.thumbnail.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, resource.calculateHeight(resources.displayMetrics.widthPixels - widthMargin))
     }
 }

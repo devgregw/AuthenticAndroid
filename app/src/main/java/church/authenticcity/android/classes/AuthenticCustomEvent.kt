@@ -4,7 +4,6 @@ import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
-import java.util.*
 
 /**
  * Project AuthenticAndroid
@@ -32,7 +31,7 @@ class AuthenticCustomEvent(id: String, val index: Int, title: String, hideTitle:
         get() {
             if (elements == null)
                 _elements = ArrayList()
-            else if (_elements.count() == 0)
+            else if (_elements.isEmpty())
                 _elements = elements.map { AuthenticElement(it) }
             return _elements
         }

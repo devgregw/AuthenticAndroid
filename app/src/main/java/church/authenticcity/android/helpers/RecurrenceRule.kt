@@ -4,8 +4,7 @@ import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.Locale
 
 /**
  * Project AuthenticAndroid
@@ -43,7 +42,10 @@ class RecurrenceRule(private val frequency: String, private val interval: Int, p
         return when {
             endDate != null -> main + " until ${endDate.format(Utils.datePattern)} at ${endDate.format(Utils.timePattern)}"
             count != null -> {
-                val remaining = getOccurrences(initialStart, initialEnd).filter { it.startDate >= ZonedDateTime.now() }.count()
+                val remaining = getOccurrences(
+                    initialStart,
+                    initialEnd
+                ).count { it.startDate >= ZonedDateTime.now() }
                 return main + " $remaining more time${if (remaining != 1) "s" else ""}"
             }
             else -> main

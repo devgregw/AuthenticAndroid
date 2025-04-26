@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.databinding.ActivityWallpaperPreviewBinding
 import church.authenticcity.android.helpers.Utils
@@ -36,7 +37,7 @@ class WallpaperPreviewActivity : AppCompatActivity() {
                 Utils.makeToast(this@WallpaperPreviewActivity, "Download complete", Toast.LENGTH_SHORT).show()
             }
         }
-        registerReceiver(downloadReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        ContextCompat.registerReceiver(this, downloadReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_EXPORTED)
         mVisible = true
 
         binding.image.scaleType = ImageView.ScaleType.CENTER_CROP

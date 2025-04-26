@@ -250,7 +250,7 @@ class AuthenticElement(private val map: HashMap<String, Any>) {
     }
 
     val id: String = map["id"] as String
-    val parent: String = map["parent"] as String
+    private val parent: String = map["parent"] as String
     val type: String = map["type"] as String
 
     @Suppress("UNCHECKED_CAST")

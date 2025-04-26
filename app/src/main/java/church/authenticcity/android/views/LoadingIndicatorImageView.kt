@@ -38,7 +38,7 @@ class LoadingIndicatorImageView {
                 addView(ProgressBar(context).apply {
                     isIndeterminate = true
                     indeterminateTintList = if (randomColor)
-                        ColorStateList.valueOf(Color.argb(if (randomColor) 255 else 0, 255 - rand, 255 - rand, 255 - rand))
+                        ColorStateList.valueOf(Color.argb(255, 255 - rand, 255 - rand, 255 - rand))
                     else
                         ColorStateList.valueOf(Color.WHITE)
                     val size = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20f, context.resources.displayMetrics).roundToInt()

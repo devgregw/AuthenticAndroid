@@ -2,30 +2,17 @@ package church.authenticcity.android.classes
 
 import android.app.DownloadManager
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Environment
-import android.provider.Settings
-import android.util.Log
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.annotation.IntDef
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import church.authenticcity.android.AuthenticApplication
 import church.authenticcity.android.R
 import church.authenticcity.android.helpers.Utils
-import church.authenticcity.android.helpers.applyColorsAndTypefaces
 import church.authenticcity.android.helpers.getAs
 import church.authenticcity.android.helpers.isNullOrWhiteSpace
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import kotlin.math.roundToInt
@@ -72,14 +59,14 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
     }
 
     fun saveToGallery(context: Context) {
-        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            AlertDialog.Builder(context).setTitle("Permission Denied").setMessage("The image could not be saved because you didn't give the Authentic app permission.").setNeutralButton("Settings") { _, _ ->
-                context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}")).apply {
-                    addCategory(Intent.CATEGORY_DEFAULT)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                })
-            }.setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
-        else {
+//        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+//            AlertDialog.Builder(context).setTitle("Permission Denied").setMessage("The image could not be saved because you didn't give the Authentic app permission.").setNeutralButton("Settings") { _, _ ->
+//                context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}")).apply {
+//                    addCategory(Intent.CATEGORY_DEFAULT)
+//                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//                })
+//            }.setPositiveButton("Dismiss", null).create().applyColorsAndTypefaces().show()
+//        else {
             /*val dialog = ProgressDialog(context, R.style.ProgressDialog).apply {
                 setMessage(Utils.makeTypefaceSpan("Downloading image...", Utils.getTitleTypeface(context)))
                 isIndeterminate = true
@@ -129,6 +116,6 @@ class ImageResource(val imageName: String, val width: Int, val height: Int) {
                     }
                 })
             }*/
-        }
+//        }
     }
 }

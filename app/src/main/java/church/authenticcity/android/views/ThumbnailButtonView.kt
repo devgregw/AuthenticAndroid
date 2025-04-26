@@ -55,6 +55,6 @@ class ThumbnailButtonView private constructor(context: Context) : RelativeLayout
         if (Utils.checkSdk(23))
             binding.root.foreground = RippleDrawable(ColorStateList.valueOf(Color.argb(64, 0, 0, 0)), null, ColorDrawable(Color.BLACK))
         isClickable = true
-        layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100f, context.resources.displayMetrics).roundToInt())
+        layoutParams = ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100f, context.resources.displayMetrics).roundToInt())
     }
 }

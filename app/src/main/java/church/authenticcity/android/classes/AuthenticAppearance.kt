@@ -1,7 +1,6 @@
 package church.authenticcity.android.classes
 
 import android.graphics.Color
-import church.authenticcity.android.R
 
 /**
  * Project AuthenticAndroid

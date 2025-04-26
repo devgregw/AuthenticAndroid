@@ -1,6 +1,5 @@
 package church.authenticcity.android.helpers
 
-import android.animation.Animator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
@@ -13,14 +12,22 @@ import android.text.SpannableString
 import android.util.TypedValue
 import android.view.MenuItem
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.ScrollView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import church.authenticcity.android.AuthenticApplication
 import church.authenticcity.android.BuildConfig
 import church.authenticcity.android.R
-import church.authenticcity.android.classes.*
+import church.authenticcity.android.classes.AuthenticCustomEvent
+import church.authenticcity.android.classes.AuthenticEvent
+import church.authenticcity.android.classes.AuthenticTab
+import church.authenticcity.android.classes.ButtonAction
+import church.authenticcity.android.classes.ImageResource
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -76,29 +83,10 @@ fun ScrollView.setScrollingEnabled(enabled: Boolean) {
 @Suppress("IMPLICIT_CAST_TO_ANY")
 inline fun <reified T, V, K> HashMap<V, K>.getAs(key: V) = (if (T::class.simpleName == Int::class.simpleName) this[key].toString().toInt() else if (T::class.simpleName == Float::class.simpleName) this[key].toString().toFloat() else this[key]) as T
 
-@Suppress("IMPLICIT_CAST_TO_ANY")
 inline fun <reified T, V, K> HashMap<V, K>.getAs(key: V, default: T) = try {
     this.getAs(key)
 } catch (e: Exception) {
     default
-}
-
-open class SimpleAnimatorListener : Animator.AnimatorListener {
-    override fun onAnimationRepeat(animator: Animator?) {
-        // nothing
-    }
-
-    override fun onAnimationEnd(animator: Animator?) {
-        // nothing
-    }
-
-    override fun onAnimationCancel(animator: Animator?) {
-        // nothing
-    }
-
-    override fun onAnimationStart(p0: Animator?) {
-        // nothing
-    }
 }
 
 class Utils {

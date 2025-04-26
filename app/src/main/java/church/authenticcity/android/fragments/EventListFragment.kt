@@ -40,17 +40,17 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
             contentList.removeAllViews()
             contentList.addView(content)
             nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
                 }
 
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     binding?.swipeRefreshLayout?.isRefreshing = false
                 }
 
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
                 }
 
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                 }
             }).start()
         }
@@ -61,17 +61,17 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
             nestedScrollView.removeAllViews()
             nestedScrollView.addView(content)
             nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
                 }
 
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     binding?.swipeRefreshLayout?.isRefreshing = false
                 }
 
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
                 }
 
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                 }
             }).start()
         }
@@ -112,7 +112,7 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         binding?.apply {
             swipeRefreshLayout.isRefreshing = true
             nestedScrollView.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     DatabaseHelper.loadAllEvents(false) {er, ev ->
                         if (er != null)
                             setErrorMessage(view, "Error 400: Bad request.  FB#${er.code}: ${er.message}")
@@ -120,13 +120,13 @@ class EventListFragment : AuthenticFragment<FragmentContentBasicBinding>() {
                     }
                 }
 
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
                 }
 
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
                 }
 
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                 }
             }).start()
         }

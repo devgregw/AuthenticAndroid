@@ -13,7 +13,12 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,8 +33,7 @@ import church.authenticcity.android.databinding.FragmentContentBasicBinding
 import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
 import church.authenticcity.android.views.HalfThumbnailButtonView
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.Random
 import kotlin.math.roundToInt
 
 class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
@@ -69,7 +73,7 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
     }) {
 
         fun initialize(resource: ImageResource) {
-            resource.load(context, itemView.findViewById(R.id.image) as ImageView)
+            resource.load(context, itemView.findViewById<ImageView>(R.id.image)!!)
             itemView.setOnClickListener {
                 context.startActivity(Intent(context, WallpaperPreviewActivity::class.java).apply {
                     putExtra("imageName", resource.imageName)
@@ -85,17 +89,17 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
             nestedScrollView.removeAllViews()
             nestedScrollView.addView(content)
             nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
                 }
 
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     binding?.swipeRefreshLayout?.isRefreshing = false
                 }
 
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
                 }
 
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                 }
             }).start()
         }
@@ -106,17 +110,17 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
             contentList.removeAllViews()
             contentList.addView(content)
             nestedScrollView.animate().alpha(1f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
                 }
 
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     binding?.swipeRefreshLayout?.isRefreshing = false
                 }
 
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
                 }
 
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                 }
             }).start()
         }
@@ -126,17 +130,17 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         binding?.contentList?.removeAllViews()
         views.forEach { binding?.contentList?.addView(it) }
         binding?.nestedScrollView?.animate()?.alpha(1f)?.setDuration(125L)?.setListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(p0: Animator?) {
+            override fun onAnimationRepeat(p0: Animator) {
             }
 
-            override fun onAnimationEnd(p0: Animator?) {
+            override fun onAnimationEnd(p0: Animator) {
                 binding?.swipeRefreshLayout?.isRefreshing = false
             }
 
-            override fun onAnimationCancel(p0: Animator?) {
+            override fun onAnimationCancel(p0: Animator) {
             }
 
-            override fun onAnimationStart(p0: Animator?) {
+            override fun onAnimationStart(p0: Animator) {
             }
         })?.start()
     }
@@ -247,14 +251,14 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
                     weightSum = 1f
                     orientation = LinearLayout.HORIZONTAL
                 }
-                if (elements.count() > 0) {
+                if (elements.isNotEmpty()) {
                     rootList.addView(AuthenticElement.createThumbnailButton(view.context, ButtonAction.empty, "", tab.header, large = true, hideTitle = true))
 
                 //val info = elements[0].getProperty("videoInfo", HashMap<String, Any>())
                     //rootList.addView(AuthenticElement.createVideo(view.context, info["provider"] as String, info["id"] as String, info["thumbnail"] as String, info["title"] as String, large = true, hideTitle = true))
                 }
                 //elements.removeAt(0)
-                if (elements.count() > 0) {
+                if (elements.isNotEmpty()) {
                     val leftList = LinearLayout(view.context).apply {
                         orientation = LinearLayout.VERTICAL
                         layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT).apply {
@@ -295,7 +299,7 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
         binding?.apply {
             swipeRefreshLayout.isRefreshing = true
             nestedScrollView.animate().alpha(0f).setDuration(125L).setListener(object : Animator.AnimatorListener {
-                override fun onAnimationEnd(p0: Animator?) {
+                override fun onAnimationEnd(p0: Animator) {
                     DatabaseHelper.loadTab(tabId, false) {er, t ->
                         if (er != null)
                             setErrorMessage("Error 400: Bad request.  FB#${er.code}: ${er.message}")
@@ -303,13 +307,13 @@ class TabFragment : AuthenticFragment<FragmentContentBasicBinding>() {
                     }
                 }
 
-                override fun onAnimationRepeat(p0: Animator?) {
+                override fun onAnimationRepeat(p0: Animator) {
                 }
 
-                override fun onAnimationCancel(p0: Animator?) {
+                override fun onAnimationCancel(p0: Animator) {
                 }
 
-                override fun onAnimationStart(p0: Animator?) {
+                override fun onAnimationStart(p0: Animator) {
                 }
             }).start()
         }

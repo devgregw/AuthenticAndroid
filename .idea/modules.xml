@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/AuthenticAndroid.iml" filepath="$PROJECT_DIR$/AuthenticAndroid.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AuthenticAndroid.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AuthenticAndroid.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/AuthenticAndroid.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/AuthenticAndroid.app.androidTest.iml" />
     </modules>
   </component>
 </project>

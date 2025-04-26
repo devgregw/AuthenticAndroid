@@ -9,7 +9,12 @@ import church.authenticcity.android.classes.ImageResource
 import church.authenticcity.android.databinding.FragmentLivestreamBinding
 import church.authenticcity.android.helpers.DatabaseHelper
 import church.authenticcity.android.helpers.Utils
-import com.android.volley.*
+import com.android.volley.DefaultRetryPolicy
+import com.android.volley.NetworkError
+import com.android.volley.NoConnectionError
+import com.android.volley.Request
+import com.android.volley.ServerError
+import com.android.volley.TimeoutError
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.beust.klaxon.JsonObject
@@ -63,7 +68,7 @@ class LivestreamFragment : AuthenticFragment<FragmentLivestreamBinding>() {
             request = StringRequest(Request.Method.GET, "https://us-central1-authentic-city-church.cloudfunctions.net/videos", {
                 checkingSnackbar!!.dismiss()
                 val obj = Parser.default().parse(StringBuilder(it)) as JsonObject
-                if (obj.count() > 0) {
+                if (obj.isNotEmpty()) {
                     if (obj.containsKey("livestream")) {
                         actionSnackbar = Snackbar.make(requireView(), Utils.makeTypefaceSpan("WE'RE LIVE", requireView().context, 12), Snackbar.LENGTH_INDEFINITE)
                         actionSnackbar?.setAction(Utils.makeTypefaceSpan("TAP TO WATCH NOW", requireView().context, 12)) {
@@ -83,14 +88,22 @@ class LivestreamFragment : AuthenticFragment<FragmentLivestreamBinding>() {
                 checkingSnackbar?.dismiss()
                 if (view != null)
                     Snackbar.make(requireView(), Utils.makeTypefaceSpan("ERROR WHILE CHECKING FOR LIVESTREAM", requireView().context, 10), Snackbar.LENGTH_SHORT).show()
-                if (it is NetworkError) {
-                    Log.e("Livestream", "NetworkError: " + (it.localizedMessage ?: "<null>"))
-                } else if (it is TimeoutError || it is NoConnectionError) {
-                    Log.e("Livestream", "TimeoutError or NoConnectionError: " + (it.localizedMessage ?: "<null>"))
-                } else if (it is ServerError) {
-                    Log.e("Livestream", "ServerError: " + (it.localizedMessage ?: "<null>"))
-                } else {
-                    Log.e("Livestream", "Unknown: " + (it.localizedMessage ?: "<null>"))
+                when (it) {
+                    is NetworkError -> {
+                        Log.e("Livestream", "NetworkError: " + (it.localizedMessage ?: "<null>"))
+                    }
+
+                    is TimeoutError, is NoConnectionError -> {
+                        Log.e("Livestream", "TimeoutError or NoConnectionError: " + (it.localizedMessage ?: "<null>"))
+                    }
+
+                    is ServerError -> {
+                        Log.e("Livestream", "ServerError: " + (it.localizedMessage ?: "<null>"))
+                    }
+
+                    else -> {
+                        Log.e("Livestream", "Unknown: " + (it.localizedMessage ?: "<null>"))
+                    }
                 }
             })
             request!!.setShouldCache(false)
